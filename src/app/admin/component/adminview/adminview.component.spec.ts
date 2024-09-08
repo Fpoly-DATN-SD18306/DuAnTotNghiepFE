@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestUIAdminComponent } from './test-uiadmin.component';
+import { AdminviewComponent } from './adminview.component';
 
-describe('TestUIAdminComponent', () => {
-  let component: TestUIAdminComponent;
-  let fixture: ComponentFixture<TestUIAdminComponent>;
+describe('AdminviewComponent', () => {
+  let component: AdminviewComponent;
+  let fixture: ComponentFixture<AdminviewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestUIAdminComponent]
+      declarations: [AdminviewComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TestUIAdminComponent);
+    fixture = TestBed.createComponent(AdminviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
