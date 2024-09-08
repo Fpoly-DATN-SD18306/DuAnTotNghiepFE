@@ -8,12 +8,14 @@ import { MenuComponent } from './component/menu/menu.component';
 import { OtherComponent } from './component/other/other.component';
 
 
+
 @NgModule({
   declarations: [
     UserviewComponent,
     HomeComponent,
     MenuComponent,
-    OtherComponent
+    OtherComponent,
+
   ],
   imports: [
     CommonModule,

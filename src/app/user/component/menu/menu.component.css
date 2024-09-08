@@ -1,0 +1,64 @@
+.product-container {
+    display: flex;
+    overflow-x: auto; /* Tạo thanh cuộn ngang */
+    white-space: nowrap; /* Giữ tất cả sản phẩm trong một hàng */
+  }
+  
+  .product-card {
+    flex: 0 0 auto; /* Giữ các thẻ sản phẩm cố định trong hàng */
+    width: 200px; /* Điều chỉnh kích thước sản phẩm */
+    margin-right: 15px; /* Khoảng cách giữa các sản phẩm */
+  }
+  
+  .product-container::-webkit-scrollbar {
+    height: 8px; /* Tùy chỉnh chiều cao thanh cuộn */
+  }
+  
+  .product-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3); /* Tùy chỉnh màu thanh cuộn */
+    border-radius: 4px;
+  }
+
+  .product-slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .product-container {
+    display: flex;
+    overflow-x: hidden; /* Ẩn các sản phẩm thừa */
+    scroll-behavior: smooth; /* Tạo hiệu ứng cuộn mượt */
+  }
+  
+  .product-card {
+    flex: 0 0 auto;
+    width: 200px;
+    margin-right: 15px;
+  }
+  
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5); /* Nền mờ đen cho mũi tên */
+    color: white;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1000;
+  }
+  
+  .left-arrow {
+    left: 0;
+  }
+  
+  .right-arrow {
+    right: 0;
+  }
+  
+  .arrow:hover {
+    background-color: rgba(0, 0, 0, 0.7); /* Hiệu ứng hover cho mũi tên */
+  }
