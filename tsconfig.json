@@ -23,7 +23,10 @@
       "ES2022",
       "dom"
     ]
-  },
+  }, "include": [
+    "src/**/*.ts",
+    "src/environments/environment.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
