@@ -1,0 +1,83 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" routerLink="/admin/manager/managerFood/manager">Quản lý</a>
+
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " aria-current="page" routerLink="/admin/manager/managerFood/foods">Danh sách món</a>
+  </li>
+</ul>
+<form action="" [formGroup]="productForm" method="post" enctype="multipart/form-data" >
+<div class="w-100 h-100 p-3 ">
+  <div class=" row ms-auto ">
+
+    <div class="col-3"> 
+      <!-- <img *ngIf="srcImage!='./img/noImage.jpg'" id="previewImage" class="img-thumbnail border mx-auto" alt="" src="http://localhost:8080/images/{{srcImage}}" style="height: 200px; width: 100%">
+      <img *ngIf="srcImage=='./img/noImage.jpg'" id="previewImage" class="img-thumbnail border mx-auto" alt="" src="{{srcImage}}" style="height: 200px; width: 100%"> -->
+      <img src="{{srcImage}}"
+										class="img-thumbnail border mx-auto" id="previewImage" alt="."
+										style="height: 200px; width: 100%">
+                   
+    <div class="input-group my-3 ">
+     <input type="file"  (change)="changeImage($event)"   class="form-control"
+        id="fileInput">
+    </div>
+
+    </div>
+    <div class="col-8 row ">
+      <div class="col-12">
+
+        <label for="inputAddress" class="form-label">Tên sản phẩm </label>
+        <input type="text" class="form-control" formControlName="nameFood"  [class.is-invalid]="productForm.controls['nameFood'].invalid &&  productForm  .controls['nameFood'].touched" id="inputAddress" placeholder="Banh my, Pho , . . .">
+        <div *ngIf="productForm.controls['nameFood'].invalid &&  productForm.controls['nameFood'].touched" class="text-danger">
+          Name is required
+          </div>
+      </div>
+        
+        <div class="col-12">
+        <label for="inputAddress" class="form-label">Loại sản phẩm </label>
+        <select class="form-select" formControlName="idCategory" aria-label="Default select example">
+          <option *ngFor="let cate of listCate" value="{{cate.idCategory}}">{{cate.nameCategory}}</option>
+        </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="inputEmail4"  class="form-label">Đơn Giá</label>
+          <input type="number" formControlName="priceFood"  [class.is-invalid]="productForm.controls['priceFood'].invalid &&  productForm  .controls['priceFood'].touched" class="form-control" id="inputEmail4">
+          <div *ngIf="productForm.controls['priceFood'].invalid &&  productForm.controls['priceFood'].touched" class="text-danger">
+            Price is required
+             <span *ngIf="productForm.controls['priceFood'].value < 0 &&  productForm.controls['priceFood'].touched" class="text-danger">
+              and not negative
+              </span>
+            </div>
+           
+        </div>
+        <div class="col-md-6">
+          <label for="inputPassword4" class="form-label">Trạng thái(Đang bán)</label>
+          <select class="form-select"  formControlName="isSelling" aria-label="Default select example">  
+            
+            <option value=True [selected]="productForm.controls['isSelling'].value==true" >True</option>
+            <option value=False [selected]="productForm.controls['isSelling'].value==false">False</option>
+          </select>
+        
+
+        </div>
+    </div>
+    <div class="col-12">
+      <div class="mb-3">
+        <label for="exampleFormControlTextarea1"  class="form-label">Example textarea</label>
+        <textarea class="form-control" formControlName="note" id="exampleFormControlTextarea1" rows="5"></textarea>
+      </div>
+    </div>
+    
+    <div class="col-12 w-100 text-center">
+      <button type="button" (click)="postFood()" [disabled]="productForm.invalid" class="btn btn-outline-primary mx-2">Thêm món</button>
+      <button type="button" *ngIf="idFoodNeedUpdate!=null" (click)="putFood()" [disabled]="productForm.invalid" class="btn btn-outline-primary mx-2">Sửa món</button>
+      <button type="button" (click)=" reLoad()"  class="btn btn-outline-primary mx-2">Làm mới</button>
+    </div>
+
+  </div>
+
+
+</div>
+</form>
