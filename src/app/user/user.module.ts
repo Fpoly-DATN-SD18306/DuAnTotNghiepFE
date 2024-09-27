@@ -6,6 +6,7 @@ import { UserviewComponent } from './component/userview/userview.component';
 import { HomeComponent } from './component/home/home.component';
 import { MenuComponent } from './component/menu/menu.component';
 import { OtherComponent } from './component/other/other.component';
+import { CartComponent } from './component/cart/cart/cart.component';
 
 
 
@@ -15,6 +16,7 @@ import { OtherComponent } from './component/other/other.component';
     HomeComponent,
     MenuComponent,
     OtherComponent,
+    CartComponent,
 
   ],
   imports: [
