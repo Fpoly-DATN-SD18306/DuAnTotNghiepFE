@@ -1,38 +1,37 @@
-
 <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link " aria-current="page" routerLink="/admin/manager/managerFood/manager">Quản lý</a>
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/admin/manager/managerFood/manager">Quản lý</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" routerLink="/admin/manager/managerFood/foods">Danh sách món</a>
+  </li>
+</ul>
 
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" routerLink="/admin/manager/managerFood/foods">Danh sách món</a>
-    </li>
-  </ul>
-  <form class="row g-3 mt-1">
-    
-    <div class="col-md-6">
-      <input type="text" class="form-control" placeholder="Tên món ăn" id="inputCity">
-    </div>
-    <div class="col-md-4">
-      <select id="inputState" class="form-select">
-        <option >Loại món ăn</option>
-        <option>...</option>
-      </select>
-    </div>
-    <div class="col-md-2">
-      <select id="inputState" class="form-select">  
-        <option>Đang mở bán</option>
-        <option>Tạm ngưng</option>
-      </select>
-    </div>
-
-  </form>
-  <div class="mt-2">
-    <button type="submit" class="btn btn-primary w-100 ">Tìm kiếm</button>
+<form class="row g-3 mt-1">
+  <div class="col-md-6">
+    <input type="text" class="form-control" placeholder="Tìm kiếm" #myInput (keyup.enter)="doSearch(myInput.value)">
   </div>
-  <div class=" mx-auto" style="overflow-y: scroll; height: 370px;">
-  <table class=" border rounded my-2 table table-striped">
+  <div class="col-md-4">
+    <select id="inputState" class="form-select" (change)="filterFoodByCategory($event)">
+      <option value="">Loại món ăn</option>
+      <option *ngFor="let cate of listCate"  [value]="cate.idCategory">{{cate.nameCategory}}</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select id="inputState" class="form-select" (change)="filterisSelling($event)">
+      <option >Chọn tất cả</option>
+      <option [value]=true>Đang mở bán</option>
+      <option [value]=false>Tạm ngưng</option>
+    </select>
+  </div>
+</form>
 
+<div class="mt-2">
+  <button type="button" class="btn btn-primary w-100" (click)="doSearch(myInput.value)">Tìm kiếm</button>
+</div>
+
+<div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+  <table class="border rounded my-2 table table-striped">
     <thead class="table-light">
       <tr>
         <th scope="col">Ảnh</th>
@@ -44,50 +43,50 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let food of listFood">
+      <tr *ngFor="let food of filteredFoods">
         <td style="width: 140px;">
-         
-          <img *ngIf="food.imgFood!=null" alt="" src="http://localhost:8080/images/{{food.imgFood}}" style="height: 100px ; width: 120px">
-          <img *ngIf="food.imgFood==null" alt="" src="./img/noImage.jpg" style="height: 100px ; width: 120px">
-                            
+          <img *ngIf="food?.imgFood" alt="" src="http://localhost:8080/images/{{food.imgFood}}"
+            style="height: 100px; width: 120px">
+          <img *ngIf="!food?.imgFood" alt="" src="./img/noImage.jpg" style="height: 100px; width: 120px">
         </td>
-        <td>{{food.idFood}} </td>
-        <td>{{food.nameFood}} </td>
+        <td>{{food.idFood}}</td>
+        <td>{{food.nameFood}}</td>
         <td>{{food.priceFood}} vnđ</td>
-        <td>{{food.isSelling}} </td>  
+        <td>{{food.isSelling}}</td>
         <td>
-          <button type="button" (click)="editProduct(food.idFood)" class="btn mx-1 btn-outline-secondary"> sửa</button>
+          <button type="button" (click)="editProduct(food.idFood)" class="btn mx-1 btn-outline-secondary">Sửa</button>
         </td>
-
       </tr>
-      
-     
     </tbody>
-
   </table>
-  </div>
-  <div class="w-100 my-3 d-flex justify-content-center ">
-    <nav class="mx-auto text-center " aria-label="...">
-      <ul class="pagination">
-        <li class="page-item "  [class.disabled]="number==0" >
-          <button  class="page-link">Previous</button>
-        </li>
+</div>
 
-        <li *ngIf="number>0" class="page-item ">
-          <button (click)="getAllListFood(number-1)" class="page-link" >{{number}}</button></li>
-        <li  class="page-item active">
-           <button class="page-link" >{{number+1}}</button></li>
+<div class="w-100 my-3 d-flex justify-content-center">
+  <nav class="mx-auto text-center" aria-label="...">
+    <ul class="pagination">
+      <li class="page-item" [class.disabled]="number == 0">
+        <button class="page-link">Previous</button>
+      </li>
 
-           <li *ngIf="totalPages-1>number" class="page-item ">
-            <button (click)="getAllListFood(number+1)" class="page-link" >{{number+2}}</button></li>
-            <li *ngIf="totalPages-1>number+3" class="page-item">
-              <button (click)="getAllListFood(number+2)" class="page-link" >{{number+3}}</button></li>
-     
+      <li *ngIf="number > 0" class="page-item">
+        <!-- <button (click)="getAllListFood(number - 1)" class="page-link">{{ number }}</button> -->
+      </li>
 
+      <li class="page-item active">
+        <button class="page-link">{{ number + 1 }}</button>
+      </li>
 
-        <li class="page-item" [class.disabled]="number==totalPages-1">
-          <button  class="page-link" >Next</button>
-        </li>
-      </ul>
-    </nav>
-  </div>
+      <li *ngIf="totalPages - 1 > number" class="page-item">
+        <!-- <button (click)="getAllListFood(number + 1)" class="page-link">{{ number + 2 }}</button> -->
+      </li>
+
+      <li *ngIf="totalPages - 1 > number + 2" class="page-item">
+        <!-- <button (click)="getAllListFood(number + 2)" class="page-link">{{ number + 3 }}</button> -->
+      </li>
+
+      <li class="page-item" [class.disabled]="number == totalPages - 1">
+        <button class="page-link">Next</button>
+      </li>
+    </ul>
+  </nav>
+</div>

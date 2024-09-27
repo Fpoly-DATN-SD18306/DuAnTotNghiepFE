@@ -142,10 +142,10 @@ ngOnInit(): void {
 
   this.router.params.subscribe(
     param =>{
-      let idFood = param['id']
+      let foodId = param['id']
       let foodResponse !: foodResponse;
-      if(idFood!= undefined){
-        this.foodService.getById(idFood).subscribe(
+      if(foodId!= undefined){
+        this.foodService.getById(foodId).subscribe(
           data=>{
             foodResponse =data.result;
             console.log(foodResponse)
