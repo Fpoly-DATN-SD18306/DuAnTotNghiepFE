@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ManagerviewparentComponent } from './managerviewparent/managerviewparent.component';
-import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
+
+
 
 const routes: Routes = [{
   path: '', component: ManagerviewparentComponent,
   children: [
-   {path :'managerTable' , component :ManagerviewTableComponent }
+   { path: 'managerFood', loadChildren: () => import('./managerview-food/managerview-food.module').then(m => m.ManagerviewFoodModule) }
   ]
 }
 ];
