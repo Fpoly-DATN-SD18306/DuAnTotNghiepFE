@@ -21,6 +21,8 @@ export class ManagerviewTableComponent implements OnInit {
   keyTable?: number;
   currentPage : number = 0
   pagesize :number = 18
+  totalPages : number = 0
+  pages: number[] = []
   tableData : tabelRequest = {
     nameTable: '',
     isDeleted: false 
@@ -33,6 +35,8 @@ export class ManagerviewTableComponent implements OnInit {
     this.tableserive.getAlltable(page, size).subscribe(data => {
       console.log(data.result)
       this.listTable = data.result.content
+      this.totalPages = data.result.totalPages
+      this.pages = Array(this.totalPages).fill(0).map((x, i) => i)
     },error => {
       console.log("Error list table: ", error)
     })

@@ -55,6 +55,7 @@
                                 aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
+                                        <form>
                                         <div class="modal-header">
                                             <h1 class="modal-title ms-3 fs-5" id="staticBackdropLabel">
                                                 Thêm bàn
@@ -63,7 +64,7 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form class="form-floating-group">
+                                            <div class="form-floating-group" novalidate>
                                                 <!-- Khu vực Input -->
                                                 <div class="form-area">
                                                     <input type="text"
@@ -82,13 +83,14 @@
                                                     <label for="tableInput" class="label-input">Tên
                                                         bàn</label>
                                                 </div>
-                                            </form>
+                                                
+                                            </div>
                                         </div>
                                         <div class="modal-footer border-0 mt-0 pt-0">
                                             <div class="row">
                                                 <div class="button-group">
                                                     <button class="btn btn-confirm rounded-3" style="font-size: 0.8em"
-                                                        type="button" (click)="createNewTable()">
+                                                        type="submit" (click)="createNewTable()">
                                                         Xác nhận
                                                     </button>
                                                     <a class="btn btn-cancel rounded-3" type="button"
@@ -97,6 +99,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </form>
                                     </div>
                                 </div>
                             </div>
@@ -274,7 +277,7 @@
                                 </div>
                                 <!-- Modal -->
                                 <div class="modal fade" id="modalqrcode" data-bs-backdrop="static"
-                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                    data-bs-keyboard="false" tabindex="-1" aria-labelle dby="staticBackdropLabel"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
