@@ -1,0 +1,72 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/admin/manager/managerFood/manager">Quản lý</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" routerLink="/admin/manager/managerFood/foods">Danh sách món</a>
+  </li>
+</ul>
+
+<form class="row g-3 mt-1">
+  <div class="col-md-6">
+    <input type="text" class="form-control" placeholder="Tìm kiếm" #myInput (keyup.enter)="doSearch(myInput.value)">
+  </div>
+  <div class="col-md-4">
+    <select id="inputState" class="form-select" (change)="filterFoodByCategory($event)">
+      <option value="">Loại món ăn</option>
+      <option *ngFor="let cate of listCate"  [value]="cate.idCategory">{{cate.nameCategory}}</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select id="inputState" class="form-select" (change)="filterisSelling($event)">
+      <option >Chọn tất cả</option>
+      <option [value]=true>Đang mở bán</option>
+      <option [value]=false>Tạm ngưng</option>
+    </select>
+  </div>
+</form>
+
+<div class="mt-2">
+  <button type="button" class="btn btn-primary w-100" (click)="doSearch(myInput.value)">Tìm kiếm</button>
+</div>
+
+<div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+  <table class="border rounded my-2 table table-striped">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">Ảnh</th>
+        <th scope="col">Mã món</th>
+        <th scope="col">Tên món</th>
+        <th scope="col">Đơn giá</th>
+        <th scope="col">Đang mở bán</th>
+        <th scope="col">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let food of filteredFoods">
+        <td style="width: 140px;">
+          <img *ngIf="food?.imgFood" alt="" src="http://localhost:8080/images/{{food.imgFood}}"
+            style="height: 100px; width: 120px">
+          <img *ngIf="!food?.imgFood" alt="" src="./img/noImage.jpg" style="height: 100px; width: 120px">
+        </td>
+        <td>{{food.idFood}}</td>
+        <td>{{food.nameFood}}</td>
+        <td>{{food.priceFood}} vnđ</td>
+        <td>{{food.isSelling}}</td>
+        <td>
+          <button type="button" (click)="editProduct(food.idFood)" class="btn mx-1 btn-outline-secondary">Sửa</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+<div class="d-flex justify-content-center">
+  <ngb-pagination 
+    [(page)]="thePageNumber" 
+    [pageSize]="thePageSize"
+    [collectionSize]="theTotalElements" 
+    (pageChange)="listFoods()" 
+    [boundaryLinks]="true">
+  </ngb-pagination>
+</div>
