@@ -20,186 +20,99 @@ export class ListfoodComponent implements OnInit {
   filteredFoods!: Foods[];
   number = 0;
   totalPages = 0;
-  thePageNumber: number = 0;
+  thePageNumber: number = 1;
   thePageSize: number = 20;
   theTotalElements: number = 0;
   size: number = 20;
-  currentCategoryId: number = 1;
-  
-  listCate !: any;
+  currentCategoryId: number = 1;  
+  listCate!: FoodCategory[]; 
+
   constructor(
     private foodService: FoodService,
-    private cateService : CategoryService,
+    private cateService: CategoryService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private searchFilterService: SearchFilterService
   ) {}
 
-  getAllListFood(page: number) {
-    this.foodService.getAllList(page).subscribe(
-      data => {
-        this.listFood = data.result.content;
-        this.number = data.result.number;
-        this.totalPages = data.result.totalPages;
-      },
-      error => {
-        console.error('Error fetching all food items', error);
-      }
-    );
-  }
-
-  editProduct(idFood: number) {
-    this.router.navigate(["/admin/manager/managerFood/manager", idFood]);
-  }
-
-  ListAllFood() {
-    this.searchFilterService.getFoodList().subscribe(
-      data => {
-        this.filteredFoods = data;
-      },
-      error => {
-        console.error('Error fetching all food items', error);
-      }
-    );
-  }
-  doSearch(value: string) {
-      this.router.navigate([`/admin/manager/managerFood/search/${value}`]).then(() => {
-        
-        window.location.reload();
-      });;
-  }
-  filterFoodByCategory(event: Event) {
-    const selectedCategoryId = +(event.target as HTMLSelectElement).value;
-    if (selectedCategoryId) {
-      this.router.navigate([`/admin/manager/managerFood/category/${selectedCategoryId}`]).then(() => {
-        
-        window.location.reload();
-      });
-    } else {
-      this.router.navigate(["/admin/manager/managerFood/category"]).then(() => {
-        
-        window.location.reload();
-      });;
-    }
-  }
-  filterisSelling(event: Event) {
-    const isSelling = (event.target as HTMLSelectElement).value;
-    this.router.navigate([`/admin/manager/managerFood/isselling/${isSelling}`]).then(() => {
-      window.location.reload(); 
+  ngOnInit(): void {
+    this.filterByCategory();
+    this.route.paramMap.subscribe(() => {
+      this.listFoods(); 
     });
   }
+
   
   listFoods() {
     const idParam = this.route.snapshot.paramMap.get('idcategory');
     const theKeyword = this.route.snapshot.paramMap.get('keyword');
     const theSelling = this.route.snapshot.paramMap.get('isSelling');
+
+    let observable;
+
     if (theKeyword) {
-      this.searchFilterService.searchFood(this.thePageNumber, this.thePageSize, theKeyword).subscribe(
-        data => {
-          if (data && data._embedded && data._embedded.foodEntities) {
-            this.food = data._embedded.foodEntities;
-            this.filteredFoods = this.food;
-            this.thePageNumber = data.page.number;
-            this.thePageSize = data.page.size;
-            this.theTotalElements = data.page.totalElements;
-            this.size = this.filteredFoods.length;
-          } else {
-            console.error('No food data or incorrect format', data);
-            this.filteredFoods = [];
-          }
-        },
-        error => {
-          console.error('Error searching food items', error);
-        }
-      );
+      observable = this.searchFilterService.searchFood(this.thePageNumber - 1, this.thePageSize, theKeyword);
+    } else if (idParam) {
+      this.currentCategoryId = +idParam; 
+      observable = this.searchFilterService.getFoodListPaginate(this.thePageNumber - 1, this.thePageSize, this.currentCategoryId);
+    } else if (theSelling) {
+      observable = this.searchFilterService.getFoodListByisSelling(this.thePageNumber - 1, this.thePageSize, theSelling === 'true');
     } else {
-      if (!idParam) {
-        this.searchFilterService.getFoodPage(this.thePageNumber, this.thePageSize).subscribe(
-          data => {
-            if (data && data._embedded && data._embedded.foodEntities) {
-              this.food = data._embedded.foodEntities;
-              this.filteredFoods = this.food;
-              this.thePageNumber = data.page.number;
-              this.thePageSize = data.page.size;
-              this.theTotalElements = data.page.totalElements;
-              this.size = this.filteredFoods.length;
-            } else {
-              console.error('No food data or incorrect format', data);
-              this.filteredFoods = [];
-            }
-          },
-          error => {
-            console.error('Error fetching paginated food list', error);
-          }
-        );
-      } else {
-        this.currentCategoryId = idParam ? +idParam : 1;
-        this.searchFilterService.getFoodListPaginate(this.thePageNumber, this.thePageSize, this.currentCategoryId).subscribe(
-          data => {
-            if (data && data._embedded && data._embedded.foodEntities) {
-              this.food = data._embedded.foodEntities;
-              this.filteredFoods = this.food;
-              this.thePageNumber = data.page.number;
-              this.thePageSize = data.page.size;
-              this.theTotalElements = data.page.totalElements;
-              this.size = this.filteredFoods.length;
-            } else {
-              console.error('No food data or incorrect format', data);
-              this.filteredFoods = [];
-            }
-          },
-          error => {
-            console.error('Error fetching food items by category', error);
-          }
-        );
-      }if (theSelling) {
-        this.searchFilterService.getFoodListByisSelling(this.thePageNumber, this.thePageSize, theSelling === 'true').subscribe(
-          data => {
-            if (data && data._embedded && data._embedded.foodEntities) {
-              this.food = data._embedded.foodEntities;
-              this.filteredFoods = this.food;
-              this.thePageNumber = data.page.number;
-              this.thePageSize = data.page.size;
-              this.theTotalElements = data.page.totalElements;
-              this.size = this.filteredFoods.length;
-            } else {
-              console.error('No food data or incorrect format', data);
-              this.filteredFoods = [];
-            }
-          },
-          error => {
-            console.error('Error fetching food items by selling status', error);
-          }
-        );
-      }
+      observable = this.searchFilterService.getFoodPage(this.thePageNumber - 1, this.thePageSize);
     }
+
+    observable.subscribe(
+      data => {
+        if (data && data._embedded && data._embedded.foodEntities) {
+          this.food = data._embedded.foodEntities;
+          this.filteredFoods = this.food;
+          this.theTotalElements = data.page.totalElements; 
+          this.size = this.filteredFoods.length;
+          this.number = data.page.number + 1; 
+          this.totalPages = data.page.totalPages;
+        } else {
+          this.filteredFoods = [];
+        }
+      },
+      error => {
+        console.error('Error fetching food items', error);
+      }
+    );
   }
 
+  editProduct(idFood: number) {
+    this.router.navigate(['/admin/manager/managerFood/manager', idFood]);
+  }
+
+  doSearch(value: string) {
+    this.router.navigate([`/admin/manager/managerFood/search/${value}`]).then(() => {
+      window.location.reload();
+    });
+  }
+
+  filterFoodByCategory(event: Event) {
+    const selectedCategoryId = +(event.target as HTMLSelectElement).value;
+    this.router.navigate([`/admin/manager/managerFood/category/${selectedCategoryId}`]).then(() => {
+      window.location.reload();
+    });
+  }
+
+  filterisSelling(event: Event) {
+    const isSelling = (event.target as HTMLSelectElement).value;
+    this.router.navigate([`/admin/manager/managerFood/isselling/${isSelling}`]).then(() => {
+      window.location.reload();
+    });
+  }
 
   filterByCategory() {
-
-      this.cateService.getAllCate().subscribe(
-        data=>{
-         
-          this.listCate = data.result as ApiRespone;
-          console.log(this.listCate)
-        }, 
-        error =>{
-          console.log(error)
-        }
-  
-      )
-    
-    
-  }
-
-  ngOnInit(): void {
-   
-    this.ListAllFood();
-    this.filterByCategory();
-    this.route.paramMap.subscribe(() => {
-      this.listFoods();
-    });
+    this.cateService.getAllCate().subscribe(
+      data => {
+        this.listCate = data.result as FoodCategory[]; 
+      },
+      error => {
+        console.error('Error fetching categories', error);
+      }
+    );
   }
 }

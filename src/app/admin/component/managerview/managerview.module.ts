@@ -6,6 +6,7 @@ import { ManagerviewparentComponent } from './managerviewparent/managerviewparen
 
 import { ManagerviewFoodComponent } from './managerview-food/managerview-food.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -14,6 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ManagerviewFoodComponent
   ],
   imports: [
+ 
+    NgbModule,
     CommonModule,
     FormsModule,ReactiveFormsModule,
     ManagerviewRoutingModule

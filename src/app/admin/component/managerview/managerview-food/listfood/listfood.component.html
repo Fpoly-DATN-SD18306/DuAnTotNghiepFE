@@ -59,34 +59,14 @@
       </tr>
     </tbody>
   </table>
+
 </div>
-
-<div class="w-100 my-3 d-flex justify-content-center">
-  <nav class="mx-auto text-center" aria-label="...">
-    <ul class="pagination">
-      <li class="page-item" [class.disabled]="number == 0">
-        <button class="page-link">Previous</button>
-      </li>
-
-      <li *ngIf="number > 0" class="page-item">
-        <!-- <button (click)="getAllListFood(number - 1)" class="page-link">{{ number }}</button> -->
-      </li>
-
-      <li class="page-item active">
-        <button class="page-link">{{ number + 1 }}</button>
-      </li>
-
-      <li *ngIf="totalPages - 1 > number" class="page-item">
-        <!-- <button (click)="getAllListFood(number + 1)" class="page-link">{{ number + 2 }}</button> -->
-      </li>
-
-      <li *ngIf="totalPages - 1 > number + 2" class="page-item">
-        <!-- <button (click)="getAllListFood(number + 2)" class="page-link">{{ number + 3 }}</button> -->
-      </li>
-
-      <li class="page-item" [class.disabled]="number == totalPages - 1">
-        <button class="page-link">Next</button>
-      </li>
-    </ul>
-  </nav>
+<div class="d-flex justify-content-center">
+  <ngb-pagination 
+    [(page)]="thePageNumber" 
+    [pageSize]="thePageSize"
+    [collectionSize]="theTotalElements" 
+    (pageChange)="listFoods()" 
+    [boundaryLinks]="true">
+  </ngb-pagination>
 </div>
