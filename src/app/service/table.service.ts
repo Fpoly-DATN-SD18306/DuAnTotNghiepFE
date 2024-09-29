@@ -16,7 +16,7 @@ export class TableService {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/tables?page=${page}&size=${size}`)
   }
 
-  getTable(idtable : number){
+  getTable(idtable : number):Observable<ApiRespone> {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/${idtable}`);
   }
 
@@ -25,7 +25,7 @@ export class TableService {
   }
 
   updateTable(request : tabelRequest, idtable : number):Observable<ApiRespone>{
-     return this.http.put<ApiRespone>(`${this.url}/api/v1/tables/${idtable}`, request);
+     return this.http.put<ApiRespone>(this.url+'/api/v1/tables/'+idtable, request);
   }
 
   deleteTable(idtable : number):Observable<ApiRespone>{

@@ -20,11 +20,61 @@
 
                 <span class="navbar-text">
                     <div>
-                        <a class="btn btn-outline-dark rounded-4 py-1"><i class="bi bi-printer-fill mx-1"
-                                style="font-size: 0.8;"></i><span style="font-size: 0.8em;">In QR bàn</span></a>
+                        <button class="btn btn-outline-dark rounded-4 py-1" data-bs-toggle="modal" type="button"
+                            data-bs-target="#modalqrcode_print_all" (click)="getAllQrcode()"><i class="bi bi-printer-fill mx-1"
+                                style="font-size: 0.8;"></i><span style="font-size: 0.8em;">In QR bàn</span></button>
                     </div>
                 </span>
 
+                
+                <!-- Modal print all QRcode -->
+                <div class="modal fade" id="modalqrcode_print_all"  data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" >
+                        <div class="modal-content" >
+                            <div class="modal-header p-2" style="background-color: rgb(195, 133, 18);">
+                                <i class="bi bi-printer-fill mx-1" style="font-size: 0.8;"></i>
+                            <span class="fw-bold ">In toàn bộ QR</span>
+                            </div>
+                            <div class="modal-body" >
+                                <div class="container-fluid mt-3" *ngFor="let itemqr of listQrcode">
+                                    <div class="row" >
+                                        <div class="khungqr-code d-flex justify-content-center position-relative">
+                                            <img src="./img/khungqr2.png" class="position-relative" width="240px"
+                                                alt="QR Code Frame">
+                                            <div class="box-img-qrcode position-absolute">
+                                                <img *ngIf="itemqr != null" [src]="itemqr.linkImage"
+                                                    width="110px" class="rounded-3" alt="QR Code Image" />
+                                                <img *ngIf="itemqr == null" src="./img/imageempty.png" class="p-5"
+                                                    width="200px" alt="Empty QR Code" />
+                                            </div>
+                                            <div class="title-name_table position-absolute top-0">
+                                                <span class="fw-bold" style="font-size: 0.7em;">Tầng 1 - {{itemqr.nameImage}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body d-flex justify-content-center" *ngIf="listQrcode == null">
+                                <i>Không có dữ liệu!</i>
+                            </div>
+                            <div class="modal-footer border-0 mt-0 pt-0">
+                                <div class="row">
+                                    <div class="button-group">
+                                        <button class="btn btn-confirm rounded-3"
+                                        *ngIf="listQrcode != null"
+                                        (click)="printQrcode()" style="font-size: 0.8em" type="button">
+                                            <i class="bi bi-printer-fill mx-1" style="font-size: 0.8;"></i>
+                                            Xác nhận in mã
+                                        </button>
+                                        <a class="btn btn-cancel bg-danger text-white rounded-3 px-3" type="button"
+                                            style="font-size: 0.8em;" data-bs-dismiss="modal">Đóng</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
@@ -49,22 +99,78 @@
                                 </a>
                             </div>
 
-                            <!-- Modal -->
+                            <!-- Modal add Table -->
                             <div class="modal fade" id="modaladdtable" data-bs-backdrop="static"
                                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
-                                        <form>
+                                        <form class="needs-validation" novalidate>
+                                            <div class="modal-header">
+                                                <h1 class="modal-title ms-3 fs-5" id="staticBackdropLabel">
+                                                    Thêm bàn
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-floating-group" novalidate>
+                                                    <!-- Khu vực Input -->
+                                                    <div class="form-area">
+                                                        <input type="text"
+                                                            class="form-control input-control area-input px-3"
+                                                            id="areaInput" placeholder="Tầng 1" disabled />
+                                                        <label for="areaInput" class="label-khuvuc">Khu
+                                                            vực</label>
+                                                    </div>
+
+                                                    <!-- Tên bàn Input -->
+                                                    <div class="form-table">
+                                                        <input type="text" name="nameTable"
+                                                            [(ngModel)]="tableData.nameTable"
+                                                            class="form-control input-control table-input px-3"
+                                                            #nameTable="ngModel" id="tableInput" placeholder required />
+                                                        <label for="tableInput" class="label-input">Tên
+                                                            bàn</label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0 mt-0 pt-0">
+                                                <div class="row">
+                                                    <div class="button-group">
+                                                        <button class="btn btn-confirm rounded-3"
+                                                            style="font-size: 0.8em" type="submit"
+                                                            (click)="createNewTable()">
+                                                            Xác nhận
+                                                        </button>
+                                                        <a class="btn btn-cancel rounded-3" type="button"
+                                                            data-bs-dismiss="modal">Hủy</a>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end box add table -->
+
+                            <!-- Modal Update Table -->
+                            <div class="modal fade" id="modalupdatetable" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
                                         <div class="modal-header">
                                             <h1 class="modal-title ms-3 fs-5" id="staticBackdropLabel">
-                                                Thêm bàn
+                                                Sửa thông tin
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="form-floating-group" novalidate>
+                                            <form class="form-floating-group">
                                                 <!-- Khu vực Input -->
                                                 <div class="form-area">
                                                     <input type="text"
@@ -77,39 +183,47 @@
                                                 <!-- Tên bàn Input -->
                                                 <div class="form-table">
                                                     <input type="text" name="nameTable"
-                                                       [(ngModel)]="tableData.nameTable"
+                                                        [(ngModel)]="tableData.nameTable"
                                                         class="form-control input-control table-input px-3"
-                                                        id="tableInput" placeholder required/>
+                                                        id="tableInput" placeholder />
                                                     <label for="tableInput" class="label-input">Tên
                                                         bàn</label>
                                                 </div>
-                                                
-                                            </div>
+
+                                                <div class="form-delete-check d-flex justify-content-end">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" [(ngModel)]="tableData.deleted"
+                                                            name="deleted" type="checkbox" role="switch"
+                                                            id="flexSwitchCheckChecked" checked>
+                                                        <label class="form-check-label" style="font-size: 0.8em;"
+                                                            for="flexSwitchCheckChecked">Khóa bàn</label>
+                                                    </div>
+                                                </div>
+
+                                            </form>
                                         </div>
                                         <div class="modal-footer border-0 mt-0 pt-0">
                                             <div class="row">
                                                 <div class="button-group">
                                                     <button class="btn btn-confirm rounded-3" style="font-size: 0.8em"
-                                                        type="submit" (click)="createNewTable()">
-                                                        Xác nhận
+                                                        type="button" (click)="updateTable(keyTable)">
+                                                        Cập nhật
                                                     </button>
                                                     <a class="btn btn-cancel rounded-3" type="button"
-                                                        data-bs-dismiss="modal">Hủy</a>
-
+                                                        style="font-size: 0.8em" data-bs-dismiss="modal">Hủy</a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
                                     </div>
                                 </div>
                             </div>
-                            <!-- end box add table -->
 
                             <!-- start item table -->
                             <div class="item-table col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4"
                                 *ngFor="let table of listTable">
-                                <div class="box-item-table " *ngIf="listTable != null">
-                                    <div class="card border-1 w-100 status-active-unpaid rounded-3">
+                                <div class="box-item-table" *ngIf="listTable != null">
+                                    <div class="card border-1 w-100 status-active-unpaid rounded-3"
+                                        [ngClass]="{'table_locked':table.deleted}">
                                         <div class="custom-card-body position-relative">
                                             <div class="border-0 position-absolute top-0 end-0 pt-1 d-flex justify-content-end align-items-center"
                                                 style="font-size: 0.8em">
@@ -134,23 +248,24 @@
                                                                 (click)="createQrcode(table.idTable)">Tạo
                                                                 mã Qr
                                                                 {{table.nameTable}}</button></li>
+
                                                         <li><button class="dropdown-item" type="button"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#modalupdatetable"
                                                                 (click)="openModal(table.idTable)">Sửa
                                                                 thông
                                                                 tin</button></li>
-                                                        <!-- <li *ngIf="!table.isDeleted">
+                                                        <li *ngIf="!table.deleted">
                                                             <button class="dropdown-item" type="button"
                                                                 (click)="deleteTable(table.idTable)">
                                                                 Khóa bàn này
                                                             </button>
-                                                        </li> -->
+                                                        </li>
 
 
                                                     </ul>
                                                 </div>
-                                                <!-- Modal -->
+                                                <!-- Modal print Qrcode -->
                                                 <div class="modal fade" id="modalqrcode_print" data-bs-backdrop="static"
                                                     data-bs-keyboard="false" tabindex="-1"
                                                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -159,23 +274,26 @@
                                                             <div class="modal-body">
                                                                 <div class="container-fluid mt-3">
                                                                     <div class="row">
-                                                                        <div class="d-flex justify-content-center">
-                                                                            <h2 class="px-5 py-2 bg-dark text-white rounded-3 "
-                                                                                style="font-size: 1.7em">
-                                                                                Tầng 1 -
-                                                                                {{tableData.nameTable}}
-                                                                            </h2>
-                                                                        </div>
-                                                                        <div class="d-flex justify-content-center">
+                                                                        <div
+                                                                            class="khungqr-code d-flex justify-content-center position-relative">
+                                                                            <img src="./img/khungqr.png"
+                                                                                class="position-relative" width="300px"
+                                                                                alt="QR Code Frame">
                                                                             <div
-                                                                                class="box-img-qrcode d-flex justify-content-center rounded-3">
+                                                                                class="box-img-qrcode position-absolute">
                                                                                 <img *ngIf="itemqrcode != null"
                                                                                     [src]="itemqrcode.linkImage"
-                                                                                    width="250px" class="rounded-3"
-                                                                                    alt />
+                                                                                    width="200px" class="rounded-3"
+                                                                                    alt="QR Code Image" />
                                                                                 <img *ngIf="itemqrcode == null"
                                                                                     src="./img/imageempty.png"
-                                                                                    class="p-5" width="200px" alt />
+                                                                                    class="p-5" width="200px"
+                                                                                    alt="Empty QR Code" />
+                                                                            </div>
+                                                                            <div
+                                                                                class="title-name_table mb-4 position-absolute bottom-0">
+                                                                                <span class="fw-bold">Tầng 1 -
+                                                                                    {{tableData.nameTable}}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -186,11 +304,12 @@
                                                                 <div class="row">
                                                                     <div class="button-group">
                                                                         <button class="btn btn-confirm rounded-3"
-                                                                            style="font-size: 1em" type="button">
-                                                                            Xác nhận in mã QRcode
-                                                                        </button>
+                                                                            style="font-size: 0.9em" type="button">
+                                                                            <i class="bi bi-printer-fill mx-1" style="font-size: 0.8;"></i>
+                                                                            Xác nhận in mã
+                                                                        </button> 
                                                                         <a class="btn btn-cancel bg-danger text-white rounded-3 px-3"
-                                                                            type="button" style="font-size: 1em;"
+                                                                            type="button" style="font-size: 0.9em;"
                                                                             data-bs-dismiss="modal">Đóng</a>
                                                                     </div>
                                                                 </div>
@@ -199,83 +318,20 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="modalupdatetable" data-bs-backdrop="static"
-                                                    data-bs-keyboard="false" tabindex="-1"
-                                                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title ms-3 fs-5"
-                                                                    id="staticBackdropLabel">
-                                                                    Sửa thông tin
-                                                                </h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form class="form-floating-group">
-                                                                    <!-- Khu vực Input -->
-                                                                    <div class="form-area">
-                                                                        <input type="text"
-                                                                            class="form-control input-control area-input px-3"
-                                                                            id="areaInput" placeholder="Tầng 1"
-                                                                            disabled />
-                                                                        <label for="areaInput" class="label-khuvuc">Khu
-                                                                            vực</label>
-                                                                    </div>
 
-                                                                    <!-- Tên bàn Input -->
-                                                                    <div class="form-table">
-                                                                        <input type="text" name="nameTable"
-                                                                            [(ngModel)]="tableData.nameTable"
-                                                                            class="form-control input-control table-input px-3"
-                                                                            id="tableInput" placeholder />
-                                                                        <label for="tableInput" class="label-input">Tên
-                                                                            bàn</label>
-                                                                    </div>
 
-                                                                    <div class="form-delete-check d-flex justify-content-end">
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input" 
-                                                                                   [(ngModel)]="tableData.isDeleted" 
-                                                                                   name="isDeleted" 
-                                                                                   type="checkbox" 
-                                                                                   id="inlineCheckbox1">
-                                                                            <label class="form-check-label" for="inlineCheckbox1">Khóa bàn</label>
-                                                                          </div>
-                
-                                                                    </div>
-                                                                    
-                                                                </form>
-                                                            </div>
-                                                            <div class="modal-footer border-0 mt-0 pt-0">
-                                                                <div class="row">
-                                                                    <div class="button-group">
-                                                                        <button class="btn btn-confirm rounded-3"
-                                                                            style="font-size: 1em" type="button"
-                                                                            (click)="updateTable(keyTable)">
-                                                                            Xác nhận
-                                                                        </button>
-                                                                        <a class="btn btn-cancel rounded-3"
-                                                                            type="button" style="font-size: 1em"
-                                                                            data-bs-dismiss="modal">Hủy</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+
                                             </div>
                                             <div class="d-flex justify-content-center align-items-center"
                                                 style="height: 110px">
-                                                <span class="custom-font-size">{{table.nameTable}}</span>
+                                                <span class="custom-font-size text-dark">{{table.nameTable}}</span>
                                             </div>
-
+                                            <div *ngIf="table.deleted" class="icon-locked position-absolute"><i
+                                                    class="bi bi-lock-fill fs-5"></i></div>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Modal -->
+                                <!-- Modal show QRCODE -->
                                 <div class="modal fade" id="modalqrcode" data-bs-backdrop="static"
                                     data-bs-keyboard="false" tabindex="-1" aria-labelle dby="staticBackdropLabel"
                                     aria-hidden="true">
@@ -285,15 +341,15 @@
                                                 <div class="container-fluid mt-3">
                                                     <div class="row">
                                                         <div class="d-flex justify-content-center">
-                                                            <h2 class="px-5 py-2 bg-dark text-white rounded-3 "
+                                                            <h2 class="px-5 fw-bold bg-dark text-white rounded-3 "
                                                                 style="font-size: 1.7em">
                                                                 Tầng 1 -
                                                                 {{tableData.nameTable}}
                                                             </h2>
                                                         </div>
-                                                        <div class="d-flex justify-content-center mt-2">
+                                                        <div class="d-flex justify-content-center">
                                                             <div
-                                                                class="box-img-qrcode d-flex justify-content-center rounded-3">
+                                                                class="d-flex justify-content-center border-5 border-black border rounded-3">
                                                                 <img *ngIf="itemqrcode != null" class="rounded-3"
                                                                     [src]="itemqrcode.linkImage" width="250px" alt />
                                                                 <img *ngIf="itemqrcode == null"
@@ -308,19 +364,49 @@
                                             <div class="modal-footer border-0 mt-0 pt-0">
                                                 <div class="row">
                                                     <div class="button-group">
-                                                        <a class="btn btn-cancel bg-danger text-white rounded-3 px-5"
-                                                            type="button" data-bs-dismiss="modal">Đóng</a>
+                                                        <button class="btn btn-confirm rounded-3" *ngIf="itemqrcode"
+                                                            (click)="updateQrCode(table.idTable)"
+                                                            style="font-size: 0.8em" type="button">
+                                                            Cập nhật mã QRCode mới
+                                                        </button>
+                                                        <a class="btn btn-cancel bg-danger text-white rounded-3 px-3"
+                                                            type="button" style="font-size: 0.8em;"
+                                                            data-bs-dismiss="modal">Đóng</a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+
+                                
+
                             </div>
                             <!-- end item table -->
+                            <nav aria-label="Page navigation example" *ngIf="totalPages > 1">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" [class.disabled]="currentPage === 0">
+                                        <a class="page-link" (click)="changePage(currentPage - 1)"
+                                            aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li *ngFor="let page of pages" class="page-item"
+                                        [class.active]="currentPage === page">
+                                        <a class="page-link" (click)="changePage(page)">{{ page + 1 }}</a>
+                                    </li>
+                                    <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                                        <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
 
                         </div>
-                        <div *ngIf="listTable == null" class="d-flex justify-content-center align-content-center">
+                        <div *ngIf="listTable == null || totalPages < 1"
+                            class="d-flex justify-content-center align-content-center">
                             <i>Không có dữ liệu!</i>
                         </div>
                     </div>
