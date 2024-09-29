@@ -93,9 +93,9 @@
 }
 
 .box-img-qrcode{
-    box-shadow: 0px 0px 5px 2px rgb(194, 190, 190); 
-    /* width: 370px; */
-    /* border-radius: 20px; */
+    top: 63%; 
+    left: 50%; 
+    transform: translate(-50%, -50%)
 }
 .modal-body {
     max-height: none; /* Bỏ giới hạn chiều cao tối đa */
@@ -104,4 +104,37 @@
 
 .no-caret::after {
     display: none; /* Ẩn mũi tên */
+}
+
+
+/* chuyển màu bàn đã khóa */
+.table_locked {
+    background-image: url('/img/pngegg.png');
+    background-size: 500px; /* Đảm bảo ảnh nằm vừa vặn trong div */
+    background-position: center; /* Căn giữa ảnh */
+    background-repeat: no-repeat; /* Không lặp lại ảnh */
+}
+
+.mat-mdc-simple-snack-bar{
+    padding: 50px 60px;
+}
+.icon-locked{
+    top: 65%;
+    left: 45%;
+    color: rgb(0, 0, 0);
+}
+
+.modal-body {
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+/* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
+.modal-body::-webkit-scrollbar {
+    display: none; /* Ẩn thanh cuộn trên trình duyệt WebKit */
+}
+
+.modal-body {
+    -ms-overflow-style: none;  /* Ẩn thanh cuộn trên IE và Edge */
+    scrollbar-width: none;     /* Ẩn thanh cuộn trên Firefox */
 }
