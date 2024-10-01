@@ -6,6 +6,7 @@ import { UserviewComponent } from './component/userview/userview.component';
 import { HomeComponent } from './component/home/home.component';
 import { MenuComponent } from './component/menu/menu.component';
 import { OtherComponent } from './component/other/other.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -19,7 +20,8 @@ import { OtherComponent } from './component/other/other.component';
   ],
   imports: [
     CommonModule,
-    UserRoutingModule
+    UserRoutingModule,
+    FormsModule
   ]
 })
 export class UserModule { }
