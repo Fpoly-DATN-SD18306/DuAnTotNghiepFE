@@ -3,16 +3,22 @@ import { CommonModule } from '@angular/common';
 
 import { ManagerviewRoutingModule } from './managerview-routing.module';
 import { ManagerviewparentComponent } from './managerviewparent/managerviewparent.component';
-import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
+
+import { ManagerviewFoodComponent } from './managerview-food/managerview-food.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
   declarations: [
     ManagerviewparentComponent,
-    ManagerviewTableComponent
+    ManagerviewFoodComponent
   ],
   imports: [
+ 
+    NgbModule,
     CommonModule,
+    FormsModule,ReactiveFormsModule,
     ManagerviewRoutingModule
   ]
 })

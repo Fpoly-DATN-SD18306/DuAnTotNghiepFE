@@ -1,17 +1,31 @@
 
 
-<div class="row container-fluid w-100 ">
-    <div class="col-2 bg-primary py-3" style="height: 700px;">
-        <button type="button" class="btn text-start btn-light mb-2 w-100">Quản lý sản phẩm</button>
-        <button type="button" class="btn text-start  btn-light mb-2 w-100">Quản lý nhân viên</button>
-        <button type="button" class="btn text-start btn-light mb-2 w-100">Quản lý đơn hàng</button>
-        <button type="button" class="btn text-start btn-light mb-2 w-100">Quản lý bàn</button>
+<div class="row container-fluid w-100 h-100 " >
+  
+  <div class="col-2  py-4 my-4   h-100" >
+      <div class=" w-100 ">
+      <div class=" ">
+      <button type="button" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Quản lý sản phẩm</button>
+      <button type="button" class="btn btn-lg text-start  shadow border  btn-light my-2 w-100">Quản lý nhân viên</button>
+      <button type="button" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Quản lý đơn hàng</button> 
+      <button type="button" class="btn btn-lg text-start shadow border  active btn-light my-2 w-100">Quản lý bàn</button>
       </div>
-      <div class="col-10 bg-warning " style="height: 700px">
-        Column
+      <div class="my-2"></div>
+      <div class=" pt-4 mt-5 ">
+          <button type="button" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Tổng quan</button>
+          <button type="button" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Thống kê</button>
+        
       </div>
+  </div>
+  </div>
+
+    <div class="col-10  "  >
+      <div class=" shadow my-3 p-2 p-3 h-100 ">
+        <router-outlet></router-outlet>
+      </div>
+      
+    </div>
 
 </div>
 
 
-<router-outlet></router-outlet>
