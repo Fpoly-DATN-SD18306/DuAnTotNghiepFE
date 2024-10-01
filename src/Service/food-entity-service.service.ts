@@ -26,4 +26,9 @@ export class FoodEntityServiceService {
     const params = new HttpParams().set('name', name);
     return this.http.get<FoodEntity[]>(this.url+"/find"+"/"+id,{params});
   }
+
+  getfoodByIdCategoryAndNameisSort(id:number,name:string,sort:boolean):Observable<FoodEntity[]>{
+    const params = new HttpParams().set('name', name).set('sort',sort );
+    return this.http.get<FoodEntity[]>(this.url+"/find"+"/"+id,{params});
+  }
 }

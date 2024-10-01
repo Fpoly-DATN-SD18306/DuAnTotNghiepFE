@@ -19,8 +19,8 @@
        </div> 
     </div>
     <div class="col-2 my-3 " >
-      <input type="checkbox"   class="btn-check" id="btn-check-2"    autocomplete="off">
-      <label class="btn btn-primary w-100 h-100"  for="btn-check-2" >Giá</label>
+      <input type="checkbox"   class="btn-check" id="btn-check-2" [(ngModel)] = "Sort" (change)="getSort()" name="sort" autocomplete="off">
+      <label class="btn btn-primary w-100 h-100"   for="btn-check-2" >Giá</label>
     </div>
 
 

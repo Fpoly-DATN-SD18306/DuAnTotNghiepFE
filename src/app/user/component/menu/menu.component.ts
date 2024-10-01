@@ -17,17 +17,15 @@ export class MenuComponent implements OnInit {
   idCategory!:number;
   selectedValue = 0; 
   searchValue: string = '';
-  isChecked: boolean = true;
+  Sort: boolean = true;
   constructor(private route:Router,
     private router:ActivatedRoute,
     private FoodService:FoodEntityServiceService,
     private CategoryService:CategoryServiceService){}
 
-  activeLink1: String = '1';
 
-  setActive( type :String ){
-    this.activeLink1 = type;
-  }
+
+
 
   onSubmit() {
     console.log('Search Value:', this.searchValue);
@@ -61,14 +59,17 @@ export class MenuComponent implements OnInit {
     this.FoodService.getFoodByIdCategory(this.selectedValue).subscribe(data => this.listFood = data)
   }
 
-  pickProduct(id : number){
-    this.route.navigate(['Product']);
+  getProductByNameAndCategoryisSorted(){
+    this.FoodService.getfoodByIdCategoryAndNameisSort(this.selectedValue,this.searchValue,this.Sort).subscribe(data => this.listFood = data)
   }
   
+  // hàm khi bấm sort sẽ lấy lấy dữ liệu
+  getSort(){
+    this.Sort = !this.Sort;
+    console.log('sort: '+this.Sort)
+    this.getProductByNameAndCategoryisSorted();
+  } 
 
 
-  findProduct(){
-    
-  }
 
 }
