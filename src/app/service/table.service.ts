@@ -16,6 +16,21 @@ export class TableService {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/tables?page=${page}&size=${size}`)
   }
 
+  //Get all tables not delete
+  getAllTablesNotDeleted():Observable<ApiRespone>{
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/by-not_deleted`)
+  }
+
+  //Get all statuses
+  getAllStatuses():Observable<ApiRespone>{
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/getAll-status`)
+  }
+
+  //update status table
+  updateTableStatus(idtable : number, status : string):Observable<ApiRespone>{
+    return this.http.put<ApiRespone>(`${this.url}/api/v1/tables/${idtable}/status`, {status})
+  }
+
   getTable(idtable : number):Observable<ApiRespone> {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/${idtable}`);
   }
@@ -31,4 +46,6 @@ export class TableService {
   deleteTable(idtable : number):Observable<ApiRespone>{
     return this.http.delete<ApiRespone>(`${this.url}/api/v1/tables/${idtable}`);
   }
+
+
 }

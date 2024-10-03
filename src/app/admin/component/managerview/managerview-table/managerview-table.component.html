@@ -2,7 +2,7 @@
     <nav class="pt-4 px-3 border-bottom border-2">
         <p>Thiết lập phòng bàn</p>
     </nav>
-    <div class="container">
+    <div class="container" style="height: 67vh;">
 
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
@@ -304,7 +304,9 @@
                                                                 <div class="row">
                                                                     <div class="button-group">
                                                                         <button class="btn btn-confirm rounded-3"
-                                                                            style="font-size: 0.9em" type="button">
+                                                                            style="font-size: 0.9em" type="button" 
+                                                                            *ngIf="itemqrcode"
+                                                                            (click)="printQrcode()">
                                                                             <i class="bi bi-printer-fill mx-1" style="font-size: 0.8;"></i>
                                                                             Xác nhận in mã
                                                                         </button> 
@@ -384,26 +386,6 @@
 
                             </div>
                             <!-- end item table -->
-                            <nav aria-label="Page navigation example" *ngIf="totalPages > 1">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item" [class.disabled]="currentPage === 0">
-                                        <a class="page-link" (click)="changePage(currentPage - 1)"
-                                            aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    <li *ngFor="let page of pages" class="page-item"
-                                        [class.active]="currentPage === page">
-                                        <a class="page-link" (click)="changePage(page)">{{ page + 1 }}</a>
-                                    </li>
-                                    <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
-                                        <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-
                         </div>
                         <div *ngIf="listTable == null || totalPages < 1"
                             class="d-flex justify-content-center align-content-center">
@@ -413,5 +395,26 @@
                 </div>
             </div>
         </div>
+
+        
     </div>
+    <nav aria-label="Page navigation example" *ngIf="totalPages > 1">
+        <ul class="pagination justify-content-center p-0 m-0">
+            <li class="page-item" [class.disabled]="currentPage === 0">
+                <a class="page-link" (click)="changePage(currentPage - 1)"
+                    aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li *ngFor="let page of pages" class="page-item"
+                [class.active]="currentPage === page">
+                <a class="page-link" (click)="changePage(page)">{{ page + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
