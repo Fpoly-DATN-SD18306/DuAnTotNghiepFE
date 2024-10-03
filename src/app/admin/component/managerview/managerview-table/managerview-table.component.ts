@@ -21,7 +21,7 @@ export class ManagerviewTableComponent implements OnInit {
   listQrcode!: qrCodeResponse[]
   itemqrcode!: qrCodeResponse
   listTable!: tableResponse[]
-  keyTable?: number;
+  keyTable!: number;
   currentPage: number = 0
   pagesize: number = 17
   totalPages: number = 0
@@ -53,30 +53,24 @@ export class ManagerviewTableComponent implements OnInit {
       this.ngOnInit()
       this.openTotast('Tạo mới bàn thành công!')
     }, error => {
-      this.openTotast('Tạo mới bàn thất bại!')
+      console.log(error)
+      this.openTotast('Lỗi! '+ error.error.message)
     })
   }
 
 
-  updateTable(keyTable?: number) {
-    if (keyTable !== undefined) {
+  updateTable(keyTable: number) {
       this.tableserive.updateTable(this.tableData, keyTable).subscribe(
         data => {
-          if (data.message.includes('thành công')) {
             this.ngOnInit();
             this.openTotast('Cập nhật bàn thành công!');
-          } else {
-            this.openTotast('Lỗi: ' + data.message);
-          }
         }, 
         error => {
           console.log("Error update table: ", error);
-          this.openTotast('Cập nhật thất bại!');
+          this.openTotast('Lỗi! '+error.error.message);
         }
       );
-    } else {
-      this.openTotast('Cập nhật thất bại!');
-    }
+
   }
   
   
@@ -135,7 +129,7 @@ export class ManagerviewTableComponent implements OnInit {
         this.openTotast('Cập nhật QRCode thành công!')
       }, error => {
         console.error('Error creating QR Code:', error);
-        this.openTotast('Cập nhật QRCode thất bại!')
+        this.openTotast('Cập nhật QRCode thất bại!'+ error.error.message)
       }
     );
   }
