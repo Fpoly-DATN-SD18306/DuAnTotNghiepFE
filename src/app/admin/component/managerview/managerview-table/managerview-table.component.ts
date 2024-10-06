@@ -54,7 +54,7 @@ export class ManagerviewTableComponent implements OnInit {
       this.openTotast('Tạo mới bàn thành công!')
     }, error => {
       console.log(error)
-      this.openTotast('Lỗi! '+ error.error.message)
+      this.openTotast('Lỗi tạo bàn ! ')
     })
   }
 
@@ -67,14 +67,12 @@ export class ManagerviewTableComponent implements OnInit {
         }, 
         error => {
           console.log("Error update table: ", error);
-          this.openTotast('Lỗi! '+error.error.message);
+          this.openTotast('Lỗi cập nhật bàn! ');
         }
       );
 
   }
   
-  
-
 
   deleteTable(idTable: number) {
     this.tableserive.deleteTable(idTable).subscribe(data => {
@@ -129,7 +127,7 @@ export class ManagerviewTableComponent implements OnInit {
         this.openTotast('Cập nhật QRCode thành công!')
       }, error => {
         console.error('Error creating QR Code:', error);
-        this.openTotast('Cập nhật QRCode thất bại!'+ error.error.message)
+        this.openTotast('Cập nhật QRCode thất bại!')
       }
     );
   }
