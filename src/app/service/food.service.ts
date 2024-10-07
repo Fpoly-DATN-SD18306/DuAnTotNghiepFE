@@ -55,5 +55,6 @@ export class FoodService {
     return this.http.put<ApiRespone>(this.url+"/api/v1/foods/"+idFood,data)
 
   }
+  
 
 }
