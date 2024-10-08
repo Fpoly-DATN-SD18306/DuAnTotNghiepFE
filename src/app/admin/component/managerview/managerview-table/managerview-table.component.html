@@ -32,4 +32,13 @@
       </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-center">
+    <ngb-pagination 
+      [(page)]="thePageNumber" 
+      [pageSize]="thePageSize"
+      [collectionSize]="theTotalElements" 
+      (pageChange)="listFood2()" 
+      [boundaryLinks]="true">
+    </ngb-pagination>
+  </div>
 

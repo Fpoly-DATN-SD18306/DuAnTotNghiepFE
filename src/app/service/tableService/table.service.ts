@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Table } from '../../../../interface/table/table';
+import { Table } from '../../interface/table/table';
 import { Observable } from 'rxjs';
+import { ApiConfigService } from '../ApiConfigService';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 export class TableService {
 
   private apiUrl = 'http://localhost:8080/api/tables'; // Thay thế bằng URL của API của bạn
-
+  url = ApiConfigService.apiUrl; 
   constructor(private http: HttpClient) {}
 
   // getTables(): Observable<Table[]> {

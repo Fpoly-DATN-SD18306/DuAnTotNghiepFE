@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Table } from '../../../../interface/table/table';
-import { TableService } from './table.service';
+import { TableService } from '../../../../service/tableService/table.service';
 
 @Component({
   selector: 'app-managerview-table',

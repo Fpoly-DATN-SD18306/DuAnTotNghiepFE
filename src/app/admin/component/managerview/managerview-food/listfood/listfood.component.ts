@@ -1,5 +1,6 @@
+
 import { Component, OnInit } from '@angular/core';
-import { FoodService } from '../../../../../service/food.service';
+import { FoodService } from '../../../../../service/foodService/food.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { foodResponse } from '../../../../../entity/response/food-response';
 import { ActivatedRoute, Router } from '@angular/router';
