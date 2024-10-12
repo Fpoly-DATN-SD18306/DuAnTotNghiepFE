@@ -8,9 +8,7 @@ import { SearchFilterService } from '../../../../../service/foodService/search-f
 import { Foods } from '../../../../../entity/food/foods';
 import { FoodCategory } from '../../../../../entity/category/food-category';
 import { CategoryService } from '../../../../../service/categoryService';
-import { ApiRespone } from '../../../../../entity/api-respone';
-import { Observable } from 'rxjs';
-import { error } from 'console';
+
 
 @Component({
   selector: 'app-listfood',
@@ -23,14 +21,14 @@ export class ListfoodComponent implements OnInit {
   filteredFoods!: Foods[];
   number = 0;
   totalPages = 0;
-  thePageNumber: number = 1;
-  thePageSize: number = 20;
+  // thePageNumber: number = 1;
+  // thePageSize: number = 20;
   theTotalElements: number = 0;
-  size: number = 20;
+  size: number = 15;
   currentCategoryId: number = 1;  
   listCate!: FoodCategory[]; 
   nameFoodFilter!: string ;
-  nameCategoryFilter!: string ;
+  nameCategoryFilter="" ;
   isSellingFilter: string='123';
   constructor(
     private foodService: FoodService,
@@ -43,8 +41,8 @@ export class ListfoodComponent implements OnInit {
 
   ngOnInit(): void {
     this.filterByCategory();
-    this.getAllFoods();
-    // this.listFood2(); 
+    // this.getAllFoods();
+    this.listFood2(); 
   }
 
 
@@ -78,28 +76,37 @@ export class ListfoodComponent implements OnInit {
       }
     );
   }
-  listFood2(){
+ 
+  paging(numberPage: number) {
+    console.log(numberPage);
+    console.log(this.totalPages);
+    this.number = numberPage;
+    this.listFood2();  
+  }
+  
+  listFood2() {
+ 
+  
+    this.searchFilterService.filterFood(this.nameFoodFilter, this.nameCategoryFilter, this.isSellingFilter,  this.number, this.size).subscribe(
+      data => {
+        this.filteredFoods = data.result.content;         
+        this.theTotalElements = data.result.totalElements;            
+        this.totalPages = data.result.totalPages;         
+      },
+      error => {
+        console.log('Error fetching data:', error);
+      }
+    );
+  }
+  
 
-    this.searchFilterService.filterFood(this.nameFoodFilter,this.nameCategoryFilter,this.isSellingFilter,0,20).subscribe(
-      data => {
-        this.filteredFoods=data.result.content;
-        this.theTotalElements = data.result.totalElements;
-        this.size = this.filteredFoods.length;
-        this.number = data.result.number + 1;
-        this.totalPages = data.result.totalPages;
-        console.log(this.theTotalElements)
-        
-        }, 
-      error => {console.log(error)}
-    )
-  };
   getAllFoods() {
-    this.searchFilterService.getFoodPage(0,20).subscribe(
+    this.searchFilterService.getFoodPage(0,15).subscribe(
       data => {
         this.filteredFoods=data.result.content;
         this.theTotalElements = data.result.totalElements;
         this.size = this.filteredFoods.length;
-        this.number = data.result.number + 1;
+        this.number = data.result.number;
         this.totalPages = data.result.totalPages;
        console.log(this.filteredFoods)
         }, 
@@ -113,36 +120,4 @@ export class ListfoodComponent implements OnInit {
     this.router.navigate(['/admin/manager/managerFood/manager', idFood]);
   }
 
-  //   listFood2() {
-  //   let observable;
-
-  //   if (this.nameFoodFilter==null && this.nameCategoryFilter==null && this.isSellingFilter==null) {
-  //     observable = this.searchFilterService.getFoodPage(
-  //       this.thePageNumber - 1,
-  //       this.thePageSize
-  //     )
-    
-  //   } else {
-  //     observable = this.searchFilterService.filterFood(1,20,this.nameFoodFilter,this.nameCategoryFilter,this.isSellingFilter
-  //     );
-  //  ;
-  
-  //   }
-
-  //   observable.subscribe(
-  //     data => {
-  //       this.filteredFoods=data.result.content;
-  //           this.theTotalElements = data.result.totalElements;
-  //           this.size = this.filteredFoods.length;
-  //           this.number = data.result.number + 1;
-  //           this.totalPages = data.result.totalPages;
-  //           console.log(this.theTotalElements)
-  
-  //     },
-  //     // error => {
-
-  //     //   this.filteredFoods=[]
-  //     // }
-  //   );
-  // }
 }

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiConfigService } from './ApiConfigService';
-import { ApiRespone } from '../entity/api-respone';
 import { Observable } from 'rxjs';
-import { foodRequest } from '../entity/request/food-request';
+import { ApiConfigService } from '../ApiConfigService';
+import { foodRequest } from '../../entity/request/food-request';
+import { ApiRespone } from '../../entity/api-respone';
 
 @Injectable({
   providedIn: 'root'
