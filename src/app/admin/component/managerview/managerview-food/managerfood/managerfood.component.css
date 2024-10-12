@@ -1,0 +1,14 @@
+:host ::ng-deep .success-toast {
+    background-color: #4caf50 !important; /* Green */
+    color: white !important;
+}
+
+:host ::ng-deep .error-toast {
+    background-color: #f44336 !important; /* Red */
+    color: white !important;
+}
+
+:host ::ng-deep .info-toast {
+    background-color: #2196f3 !important; /* Blue */
+    color: white !important;
+}
