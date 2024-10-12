@@ -1,6 +1,9 @@
-<nav class="navbar navBar_Custom  navbar-expand-lg px-5 bg-body-tertiary shadow">
+
+<div>
+
+  <nav class="navbar navBar_Custom  navbar-expand-lg px-5 bg-body-tertiary shadow">
     <div class="container-fluid text-white">
-      <a class="navbar-brand text-white " href="#"> 
+      <a class="navbar-brand text-white " href="/admin/staff/tableorder_staff/tableorder"> 
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
           </svg>
@@ -11,7 +14,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-white">
           <li class="nav-item">
-            <a class="nav-link active text-white ms-5 fs-4" aria-current="page" href="#">Trang chủ </a>
+            <a class="nav-link active text-white ms-5 fs-4" aria-current="page" href="/admin/staff/tableorder_staff/tableorder">Trang chủ </a>
           </li>
        
      
@@ -36,7 +39,7 @@
                     </a>
                     <ul class="dropdown-menu ">
                       <li><a class="dropdown-item text-dark" href="#">Kết ca</a></li>
-                      <li><a class="dropdown-item text-dark" href="#">Quản Lý</a></li>
+                      <li><a class="dropdown-item text-dark" routerLink="/admin/manager/managerFood/manager" >Quản Lý</a></li>
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item text-danger" href="#">Đăng Xuất</a></li>
                     </ul>
@@ -49,7 +52,8 @@
     </div>
   </nav>
   <!-- +++++++ end navbar++++++ -->
-   <div class="w-100">
+   <div class="w-100   z-2   " style="height: 600px;">
      <router-outlet />
-
+  
    </div>
+  </div>
