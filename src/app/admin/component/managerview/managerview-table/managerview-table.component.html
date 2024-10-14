@@ -20,10 +20,31 @@
 
                 <span class="navbar-text">
                     <div>
-                        <button class="btn btn-outline-dark rounded-4 py-1" data-bs-toggle="modal" type="button"
-                            data-bs-target="#modalqrcode_print_all" (click)="getAllQrcode()"><i class="bi bi-printer-fill mx-1"
-                                style="font-size: 0.8;"></i><span style="font-size: 0.8em;">In QR bàn</span></button>
+                        <span class="navbar-text d-flex align-items-center">
+                            <div class="d-flex mx-3">
+                                <input type="email" class="form-control form-control" id="exampleDropdownFormEmail2"
+                                    placeholder="Tìm kiếm...">
+                                <button type="submit" class="btn btn-outline-dark"><i class="bi bi-search"></i></button>
+                            </div>
+                            <div class="d-flex">
+                                <div class="">
+                                    <select class="form-select form-select-sm" name="" id="">
+                                        <option selected>A-Z</option>
+                                        <option>Z-A</option>
+                                    </select>
+                                </div>
+        
+                            </div>
+                            <div class="ms-1">
+                                <button class="btn rounded-4 py-1" data-bs-toggle="modal" type="button"
+                                    data-bs-target="#modalqrcode_print_all" (click)="getAllQrcode()"><i
+                                        class="bi bi-printer-fill mx-1 fs-5"></i></button>
+                            </div>
+        
+        
+                        </span>
                     </div>
+                    
                 </span>
 
                 
@@ -233,7 +254,7 @@
                                                         src="https://cdn-icons-png.flaticon.com/128/8721/8721150.png"
                                                         width="15px" alt /></a>
                                                 <div class="dropend">
-                                                    <a class="btn btn-viewinfo ps-3 pe-2 p-0 m-0 dropdown-toggle no-caret border-0"
+                                                    <a href="#" class="btn btn-viewinfo ps-3 pe-2 p-0 m-0 dropdown-toggle no-caret border-0"
                                                         data-bs-toggle="dropdown" aria-expanded="false"><i
                                                             class="bi bi-three-dots-vertical"></i></a>
                                                     <ul class="dropdown-menu border-0 rounded-0"
