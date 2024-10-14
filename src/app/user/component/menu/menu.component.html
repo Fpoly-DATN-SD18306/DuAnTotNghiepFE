@@ -1,5 +1,4 @@
   <div>
-
     <div class="sticky-top border-bottom ">
     <div class="d-flex  flex-nowrap bg-white">
       <div class="mx-3 mt-1">
@@ -8,105 +7,63 @@
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
         </svg>
       </a>
-      </div >
-      <div  class="w-75">
-        <input type="email" class="form-control" id="exampleInputEmail1" 
+      </div>
+      <div class=" input-group w-75">
+        <input type="email" (keydown.enter)="searchFood()" [(ngModel)]="inputSeach" class="form-control" id="exampleInputEmail1" 
         placeholder="Tìm món ăn"
         aria-describedby="emailHelp">
+        <button class="input-group-text " (click)="clearFormSearch()" [class.d-none]="searching==false" style="background: none;  ">x</button>
       </div>
     </div>
-  <!-- Nav   scrollspy -->
-    <nav id="navbar-example2" class="navbar bg-white px-3 "> 
-      <div class="nav nav-pills ">
-          <a class="nav-link a_Tab" href="/Menu#scrollspyHeading1">Thức Ăn</a>
-          <a class="nav-link a_Tab" href="/Menu#scrollspyHeading2">Đồ Uống</a>
-          <a class="nav-link a_Tab" href="/Menu#scrollspyHeading3">Khác</a>
+  <!-- Nav scrollspy -->
+    <nav id="navbar-example2 navbar-list-food" [class.d-none]="searching" class="navbar bg-white px-3 "> 
+      <div *ngIf="listCate" class="nav nav-pills ">
+          <a *ngFor="let element of listCate" class="nav-link a_Tab" [href]="'/Menu#scrollspyHeading'+element.idCategory">{{element.nameCategory}}</a>
       </div>
     </nav>
+
+
   </div>
+    <!-- list search -->
+  <div id="for-search" [class.d-none]="searching==false" class="d-flex flex-wrap" >
+    <div class="d-flex justify-content-center w-100 h-100 my-5" [class.d-none]="!loadingCallAPI"> 
+      <div class="spinner-border text-warning  "  role="">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     
-    <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true"
-    class="scrollspy-example bg-white p-1 rounded-2" tabindex="0">
-      <h4 id="scrollspyHeading1">Thức ăn</h4>
-      <div class="d-flex flex-wrap  w-100 ">
-        <!-- food -->
-        
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-      </div>
-
-
+    <ng-container *ngFor="let product of listSeach">
+      <div class="mb-2 mx-2 rounded  shadow w-100" >
+         <app-product-ngang [product]="product"></app-product-ngang>
+    </div>
+     </ng-container>
     
+  </div>
+    <!--  end list search -->
 
-      <h4 id="scrollspyHeading2">Đồ Uống</h4>
-      <div class="d-flex flex-wrap  w-100 ">
-        <!-- Drink -->
+    <div id="list-food" [class.d-none]="searching"  data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true"
+    class="scrollspy-example bg-white d-none p-1 rounded-2" tabindex="0">
+
+    <div *ngIf="listCate" class="nav nav-pills ">
+     <div *ngFor="let cate of listCate" >
+      <h4 [id]="'scrollspyHeading'+cate.idCategory">{{cate.nameCategory}}</h4>
+      <div   class="d-flex flex-wrap  w-100 ">
+      
+         <ng-container *ngFor="let product of listFood">
+          <div class="mb-2 mx-2 rounded  shadow" style="width: 45% ;"*ngIf="cate.idCategory == product.idCategory">
+            <app-product *ngIf="cate.idCategory==product.idCategory" [product]="product"></app-product>  
+            
+        </div>
+         </ng-container>
         
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
+  
       </div>
-
-      <h4 id="scrollspyHeading3">Khác </h4>
-      <div class="d-flex flex-wrap  w-100 ">
-        <!-- Drink -->
-        
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-
-        <div class=" mx-2 my-2 rounded  shadow" style="width: 45% ; ">
-          <app-product></app-product>  
-        </div>
-      </div>
-
+    </div>
+  </div>
+      
 
   
     </div>
 
   </div>
+<div style="height: 80px;" ></div>

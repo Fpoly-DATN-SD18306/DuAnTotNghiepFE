@@ -7,6 +7,12 @@ import { HomeComponent } from './component/home/home.component';
 import { MenuComponent } from './component/menu/menu.component';
 import { OtherComponent } from './component/other/other.component';
 import { ProductComponent } from './component/product/product.component';
+import { FormsModule } from '@angular/forms';
+import { ProductNgangComponent } from './component/product-ngang/product-ngang.component';
+
+
+
+
 
 
 @NgModule({
@@ -15,13 +21,15 @@ import { ProductComponent } from './component/product/product.component';
     HomeComponent,
     MenuComponent,
     OtherComponent,
-    ProductComponent
-  
+    ProductComponent,
+    ProductNgangComponent,
+
 
   ],
   imports: [
     CommonModule,
-    UserRoutingModule
+    UserRoutingModule,
+    FormsModule
   ]
 })
 export class UserModule { }
