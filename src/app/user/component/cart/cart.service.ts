@@ -35,6 +35,7 @@ export class CartService {
     
       this.cookieService.set(this.cartKey, JSON.stringify(cart));
       console.log('Giỏ hàng sau khi thêm:', this.getCart());
+      console.log('tổng tiền giỏ hàng:', this.calculateTotal());
     }
    
   getCart() {
