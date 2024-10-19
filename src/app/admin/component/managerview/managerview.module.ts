@@ -3,17 +3,25 @@ import { CommonModule } from '@angular/common';
 
 import { ManagerviewRoutingModule } from './managerview-routing.module';
 import { ManagerviewparentComponent } from './managerviewparent/managerviewparent.component';
+
+import { ManagerviewFoodComponent } from './managerview-food/managerview-food.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
   declarations: [
     ManagerviewparentComponent,
+    ManagerviewFoodComponent,
     ManagerviewTableComponent
   ],
   imports: [
     CommonModule,
-    ManagerviewRoutingModule
+    ReactiveFormsModule,
+    ManagerviewRoutingModule,
+    FormsModule,
+    MatSnackBarModule
   ]
 })
 export class ManagerviewModule { }

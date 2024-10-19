@@ -1,0 +1,119 @@
+<div *ngIf="listStatuses == null" class="d-flex justify-content-center pt-5 align-items-center" >
+    <i>Không có dữ liệu!</i>
+</div>
+<nav class="navbar  navbar-expand-lg border-black border-bottom py-3" *ngIf="listStatuses != null || listStatuses > 0">
+    <div class="container-fluid">
+        <ul class="nav d-flex flex-nowrap align-items-center gap-2">
+            <li class="nav-item">
+                <a type="button"
+                    class="btn-active btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Tất
+                    cả</a>
+                <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+            </li>
+
+            <li class="nav-item">
+                <a type="button"
+                    class="btn btn-outline-secondary rounded-1 px-lg-5 px-md-4 px-2 fs-lg-6 fs-md-6 fs-7">Bàn đang
+                    mở</a>
+                <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+            </li>
+            <li class="nav-item">
+                <a type="button"
+                    class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Đặt bàn</a>
+                <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+            </li>
+
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container-fluid ">
+    <div class="row mx-2 mt-3 container-box-tables">
+        <!-- start item table -->
+        <div class="container-tables col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4" *ngFor="let item of listTable">
+            <div class="box-item-table">
+                <!-- 
+                THAY ĐỔI TRẠNG THÁI BÀN THANH TOÁN
+                đã thanh toán (status-active-paid)
+                    hoặc 
+                chưa thanh toán (status-active-unpaid)-->
+                <div class="card border-0 w-100 " [ngClass]="{
+                                                                '': item.status === 'AVAILABLE',
+                                                                'status-active-OCCUPIED': item.status === 'OCCUPIED',
+                                                                'status-active-RESERVED': item.status === 'RESERVED',
+                                                                'status-active-CLEANING' : item.status === 'CLEANING',
+                                                                'status-active-BILL_REQUESTED' : item.status === 'BILL_REQUESTED'
+                                                            }">
+                    <div class="card-header custom-card-header py-1 text-white border-0 rounded-top-4">
+                        <div class="div-status-table d-flex justify-content-between align-items-center">
+                            <span class="title-status d-none">Order Online</span>
+                            <span class="empty-table-status">Bàn trống</span>
+                            <div class="btn-group dropend">
+                                <a class="btn p-0 m-0 dropdown-toggle" href="#" style="font-size: 0.9em;"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-gear-fill custom-icon"></i></a>
+                                <ul class="dropdown-menu">
+                                    <select class="form-select form-select-sm  custom-select m-0 border-0"
+                                        style="width: 140px; " aria-label="Small select example"
+                                        [(ngModel)]="item.status" (change)="updateStatus(item.idTable, item.status)">
+                                        <option *ngFor="let status of listStatuses" [ngValue]="status.status">
+                                            {{status.displayName}}</option>
+                                    </select>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="custom-card-body rounded-bottom-4">
+                        <div class="d-flex justify-content-center align-items-center" style="height: 140px;">
+                            <span class="text-white custom-font-size mb-4">{{item.nameTable}}</span>
+                        </div>
+                        <div class="box-status-table px-3 py-1 rounded-bottom-4 "
+                            style="font-size: 0.75em; color: white;">
+                            
+
+                            <span class="title-paid">{{item.displayName}}</span>
+                                    <span>Bây giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end item table -->
+
+
+
+
+
+
+        <!-- START Notification orderdetails ****** box thông báo đơn hàng -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="liveToast" class="toast bg-white px-4" [ngClass]="{'show': showToast}" role="alert" aria-live="assertive" aria-atomic="true"
+                style="width: 100%;">
+                <div class="toast-header border-0 ">
+                    <strong class="me-auto text-primary">Thông báo: [VIP-mã bàn]-mã đơn hàng đã thanh toán</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body pt-0 d-flex justify-content-center">
+                    <button type="button" class="btn"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: rgb(125, 205, 5); color: white;">
+                        Chi tiết
+                    </button>
+
+                    <button type="button" class="btn btn-primary mx-2"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        Xác nhận
+                    </button>
+
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="toast" aria-label="Close"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- END Notification orderdetails-->
+    </div>
+</div>
+
