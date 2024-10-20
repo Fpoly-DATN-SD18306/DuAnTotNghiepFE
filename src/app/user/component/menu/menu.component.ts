@@ -1,5 +1,4 @@
-import { CartService } from './../cart/cart.service';
-
+import { CartService } from './../../../service/cartService/cart.service';
 
 import { Component, OnInit } from '@angular/core';
 
@@ -64,9 +63,9 @@ export class MenuComponent implements OnInit {
 
   }
 
-  addToCart(product: Food) {
-    this.cartService.addToCart(product);
-  }
+  // addToCart(product: Food) {
+  //   this.cartService.addToCart(product);
+  // }
   findProduct() {
   }
 
