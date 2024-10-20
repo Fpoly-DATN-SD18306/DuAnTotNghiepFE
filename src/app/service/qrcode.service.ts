@@ -11,12 +11,8 @@ export class QrcodeService {
   url = ApiConfigService.apiUrl;
   constructor(private http: HttpClient) { }
 
-  getAllQRcodes(): Observable<ApiRespone>{
-    return this.http.get<ApiRespone>(this.url+'/api/QRcode')
-  }
-
-  getQrCode(idtable : number):Observable<ApiRespone>{
-    return this.http.get<ApiRespone>(this.url+'/api/QRcode/'+idtable)
+  getAllQr():Observable<ApiRespone>{
+    return this.http.get<ApiRespone>(`${this.url}/api/QRcode`)
   }
 
   createQrCode(idTable: number): Observable<ApiRespone> {

@@ -22,23 +22,29 @@
                     <div>
                         <span class="navbar-text d-flex align-items-center">
                             <div class="d-flex mx-3">
-                                <input type="email" class="form-control form-control" id="exampleDropdownFormEmail2"
-                                    placeholder="Tìm kiếm...">
-                                <button type="submit" class="btn btn-outline-dark"><i class="bi bi-search"></i></button>
-                            </div>
+                                <input type="text" [(ngModel)]="tableData.nameTable" class="form-control" name="nameTable" id="exampleDropdownFormEmail2" placeholder="Tìm kiếm..."
+                                (keyup)="getTablesFromFilter()">
+                                <button type="submit" class="btn btn-outline-dark" (click)="getTablesFromFilter()">
+                                  <i class="bi bi-search"></i>
+                                </button>
+                              </div>
+                              
+                              
                             <div class="d-flex">
                                 <div class="">
-                                    <select class="form-select form-select-sm" name="" id="">
-                                        <option selected>A-Z</option>
-                                        <option>Z-A</option>
+                                    <select class="form-select form-select-sm" (change)="onSortChange($event)" [(ngModel)]="sortOrder">
+                                        <option value="asc" selected>A-Z</option>
+                                        <option value="desc">Z-A</option>
                                     </select>
                                 </div>
+                                
+                                
         
                             </div>
                             <div class="ms-1">
                                 <button class="btn rounded-4 py-1" data-bs-toggle="modal" type="button"
-                                    data-bs-target="#modalqrcode_print_all" (click)="getAllQrcode()"><i
-                                        class="bi bi-printer-fill mx-1 fs-5"></i></button>
+                                    data-bs-target="#modalqrcode_print_all"><i
+                                        class="bi bi-printer-fill mx-1 fs-5" (click)="getAllQr()"></i></button>
                             </div>
         
         
@@ -49,7 +55,7 @@
 
                 
                 <!-- Modal print all QRcode -->
-                <div class="modal fade" id="modalqrcode_print_all"  data-bs-keyboard="false"
+                <div class="modal fade" id="modalqrcode_print_all"  data-bs-keyboard="false" 
                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" >
                         <div class="modal-content" >
@@ -58,32 +64,32 @@
                             <span class="fw-bold ">In toàn bộ QR</span>
                             </div>
                             <div class="modal-body" >
-                                <div class="container-fluid mt-3" *ngFor="let itemqr of listQrcode">
+                                <div class="container-fluid mt-3" *ngFor="let itemqr of listTableContaiQR">
                                     <div class="row" >
-                                        <div class="khungqr-code d-flex justify-content-center position-relative">
+                                        <div class="khungqr-code d-flex justify-content-center position-relative" >
                                             <img src="./img/khungqr2.png" class="position-relative" width="240px"
                                                 alt="QR Code Frame">
-                                            <div class="box-img-qrcode position-absolute">
-                                                <img *ngIf="itemqr != null" [src]="itemqr.linkImage"
+                                            <div class="box-img-qrcode position-absolute">  
+                                                <img *ngIf="itemqr != null" [src]="itemqr.linkImageQr"
                                                     width="110px" class="rounded-3" alt="QR Code Image" />
                                                 <img *ngIf="itemqr == null" src="./img/imageempty.png" class="p-5"
                                                     width="200px" alt="Empty QR Code" />
                                             </div>
                                             <div class="title-name_table position-absolute top-0">
-                                                <span class="fw-bold" style="font-size: 0.7em;">Tầng 1 - {{itemqr.nameImage}}</span>
+                                                <span class="fw-bold" style="font-size: 0.7em;">Tầng 1 - {{itemqr.nameImageQr}}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-body d-flex justify-content-center" *ngIf="listQrcode == null">
+                            <div class="modal-body d-flex justify-content-center" *ngIf="listTableContaiQR == null || listTableContaiQR.length <= 0">
                                 <i>Không có dữ liệu!</i>
                             </div>
                             <div class="modal-footer border-0 mt-0 pt-0">
                                 <div class="row">
                                     <div class="button-group">
                                         <button class="btn btn-confirm rounded-3"
-                                        *ngIf="listQrcode != null"
+                                        *ngIf="listTableContaiQR != null "
                                         (click)="printQrcode()" style="font-size: 0.8em" type="button">
                                             <i class="bi bi-printer-fill mx-1" style="font-size: 0.8;"></i>
                                             Xác nhận in mã
@@ -213,8 +219,8 @@
 
                                                 <div class="form-delete-check d-flex justify-content-end">
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" [(ngModel)]="tableData.deleted"
-                                                            name="deleted" type="checkbox" role="switch"
+                                                        <input class="form-check-input" [(ngModel)]="tableData.locked"
+                                                            name="locked" type="checkbox" role="switch"
                                                             id="flexSwitchCheckChecked" checked>
                                                         <label class="form-check-label" style="font-size: 0.8em;"
                                                             for="flexSwitchCheckChecked">Khóa bàn</label>
@@ -244,7 +250,7 @@
                                 *ngFor="let table of listTable">
                                 <div class="box-item-table" *ngIf="listTable != null">
                                     <div class="card border-1 w-100 status-active-unpaid rounded-3"
-                                        [ngClass]="{'table_locked':table.deleted}">
+                                        [ngClass]="{'table_locked':table.locked}">
                                         <div class="custom-card-body position-relative">
                                             <div class="border-0 position-absolute top-0 end-0 pt-1 d-flex justify-content-end align-items-center"
                                                 style="font-size: 0.8em">
@@ -276,9 +282,15 @@
                                                                 (click)="openModal(table.idTable)">Sửa
                                                                 thông
                                                                 tin</button></li>
-                                                        <li *ngIf="!table.deleted">
+                                                        <li>
                                                             <button class="dropdown-item" type="button"
                                                                 (click)="deleteTable(table.idTable)">
+                                                                Xóa bàn
+                                                            </button>
+                                                        </li>
+                                                        <li *ngIf="!table.locked">
+                                                            <button class="dropdown-item" type="button"
+                                                                (click)="lockedTable(table.idTable)">
                                                                 Khóa bàn này
                                                             </button>
                                                         </li>
@@ -301,20 +313,19 @@
                                                                                 class="position-relative" width="300px"
                                                                                 alt="QR Code Frame">
                                                                             <div
-                                                                                class="box-img-qrcode position-absolute">
-                                                                                <img *ngIf="itemqrcode != null"
-                                                                                    [src]="itemqrcode.linkImage"
+                                                                                class="box-img-qrcode position-absolute" *ngIf="itemTable">
+                                                                                <img *ngIf="itemTable.linkImageQr != null"
+                                                                                    [src]="itemTable.linkImageQr"
                                                                                     width="200px" class="rounded-3"
                                                                                     alt="QR Code Image" />
-                                                                                <img *ngIf="itemqrcode == null"
+                                                                                <img *ngIf="itemTable.linkImageQr == null || itemTable.linkImageQr === ''"
                                                                                     src="./img/imageempty.png"
                                                                                     class="p-5" width="200px"
                                                                                     alt="Empty QR Code" />
                                                                             </div>
                                                                             <div
-                                                                                class="title-name_table mb-4 position-absolute bottom-0">
-                                                                                <span class="fw-bold">Tầng 1 -
-                                                                                    {{tableData.nameTable}}</span>
+                                                                                class="title-name_table mb-4 position-absolute bottom-0" *ngIf="itemTable">
+                                                                                <span class="fw-bold">Tầng 1 - {{itemTable.nameTable}}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -326,7 +337,7 @@
                                                                     <div class="button-group">
                                                                         <button class="btn btn-confirm rounded-3"
                                                                             style="font-size: 0.9em" type="button" 
-                                                                            *ngIf="itemqrcode"
+                                                                            *ngIf="itemTable"
                                                                             (click)="printQrcode()">
                                                                             <i class="bi bi-printer-fill mx-1" style="font-size: 0.8;"></i>
                                                                             Xác nhận in mã
@@ -349,7 +360,7 @@
                                                 style="height: 110px">
                                                 <span class="custom-font-size text-dark">{{table.nameTable}}</span>
                                             </div>
-                                            <div *ngIf="table.deleted" class="icon-locked position-absolute"><i
+                                            <div *ngIf="table.locked" class="icon-locked position-absolute"><i
                                                     class="bi bi-lock-fill fs-5"></i></div>
                                         </div>
                                     </div>
@@ -363,19 +374,19 @@
                                             <div class="modal-body">
                                                 <div class="container-fluid mt-3">
                                                     <div class="row">
-                                                        <div class="d-flex justify-content-center">
+                                                        <div class="d-flex justify-content-center" *ngIf="itemTable">
                                                             <h2 class="px-5 fw-bold bg-dark text-white rounded-3 "
                                                                 style="font-size: 1.7em">
                                                                 Tầng 1 -
-                                                                {{tableData.nameTable}}
+                                                                {{itemTable.nameTable}}
                                                             </h2>
                                                         </div>
                                                         <div class="d-flex justify-content-center">
                                                             <div
-                                                                class="d-flex justify-content-center border-5 border-black border rounded-3">
-                                                                <img *ngIf="itemqrcode != null" class="rounded-3"
-                                                                    [src]="itemqrcode.linkImage" width="250px" alt />
-                                                                <img *ngIf="itemqrcode == null"
+                                                                class="d-flex justify-content-center border-5 border-black border rounded-3" *ngIf="itemTable">
+                                                                <img *ngIf="itemTable.linkImageQr != null" class="rounded-3"
+                                                                    [src]="itemTable.linkImageQr" width="250px" alt />
+                                                                <img *ngIf="itemTable.linkImageQr == null"
                                                                     src="./img/imageempty.png" class="p-5" width="200px"
                                                                     alt />
                                                             </div>
@@ -387,7 +398,7 @@
                                             <div class="modal-footer border-0 mt-0 pt-0">
                                                 <div class="row">
                                                     <div class="button-group">
-                                                        <button class="btn btn-confirm rounded-3" *ngIf="itemqrcode"
+                                                        <button class="btn btn-confirm rounded-3" *ngIf="itemTable?.linkImageQr"
                                                             (click)="updateQrCode(table.idTable)"
                                                             style="font-size: 0.8em" type="button">
                                                             Cập nhật mã QRCode mới
@@ -420,7 +431,7 @@
         
     </div>
     <nav aria-label="Page navigation example" *ngIf="totalPages > 1">
-        <ul class="pagination justify-content-center p-0 m-0">
+        <ul class="pagination justify-content-center pt-0 m-0">
             <li class="page-item" [class.disabled]="currentPage === 0">
                 <a class="page-link" (click)="changePage(currentPage - 1)"
                     aria-label="Previous">

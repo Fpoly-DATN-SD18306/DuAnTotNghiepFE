@@ -3,7 +3,9 @@ export class tableResponse{
         public idTable : number,
         public nameTable : String,
         public status : string,
-        public deleted : boolean,
+        public locked : boolean,
+        public linkImageQr : String,
+        public nameImageQr : String,
         public displayName : String
     ){}
 
