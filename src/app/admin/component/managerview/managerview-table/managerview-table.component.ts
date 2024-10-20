@@ -12,6 +12,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { qrCodeRequest } from '../../../../entity/request/qrcode-request';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AreaService } from '../../../../service/area.service';
+import { AreaResponse } from '../../../../entity/response/area-response';
 
 @Component({
   selector: 'app-managerview-table',
@@ -20,6 +22,12 @@ import { Observable } from 'rxjs';
 })
 export class ManagerviewTableComponent implements OnInit {
 
+  //Area
+  listAreas!: AreaResponse[]
+  keyArea: number = 1
+  selectedArea!: number
+
+  //Table 
   listTableContaiQR! : tableResponse[]
   itemTable?: tableResponse
   listTable!: tableResponse[]
@@ -35,12 +43,29 @@ export class ManagerviewTableComponent implements OnInit {
 
   tableData: tabelRequest = {
     nameTable: '',
-    locked: false
+    locked: false,
+    idArea : 0
   }
 
-  constructor(private tableserive: TableService, private qrcodeservice: QrcodeService, private router: Router,
+  constructor(
+    private tableserive: TableService, 
+    private qrcodeservice: QrcodeService, 
+    private areaService: AreaService, 
+    private router: Router,
     private snackBar: MatSnackBar
   ) { }
+
+  // AREA******************
+
+  getAllAreas(){
+    this.areaService.getAllAreas().subscribe(data =>{
+      console.log(data);
+      this.listAreas = data.result
+    },error => {
+      console.log('Error',error);
+    })
+  }
+
 
   // TABLE **********************
 
@@ -49,14 +74,14 @@ export class ManagerviewTableComponent implements OnInit {
     const sortOrder = selectElement.value;
 
     if (sortOrder === 'asc') {
-      this.getAllTable(this.currentPage, this.pagesize);
+      this.getAllTableASC(this.currentPage, this.pagesize, this.keyArea);
     } else {
-        this.getAllTableDESC(this.currentPage, this.pagesize);
+        this.getAllTableDESC(this.currentPage, this.pagesize, this.keyArea);
     }
 }
 
-  getAllTable(page: number, size: number) {
-    this.tableserive.getAlltable(page, size).subscribe(data => {
+  getAllTableASC(page: number, size: number, idArea: number) {
+    this.tableserive.getAllTablesASC(page, size, idArea).subscribe(data => {
       console.log(data.result)
       this.listTable = data.result.content
       this.totalPages = data.result.totalPages
@@ -67,8 +92,8 @@ export class ManagerviewTableComponent implements OnInit {
   }
 
 
-  getAllTableDESC(page: number, size: number) {
-    this.tableserive.getAlltableDESC(page, size).subscribe(data => {
+  getAllTableDESC(page: number, size: number, idArea: number) {
+    this.tableserive.getAlltableDESC(page, size, idArea).subscribe(data => {
       console.log(data.result)
       this.listTable = data.result.content
       this.totalPages = data.result.totalPages
@@ -76,12 +101,23 @@ export class ManagerviewTableComponent implements OnInit {
     }, error => {
       console.log("Error list table: ", error)
     })
+  }
+
+  getTablesFromFilter(keyArea : number) {
+    this.tableserive.getTablesByArea(this.tableData.nameTable, keyArea, this.status, this.currentPage, this.pagesize)
+      .subscribe(data => {
+        console.log('data: ' + data.result)
+        this.listTable = data.result.content;  // Lấy danh sách tables từ API
+        this.totalPages = data.result.totalPages;  // Tổng số phần tử
+        this.keyArea = keyArea
+      }, err => {
+        console.log('error: ' + err)
+      });
   }
 
 
   getAllQr(){
     this.qrcodeservice.getAllQr().subscribe(data => { 
-      console.log('olll',data.result)
       this.listTableContaiQR = data.result
     }, error => {
       console.log("Error list table: ", error)
@@ -89,7 +125,7 @@ export class ManagerviewTableComponent implements OnInit {
   }
   createNewTable() {
     this.tableserive.createTable(this.tableData).subscribe(data => {
-      this.ngOnInit()
+      this.getAllTableASC(this.currentPage, this.pagesize, this.keyArea)
       this.openTotast('Tạo mới bàn thành công!')
     }, error => {
       console.log(error)
@@ -97,21 +133,12 @@ export class ManagerviewTableComponent implements OnInit {
     })
   }
 
-  getTablesFromFilter() {
-    this.tableserive.getTablesFromFilter(this.tableData.nameTable, this.status, this.currentPage, this.pagesize)
-      .subscribe(data => {
-        console.log('data: ' + data.result)
-        this.listTable = data.result.content;  // Lấy danh sách tables từ API
-        this.totalPages = data.result.totalPages;  // Tổng số phần tử
-      }, err => {
-        console.log('error: ' + err)
-      });
-  }
+ 
 
   updateTable(keyTable: number) {
       this.tableserive.updateTable(this.tableData, keyTable).subscribe(
         data => {
-            this.ngOnInit();
+          this.getAllTableASC(this.currentPage, this.pagesize, this.keyArea)
             this.openTotast('Cập nhật bàn thành công!');
         }, 
         error => {
@@ -150,9 +177,9 @@ export class ManagerviewTableComponent implements OnInit {
       
       // Gọi phương thức lấy dữ liệu với thứ tự sắp xếp hiện tại
       if (this.sortOrder === 'asc') {
-          this.getAllTable(this.currentPage, this.pagesize);
+          this.getAllTableASC(this.currentPage, this.pagesize, this.keyArea);
       } else {
-          this.getAllTableDESC(this.currentPage, this.pagesize);
+          this.getAllTableDESC(this.currentPage, this.pagesize, this.keyArea);
       }
   }
   }
@@ -211,7 +238,8 @@ export class ManagerviewTableComponent implements OnInit {
 
   // ****************
   ngOnInit(): void {
-    this.getAllTable(this.currentPage, this.pagesize);
+    this.getTablesFromFilter(this.keyArea);
+    this.getAllAreas()
   }
 
   openTotast(status: string) {
