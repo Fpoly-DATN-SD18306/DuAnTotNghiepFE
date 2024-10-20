@@ -9,6 +9,7 @@ import { OtherComponent } from './component/other/other.component';
 import { ProductComponent } from './component/product/product.component';
 import { FormsModule } from '@angular/forms';
 import { ProductNgangComponent } from './component/product-ngang/product-ngang.component';
+import { CartComponent } from './component/cart/cart.component';
 
 
 
@@ -23,6 +24,7 @@ import { ProductNgangComponent } from './component/product-ngang/product-ngang.c
     OtherComponent,
     ProductComponent,
     ProductNgangComponent,
+    CartComponent,
 
 
   ],
