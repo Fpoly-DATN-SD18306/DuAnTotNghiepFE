@@ -12,12 +12,13 @@ export class TableService {
   url = ApiConfigService.apiUrl;
   constructor(private http: HttpClient) { }
 
-  getAlltable(page: number, size: number): Observable<ApiRespone> {
-    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables?page=${page}&size=${size}`)
+  getAllTablesASC(page: number, size: number, idArea: number): Observable<ApiRespone> {
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/sort/asc?page=${page}&size=${size}&idArea=${idArea}`);
   }
+  
 
-  getAlltableDESC(page: number, size: number): Observable<ApiRespone> {
-    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/sort/desc?page=${page}&size=${size}`)
+  getAlltableDESC(page: number, size: number, idArea: number): Observable<ApiRespone> {
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/sort/desc?page=${page}&size=${size}&idArea=${idArea}`)
   }
 
   //Get all tables not delete
@@ -57,19 +58,33 @@ export class TableService {
 
 
    // Hàm để gọi API với các tham số lọc
-   getTablesFromFilter(nameTable: string, status: string, page: number, size: number): Observable<ApiRespone> {
+  //  getTablesFromFilter(nameTable: string, status: string, page: number, size: number): Observable<ApiRespone> {
+  //   let params = new HttpParams()
+  //     .set('page', page.toString())
+  //     .set('size', size.toString());
+
+  //   if (nameTable) {
+  //     params = params.set('nameTable', nameTable);
+  //   }
+
+  //   if (status) {
+  //     params = params.set('status', status);
+  //   }
+  //   console.log('param'+params);
+  //   return this.http.get<any>(`${this.url}/api/v1/tables/filter`, { params });
+  // }
+
+  getTablesByArea(nameTable: string, idArea: number, status: string, page: number, size: number): Observable<ApiRespone> {
     let params = new HttpParams()
+      .set('nameTable', nameTable.toString())
+      .set('idArea', idArea.toString())
+      .set('status', status)
       .set('page', page.toString())
       .set('size', size.toString());
-
-    if (nameTable) {
-      params = params.set('nameTable', nameTable);
-    }
-
-    if (status) {
-      params = params.set('status', status);
-    }
-    console.log('param'+params);
-    return this.http.get<any>(`${this.url}/api/v1/tables/filter`, { params });
+      console.log('params'+params);
+  
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/filter`, { params });
   }
+  
+  
 }
