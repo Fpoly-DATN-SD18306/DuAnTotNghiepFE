@@ -13,10 +13,10 @@ export class CartService {
  
     items: Icart[]=[];
   constructor(private platformLocation: PlatformLocation) {
-    // const storedCart = localStorage.getItem(this.cartKey);
-    // if (storedCart) {
-    //   this.items = JSON.parse(storedCart);
-    // }
+    const storedCart = localStorage.getItem(this.cartKey);
+    if (storedCart) {
+      this.items = JSON.parse(storedCart);
+    }
   }
   updateQuantity(id: number, quantity: number) {
     const cart = this.getCart();

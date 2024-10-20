@@ -10,7 +10,7 @@ import { ApiRespone } from '../../entity/api-respone';
   providedIn: 'root'
 })
 export class SearchFilterService {
-  private baseUrl = 'http://192.168.1.15:8080/api/v1/foods';
+  private baseUrl = ApiConfigService.apiFoods;
   url = ApiConfigService.apiUrl;
   constructor(private httpClient: HttpClient) { }
   getFoodPage(thePage: number, thePageSize: number): Observable<ApiRespone> {
