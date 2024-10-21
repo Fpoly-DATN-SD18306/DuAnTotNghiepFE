@@ -74,7 +74,7 @@
          <button class="page-link" >{{number+1}}  </button></li>
          <li *ngIf="totalPages-1>number" class="page-item ">
           <button (click)="paging(number+1)" class="page-link" >{{number+2}} </button></li>
-         
+        
    
       <li class="page-item" [class.disabled]="number==totalPages-1">
         <button  (click)="paging(number+1)" class="page-link" >Next</button>
