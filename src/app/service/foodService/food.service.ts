@@ -13,9 +13,8 @@ export class FoodService {
   constructor(private http : HttpClient) { }
 
 
-  getAllList(page : number):Observable<ApiRespone>{
-    console.log(page)
-    return this.http.get<ApiRespone>(this.url+"/api/v1/foods",{params :{'page' : page }});
+  getAllList():Observable<ApiRespone>{
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods");
   }
   
   getById(idFood : number):Observable<ApiRespone>{
