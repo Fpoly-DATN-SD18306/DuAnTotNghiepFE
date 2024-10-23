@@ -70,7 +70,7 @@
                                             <img src="./img/khungqr2.png" class="position-relative" width="240px"
                                                 alt="QR Code Frame">
                                             <div class="box-img-qrcode position-absolute">  
-                                                <img *ngIf="itemqr != null" [src]="itemqr.linkImageQr"
+                                                <img *ngIf="itemqr != null" [src]="itemqr.linkImageQr + '?v=' + timestamp"
                                                     width="110px" class="rounded-3" alt="QR Code Image" />
                                                 <img *ngIf="itemqr == null" src="./img/imageempty.png" class="p-5"
                                                     width="200px" alt="Empty QR Code" />
@@ -255,8 +255,8 @@
                                             <div class="border-0 position-absolute top-0 end-0 pt-1 d-flex justify-content-end align-items-center"
                                                 style="font-size: 0.8em">
                                                 <a class="btn btn-qrcode pb-1 p-0 m-0" data-bs-toggle="modal"
-                                                    data-bs-target="#modalqrcode"
-                                                    (click)="openModal(table.idTable)"><img
+                                                [attr.data-bs-target]="'#modalqrcode'+table.idTable"
+                                                    (click)="openModal(table.idTable)" (click)="refreshImg()"><img
                                                         src="https://cdn-icons-png.flaticon.com/128/8721/8721150.png"
                                                         width="15px" alt /></a>
                                                 <div class="dropend">
@@ -267,8 +267,8 @@
                                                         style="box-shadow: 0px 0px 3px 3px rgb(207, 206, 206);">
                                                         <li><button class="dropdown-item" type="button"
                                                                 data-bs-toggle="modal"
-                                                                data-bs-target="#modalqrcode_print"
-                                                                (click)="openModal(table.idTable)">In
+                                                                [attr.data-bs-target]="'#modalqrcode_print'+table.idTable"
+                                                                (click)="openModal(table.idTable)" (click)="refreshImg()">In
                                                                 QR
                                                                 bàn</button></li>
                                                         <li><button class="dropdown-item" type="button"
@@ -299,7 +299,7 @@
                                                     </ul>
                                                 </div>
                                                 <!-- Modal print Qrcode -->
-                                                <div class="modal fade" id="modalqrcode_print" data-bs-backdrop="static"
+                                                <div class="modal fade" [id]="'modalqrcode_print'+table.idTable"  data-bs-backdrop="static"
                                                     data-bs-keyboard="false" tabindex="-1"
                                                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
@@ -315,7 +315,7 @@
                                                                             <div
                                                                                 class="box-img-qrcode position-absolute" *ngIf="itemTable">
                                                                                 <img *ngIf="itemTable.linkImageQr != null"
-                                                                                    [src]="itemTable.linkImageQr"
+                                                                                    [src]="itemTable.linkImageQr  + '?v=' + timestamp"
                                                                                     width="200px" class="rounded-3"
                                                                                     alt="QR Code Image" />
                                                                                 <img *ngIf="itemTable.linkImageQr == null || itemTable.linkImageQr === ''"
@@ -366,7 +366,7 @@
                                     </div>
                                 </div>
                                 <!-- Modal show QRCODE -->
-                                <div class="modal fade" id="modalqrcode" data-bs-backdrop="static"
+                                <div class="modal fade"  [id]="'modalqrcode'+table.idTable" data-bs-backdrop="static"
                                     data-bs-keyboard="false" tabindex="-1" aria-labelle dby="staticBackdropLabel"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
@@ -385,7 +385,7 @@
                                                             <div
                                                                 class="d-flex justify-content-center border-5 border-black border rounded-3" *ngIf="itemTable">
                                                                 <img *ngIf="itemTable.linkImageQr != null" class="rounded-3"
-                                                                    [src]="itemTable.linkImageQr" width="250px" alt />
+                                                                    [src]="itemTable.linkImageQr  + '?v=' + timestamp" width="250px" alt />
                                                                 <img *ngIf="itemTable.linkImageQr == null"
                                                                     src="./img/imageempty.png" class="p-5" width="200px"
                                                                     alt />
@@ -400,8 +400,10 @@
                                                     <div class="button-group">
                                                         <button class="btn btn-confirm rounded-3" *ngIf="itemTable?.linkImageQr"
                                                             (click)="updateQrCode(table.idTable)"
+                                                            data-bs-dismiss="modal"
                                                             style="font-size: 0.8em" type="button">
                                                             Cập nhật mã QRCode mới
+                                                            {{table.idTable}}
                                                         </button>
                                                         <a class="btn btn-cancel bg-danger text-white rounded-3 px-3"
                                                             type="button" style="font-size: 0.8em;"

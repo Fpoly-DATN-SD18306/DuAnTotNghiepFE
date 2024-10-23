@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { TableService } from '../../../../service/table.service';
 import { Router } from '@angular/router';
 import { tableResponse } from '../../../../entity/response/table-response';
@@ -29,6 +29,7 @@ export class ManagerviewTableComponent implements OnInit {
   totalPages: number = 0
   pages: number[] = []
   sortOrder: string = 'asc';
+  timestamp: string = new Date().getTime().toString();
 
 //*** */
   status : string = ''
@@ -40,7 +41,9 @@ export class ManagerviewTableComponent implements OnInit {
 
   constructor(private tableserive: TableService, private qrcodeservice: QrcodeService, private router: Router,
     private snackBar: MatSnackBar
-  ) { }
+  ) {
+    this.timestamp = new Date().getTime().toString();
+   }
 
   // TABLE **********************
 
@@ -175,13 +178,20 @@ export class ManagerviewTableComponent implements OnInit {
 
 
   // QRCODE***********************
-
-
+  refreshImg(){
+    this.timestamp = new Date().getTime().toString();
+  }
   updateQrCode(idtable: number){
+    console.log(idtable);
+    
     this.qrcodeservice.updateQrCode(idtable).subscribe(
       data => {
         console.log('QR Code updated:', data);
         this.openTotast('Cập nhật QRCode thành công!')
+        setTimeout(()=>{
+          this.timestamp = new Date().getTime().toString();
+        },3000)
+        
       }, error => {
         console.error('Error creating QR Code:', error);
         this.openTotast('Cập nhật QRCode thất bại!')
@@ -213,6 +223,8 @@ export class ManagerviewTableComponent implements OnInit {
   ngOnInit(): void {
     this.getAllTable(this.currentPage, this.pagesize);
   }
+
+ 
 
   openTotast(status: string) {
     this.snackBar.open
