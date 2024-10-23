@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FoodService } from '../../../../../service/food.service';
+import { FoodService } from '../../../../../service/foodService/food.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CategoryService } from '../../../../../service/categoryService';
@@ -27,6 +27,15 @@ export class ManagerfoodComponent implements OnInit {
     idFoodNeedUpdate !: Number;
     selectedFile !: File;
 
+    
+   errorNotify : Record<number, string> = {
+    1101 : "Tên món đã tồn tại !",
+    1102 : "Món không tồn tại",
+    1103 : "Tên món không được trống !",
+    1104 : "Giá món không được âm",
+   }
+
+
   srcImage="./img/noImage.jpg";
    hostingImg = "http://localhost:8080/images/"
   changeImage(event : Event){
@@ -47,6 +56,7 @@ export class ManagerfoodComponent implements OnInit {
       duration:4000,
       horizontalPosition: 'end', //  'start', 'end'
       verticalPosition: 'bottom', //  'bottom'
+ 
     })
   }
 
@@ -70,7 +80,7 @@ export class ManagerfoodComponent implements OnInit {
 
       },error =>{
         console.log(error)
-        this.openToast("Thêm mới Không thành công");
+        this.openToast( "Lỗi : "+this.errorNotify[error.error.code]);
       }
     )
 

@@ -9,25 +9,25 @@
 
 <form class="row g-3 mt-1">
   <div class="col-md-6">
-    <input type="text" class="form-control" placeholder="Tìm kiếm" #myInput (keyup.enter)="doSearch(myInput.value)">
+    <input type="text" class="form-control" placeholder="Tìm kiếm" [(ngModel)]="nameFoodFilter" name="nameFoodFilter" (ngModelChange)="listFood2()">
   </div>
   <div class="col-md-4">
-    <select id="inputState" class="form-select" (change)="filterFoodByCategory($event)">
-      <option value="">Loại món ăn</option>
+    <select id="inputState" class="form-select" [(ngModel)]="nameCategoryFilter"  name="nameCategoryFilter" (ngModelChange)="listFood2()">
+      <option selected value="">Chọn tất cả</option>
       <option *ngFor="let cate of listCate"  [value]="cate.idCategory">{{cate.nameCategory}}</option>
     </select>
   </div>
   <div class="col-md-2">
-    <select id="inputState" class="form-select" (change)="filterisSelling($event)">
-      <option >Chọn tất cả</option>
-      <option [value]=true>Đang mở bán</option>
-      <option [value]=false>Tạm ngưng</option>
+    <select id="inputState" class="form-select" [(ngModel)]="isSellingFilter" name="isSellingFilter" (ngModelChange)="listFood2()">
+      <option [value]="123" selected >Chọn tất cả</option>
+      <option [value]='true'>Đang mở bán</option>
+      <option [value]='false'>Tạm ngưng</option>
     </select>
   </div>
 </form>
 
 <div class="mt-2">
-  <button type="button" class="btn btn-primary w-100" (click)="doSearch(myInput.value)">Tìm kiếm</button>
+  <button type="button" class="btn btn-primary w-100" (click)="listFood2()">Tìm kiếm</button>
 </div>
 
 <div class="mx-auto" style="overflow-y: scroll; height: 370px;">
@@ -61,12 +61,25 @@
   </table>
 
 </div>
-<div class="d-flex justify-content-center">
-  <ngb-pagination 
-    [(page)]="thePageNumber" 
-    [pageSize]="thePageSize"
-    [collectionSize]="theTotalElements" 
-    (pageChange)="listFoods()" 
-    [boundaryLinks]="true">
-  </ngb-pagination>
+
+<div class="w-100 my-3 d-flex justify-content-center ">
+  <nav class="mx-auto text-center " aria-label="...">
+    <ul class="pagination">
+      <li class="page-item "  [class.disabled]="number==0" >
+        <button (click)="paging(number-1)"  class="page-link">Previous</button>
+      </li>
+      <li *ngIf="number>0" class="page-item ">
+        <button (click)="paging(number-1)" class="page-link" >{{number}} </button></li>
+      <li  class="page-item active">
+         <button class="page-link" >{{number+1}}  </button></li>
+         <li *ngIf="totalPages-1>number" class="page-item ">
+          <button (click)="paging(number+1)" class="page-link" >{{number+2}} </button></li>
+        
+   
+      <li class="page-item" [class.disabled]="number==totalPages-1">
+        <button  (click)="paging(number+1)" class="page-link" >Next</button>
+      </li>
+    </ul>
+  </nav>
 </div>
+

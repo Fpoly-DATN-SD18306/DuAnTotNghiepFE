@@ -14,7 +14,7 @@ import { OtherComponent } from './component/other/other.component';
     UserviewComponent,
     HomeComponent,
     MenuComponent,
-    OtherComponent,
+    OtherComponent
 
   ],
   imports: [

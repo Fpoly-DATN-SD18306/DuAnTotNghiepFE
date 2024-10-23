@@ -1,0 +1,44 @@
+<div>
+    <input type="text" [(ngModel)]="tableName" placeholder="Tìm kiếm bàn">
+    <select [(ngModel)]="filters.status">
+      <option value="">Tất cả</option>
+      <option value="available">Trống</option>
+      <option value="occupied">Đã đặt</option>
+      <option value="cleaning">Đang dọn</option>  
+    </select>
+    <select [(ngModel)]="sortBy" (change)="sortByChanged()">
+      <option value="name">Tên sản phẩm</option>
+      <option value="price">Giá</option>
+    </select>
+    <select [(ngModel)]="sortOrder" (change)="sortOrderChanged()">
+      <option value="asc">Tăng dần</option>
+      <option value="desc">Giảm dần</option>
+    </select>
+  </div>
+  <table *ngIf="tables.length > 0">
+    <thead>
+      <tr>
+        <th>Tên bàn</th>
+        <th>Trạng thái</th>
+        <th>Vị trí</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let table of tables">
+        <td>{{ table.nameTable }}</td>
+        
+        <td>{{ table.status }}</td>
+        <td>{{ table.location }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center">
+    <ngb-pagination 
+      [(page)]="thePageNumber" 
+      [pageSize]="thePageSize"
+      [collectionSize]="theTotalElements" 
+      (pageChange)="listFood2()" 
+      [boundaryLinks]="true">
+    </ngb-pagination>
+  </div>
+

@@ -1,5 +1,6 @@
+
 import { Component, OnInit } from '@angular/core';
-import { FoodService } from '../../../../../service/food.service';
+import { FoodService } from '../../../../../service/foodService/food.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { foodResponse } from '../../../../../entity/response/food-response';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,7 +8,7 @@ import { SearchFilterService } from '../../../../../service/foodService/search-f
 import { Foods } from '../../../../../entity/food/foods';
 import { FoodCategory } from '../../../../../entity/category/food-category';
 import { CategoryService } from '../../../../../service/categoryService';
-import { ApiRespone } from '../../../../../entity/api-respone';
+
 
 @Component({
   selector: 'app-listfood',
@@ -20,12 +21,15 @@ export class ListfoodComponent implements OnInit {
   filteredFoods!: Foods[];
   number = 0;
   totalPages = 0;
-  thePageNumber: number = 1;
-  thePageSize: number = 20;
+  
   theTotalElements: number = 0;
-  size: number = 20;
+  size: number = 15;
   currentCategoryId: number = 1;  
   listCate!: FoodCategory[]; 
+  nameFoodFilter!: string ;
+  nameCategoryFilter="" ;
+  isSellingFilter: string='123';
+
 
   constructor(
     private foodService: FoodService,
@@ -38,52 +42,10 @@ export class ListfoodComponent implements OnInit {
 
   ngOnInit(): void {
     this.filterByCategory();
-    this.route.paramMap.subscribe(() => {
-      this.listFoods(); 
-    });
+    // this.getAllFoods();
+    this.listFood2(); 
   }
 
-  
-  listFoods() {
-    const idParam = this.route.snapshot.paramMap.get('idcategory');
-    const theKeyword = this.route.snapshot.paramMap.get('keyword');
-    const theSelling = this.route.snapshot.paramMap.get('isSelling');
-
-    let observable;
-
-    if (theKeyword) {
-      observable = this.searchFilterService.searchFood(this.thePageNumber - 1, this.thePageSize, theKeyword);
-    } else if (idParam) {
-      this.currentCategoryId = +idParam; 
-      observable = this.searchFilterService.getFoodListPaginate(this.thePageNumber - 1, this.thePageSize, this.currentCategoryId);
-    } else if (theSelling) {
-      observable = this.searchFilterService.getFoodListByisSelling(this.thePageNumber - 1, this.thePageSize, theSelling === 'true');
-    } else {
-      observable = this.searchFilterService.getFoodPage(this.thePageNumber - 1, this.thePageSize);
-    }
-
-    observable.subscribe(
-      data => {
-        if (data && data._embedded && data._embedded.foodEntities) {
-          this.food = data._embedded.foodEntities;
-          this.filteredFoods = this.food;
-          this.theTotalElements = data.page.totalElements; 
-          this.size = this.filteredFoods.length;
-          this.number = data.page.number + 1; 
-          this.totalPages = data.page.totalPages;
-        } else {
-          this.filteredFoods = [];
-        }
-      },
-      error => {
-        console.error('Error fetching food items', error);
-      }
-    );
-  }
-
-  editProduct(idFood: number) {
-    this.router.navigate(['/admin/manager/managerFood/manager', idFood]);
-  }
 
   doSearch(value: string) {
     this.router.navigate([`/admin/manager/managerFood/search/${value}`]).then(() => {
@@ -91,7 +53,7 @@ export class ListfoodComponent implements OnInit {
     });
   }
 
-  filterFoodByCategory(event: Event) {
+  filterFood(event: Event) {
     const selectedCategoryId = +(event.target as HTMLSelectElement).value;
     this.router.navigate([`/admin/manager/managerFood/category/${selectedCategoryId}`]).then(() => {
       window.location.reload();
@@ -115,4 +77,48 @@ export class ListfoodComponent implements OnInit {
       }
     );
   }
+ 
+  paging(numberPage: number) {
+    console.log(numberPage);
+    console.log(this.totalPages);
+    this.number = numberPage;
+    this.listFood2();  
+  }
+  
+  listFood2() {
+ 
+  
+    this.searchFilterService.filterFood(this.nameFoodFilter, this.nameCategoryFilter, this.isSellingFilter,  this.number, this.size).subscribe(
+      data => {
+        this.filteredFoods = data.result.content;         
+        this.theTotalElements = data.result.totalElements;            
+        this.totalPages = data.result.totalPages;         
+      },
+      error => {
+        console.log('Error fetching data:', error);
+      }
+    );
+  }
+  
+
+  getAllFoods() {
+    this.searchFilterService.getFoodPage(0,15).subscribe(
+      data => {
+        this.filteredFoods=data.result.content;
+        this.theTotalElements = data.result.totalElements;
+        this.size = this.filteredFoods.length;
+        this.number = data.result.number;
+        this.totalPages = data.result.totalPages;
+       console.log(this.filteredFoods)
+        }, 
+      error => {console.log(error),
+        console.log(this.filteredFoods)
+      }
+    );
+    
+}
+  editProduct(idFood: number) {
+    this.router.navigate(['/admin/manager/managerFood/manager', idFood]);
+  }
+
 }
