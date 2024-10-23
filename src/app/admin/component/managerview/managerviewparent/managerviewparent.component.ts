@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class ManagerviewparentComponent implements OnInit {
 
-    constructor (private router : Router ){}
+    constructor (private router : Router ,@Inject(PLATFORM_ID) private platformId: Object){}
     // some value currentView : managerTable, managerFood 
     currentView = "";
 
@@ -23,8 +24,13 @@ export class ManagerviewparentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const screenWidth = window.innerWidth;
+   
     this.activeButton('',window.location.pathname.split("/")[3]) 
-  
+
+    }
+
   }
 
 }

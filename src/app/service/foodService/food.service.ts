@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiConfigService } from './ApiConfigService';
-import { ApiRespone } from '../entity/api-respone';
 import { Observable } from 'rxjs';
-import { foodRequest } from '../entity/request/food-request';
+import { ApiConfigService } from '../ApiConfigService';
+import { foodRequest } from '../../entity/request/food-request';
+import { ApiRespone } from '../../entity/api-respone';
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +29,13 @@ export class FoodService {
     data.append('nameFood',foodRequest.nameFood)
     data.append('priceFood',foodRequest.priceFood.toString())
     data.append('isSelling',foodRequest.isSelling?'True':'False'),
-    data.append('isDeleted',foodRequest.isDeleted?'True':'False'),
     data.append('note',foodRequest.note)
     data.append('idCategory',foodRequest.idCategory.toString())
     data.append('file',file)
-
+    data.append('discount',foodRequest.discount.toString())
+    
     console.log(foodRequest.isSelling)
-    console.log(foodRequest.isDeleted)
+
     return this.http.post<ApiRespone>(this.url+"/api/v1/foods",data)
 
   }
@@ -45,15 +45,17 @@ export class FoodService {
     data.append('nameFood',foodRequest.nameFood)
     data.append('priceFood',foodRequest.priceFood.toString())
     data.append('isSelling',foodRequest.isSelling?'True':'False'),
-    data.append('isDeleted',foodRequest.isDeleted?'True':'False'),
+   
     data.append('note',foodRequest.note)
     data.append('idCategory',foodRequest.idCategory.toString())
     data.append('file',file)
+    data.append('discount',foodRequest.discount.toString())
 
     console.log(foodRequest.isSelling)
-    console.log(foodRequest.isDeleted)
+ 
     return this.http.put<ApiRespone>(this.url+"/api/v1/foods/"+idFood,data)
 
   }
+  
 
 }

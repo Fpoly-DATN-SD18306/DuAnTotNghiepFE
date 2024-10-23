@@ -6,6 +6,7 @@ import { ManagerviewparentComponent } from './managerviewparent/managerviewparen
 
 import { ManagerviewFoodComponent } from './managerview-food/managerview-food.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -17,6 +18,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     ManagerviewTableComponent
   ],
   imports: [
+ 
+    NgbModule,
     CommonModule,
     ReactiveFormsModule,
     ManagerviewRoutingModule,
