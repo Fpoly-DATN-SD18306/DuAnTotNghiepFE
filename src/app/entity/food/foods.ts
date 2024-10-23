@@ -8,4 +8,6 @@ export class Foods {
     imgFood!: string;
     isSelling!: boolean;
     isDeleted!: boolean;
+    idCategory!:number;
+    note!:string;
 }
