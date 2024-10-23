@@ -8,7 +8,8 @@ const routes: Routes = [{
   path: '', component: AdminviewComponent,
   children: [
     { path: 'manager', loadChildren: () => import('./component/managerview/managerview.module').then(m => m.ManagerviewModule) },
-    { path: 'staff', loadChildren: () => import('./component/staffview/staffview.module').then(m => m.StaffviewModule) }
+    { path: 'staff', loadChildren: () => import('./component/staffview/staffview.module').then(m => m.StaffviewModule) },
+    { path: 'manager/managerFood', loadChildren: () => import('./component/managerview/managerview.module').then(m => m.ManagerviewModule) }
   ]
 }
 ];
