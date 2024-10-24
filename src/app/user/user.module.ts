@@ -6,6 +6,7 @@ import { UserviewComponent } from './component/userview/userview.component';
 import { HomeComponent } from './component/home/home.component';
 import { MenuComponent } from './component/menu/menu.component';
 import { OtherComponent } from './component/other/other.component';
+import { FileNotFounduserComponent } from './component/file-not-founduser/file-not-founduser.component';
 
 
 
@@ -14,7 +15,8 @@ import { OtherComponent } from './component/other/other.component';
     UserviewComponent,
     HomeComponent,
     MenuComponent,
-    OtherComponent
+    OtherComponent,
+    FileNotFounduserComponent
 
   ],
   imports: [
