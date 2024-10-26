@@ -66,9 +66,9 @@ export class ManagerfoodComponent implements OnInit {
       this.productForm.value.nameFood,
       this.productForm.value.priceFood,
       this.productForm.value.isSelling=="True"?true:false,
-      this.productForm.value.isDeleted=="True"?true:false,
       this.productForm.value.note,
-      this.productForm.value.idCategory
+      this.productForm.value.idCategory,
+      this.productForm.value.discount
     )
 
     console.log(food)
@@ -92,9 +92,9 @@ export class ManagerfoodComponent implements OnInit {
       this.productForm.value.nameFood,
       this.productForm.value.priceFood,
       this.productForm.value.isSelling=="True"?true:false,
-      this.productForm.value.isDeleted=="True"?true:false,
       this.productForm.value.note,
-      this.productForm.value.idCategory
+      this.productForm.value.idCategory,
+      this.productForm.value.discount
     )
 
     console.log(food)
@@ -136,9 +136,9 @@ export class ManagerfoodComponent implements OnInit {
       nameFood:['',Validators.required],
       priceFood:['',[Validators.required,Validators.min(0)]], 
       isSelling:['True',[Validators.required]],
-      isDeleted: ['False', [Validators.required]],
       idCategory:['',[Validators.required]],
       note: [''],
+      discount: ['',[Validators.required,Validators.min(0),Validators.max(100)]],
       imageFile: ['']
       
   
@@ -163,8 +163,9 @@ ngOnInit(): void {
             this.productForm = this.formBuilder.group({
               nameFood:[foodResponse.nameFood,Validators.required],
               priceFood:[foodResponse.priceFood,[Validators.required,Validators.min(0)]], 
+              discount :[foodResponse.discount,[Validators.required,Validators.min(0),Validators.max(100)]],
               isSelling:[foodResponse.isSelling,[Validators.required]],
-              isDeleted: [foodResponse.isDeleted, [Validators.required]],
+             
               idCategory:[foodResponse.idCategory,[Validators.required]],
               note: [foodResponse.note],
               imageFile: [foodResponse.imgFood]

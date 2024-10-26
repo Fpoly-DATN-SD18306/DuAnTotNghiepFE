@@ -1,0 +1,41 @@
+.nav-category{
+    box-shadow: 0px 2px 3px rgb(182, 180, 180);
+} 
+.navbar ul li a{
+    box-shadow: 0px 1px 2px;
+    font-weight: 600;
+    color: black;
+} 
+.navbar ul li :hover{
+    box-shadow: 0px 1px 2px black !important   ;
+    border: 0px;
+    font-weight: 600;
+    color: white;
+    background-color: orange;
+} 
+
+/* Trạng thái button nav item (Trà sữa, caphe, trà, ....) */
+.btn-active{
+    border: 0px;
+    background-color: orange;
+    color: white !important;
+    box-shadow: 0px 1px 2px black !important   ;
+} 
+.navbar-collapse ul li a :hover{
+    background-color: antiquewhite;
+} 
+
+
+
+/****************Danh sách sản phẩm order********/
+
+/* Ẩn/hiện thanh cuộn */
+.container-listproducts::-webkit-scrollbar{
+   width: 0;
+   height: 0;
+}
+.container-order-product::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+ }
+

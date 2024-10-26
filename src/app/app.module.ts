@@ -10,7 +10,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-// import { ToastModule } from 'primeng/toast';
+
+
+
+import { ToastModule } from 'primeng/toast';
+
+
+
+import { StaffviewParentComponent } from './admin/component/staffview/staffview-parent/staffview-parent.component';
 
 
 @NgModule({

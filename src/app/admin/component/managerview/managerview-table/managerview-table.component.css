@@ -1,0 +1,140 @@
+.text-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 110px;
+    cursor: pointer;
+}
+
+
+/* Styling for the input group */
+.form-floating-group {
+    width: 100%;
+}
+
+/* Style for the input fields */
+.input-control {
+    width: 100%;
+    padding: 15px 10px;
+    font-size: 17px;
+    font-weight: bold;
+    color: gray;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 20px; /* Add margin to separate inputs */
+}
+
+/* Placeholder Styling */
+.input-control::placeholder {
+    color: #aaa;
+    font-size: 16px;
+}
+
+/* Style for the floating label */
+.form-floating-group .label-input {
+    position: absolute;
+    top: 23px;
+    left: 15px;
+    font-size: 12px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-floating-group .label-khuvuc {
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    font-size: 12px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Effect when user focuses on input */
+.form-floating-group .input-control:focus + label,
+.form-floating-group .input-control:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 15px;
+    font-size: 12px;
+    color: gray;
+}
+
+/* Focus styling */
+.form-floating-group .input-control:focus {
+    outline: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure proper spacing for each input */
+.form-area, .form-table {
+    position: relative;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem; /* Điều chỉnh khoảng cách giữa các nút */
+    justify-content: end; /* Căn chỉnh sang bên phải */
+}
+
+.btn-cancel {
+    background-color: #daebfa;
+    border: none;
+    color: #007bff; /* Màu chữ */
+    padding: 5px 60px;
+    font-size: 0.8em;
+}
+
+.modal-footer .btn-confirm {
+    background-color: #5c98c9;
+    color: white;
+    padding: 5px 50px;
+}
+
+.box-img-qrcode{
+    top: 63%; 
+    left: 50%; 
+    transform: translate(-50%, -50%)
+}
+.modal-body {
+    max-height: none; /* Bỏ giới hạn chiều cao tối đa */
+    overflow: visible; /* Đảm bảo nội dung không bị cắt */
+}
+
+.no-caret::after {
+    display: none; /* Ẩn mũi tên */
+}
+
+
+/* chuyển màu bàn đã khóa */
+.table_locked {
+    background-image: url('/img/pngegg.png');
+    background-size: 500px; /* Đảm bảo ảnh nằm vừa vặn trong div */
+    background-position: center; /* Căn giữa ảnh */
+    background-repeat: no-repeat; /* Không lặp lại ảnh */
+}
+
+.mat-mdc-simple-snack-bar{
+    padding: 50px 60px;
+}
+.icon-locked{
+    top: 65%;
+    left: 45%;
+    color: rgb(0, 0, 0);
+}
+
+.modal-body {
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+/* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
+.modal-body::-webkit-scrollbar {
+    display: none; /* Ẩn thanh cuộn trên trình duyệt WebKit */
+}
+
+.modal-body {
+    -ms-overflow-style: none;  /* Ẩn thanh cuộn trên IE và Edge */
+    scrollbar-width: none;     /* Ẩn thanh cuộn trên Firefox */
+}
