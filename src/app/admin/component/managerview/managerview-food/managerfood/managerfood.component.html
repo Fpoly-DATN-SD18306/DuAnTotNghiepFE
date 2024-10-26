@@ -53,6 +53,21 @@
            
         </div>
         <div class="col-md-6">
+          <label for="inputEmail4"  class="form-label">Giảm Giá</label>
+          <input type="number" formControlName="discount" placeholder="%"  [class.is-invalid]="productForm.controls['discount'].invalid && productForm.controls['discount'].touched " class="form-control" id="inputEmail4">
+          <div *ngIf="productForm.controls['discount'].invalid && productForm.controls['discount'].touched " class="text-danger">
+            Discount is required
+             <span *ngIf="productForm.controls['discount'].value < 0  && productForm.controls['discount'].touched" class="text-danger">
+              and not negative
+              </span>
+              <span *ngIf="productForm.controls['discount'].value > 100 && productForm.controls['discount'].touched " class="text-danger">
+                and less than 100
+                </span>
+            </div>
+           
+        </div>
+
+        <div class="col-md-12">
           <label for="inputPassword4" class="form-label">Trạng thái(Đang bán)</label>
           <select class="form-select"  formControlName="isSelling" aria-label="Default select example">  
             
@@ -65,7 +80,7 @@
     </div>
     <div class="col-12">
       <div class="mb-3">
-        <label for="exampleFormControlTextarea1"  class="form-label">Example textarea</label>
+        <label for="exampleFormControlTextarea1"  class="form-label">Mô tả</label>
         <textarea class="form-control" formControlName="note" id="exampleFormControlTextarea1" rows="5"></textarea>
       </div>
     </div>
