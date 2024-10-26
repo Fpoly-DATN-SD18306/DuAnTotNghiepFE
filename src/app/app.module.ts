@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
@@ -10,7 +10,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ToastModule } from 'primeng/toast';
+// import { ToastModule } from 'primeng/toast';
+
 
 @NgModule({
   declarations: [
@@ -23,7 +24,7 @@ import { ToastModule } from 'primeng/toast';
     BrowserAnimationsModule, 
     FormsModule,
     RouterModule,
-    ToastModule
+    // ToastModule
   ],
   providers: [
     provideClientHydration()

@@ -13,7 +13,7 @@ export class ProductNgangComponent  implements OnInit{
   constructor(private cdr: ChangeDetectorRef){}
 
   
-  srcImage = "./img/noImage.jpg";
+  srcImage = "./img/tomdutlo.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 
   quantity =0;
