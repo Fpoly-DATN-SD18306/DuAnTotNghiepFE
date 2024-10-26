@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ApiConfigService {
 
-  public static apiUrl ="http://localhost:8080" ;
+  public static apiUrl ="http://192.168.1.20:8080" ;
 
-
+ 
 }

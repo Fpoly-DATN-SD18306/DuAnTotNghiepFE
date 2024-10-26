@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { Food } from '../../../interface/food/food';
+import { verifyTable } from '../../../service/verifyTable.service';
 
 @Component({
   selector: 'app-menu',
@@ -35,6 +36,13 @@ export class MenuComponent {
   }
   findProduct(){
     
+  }
+
+  ngOnInit(): void {
+      if(!verifyTable.tableVerified){
+        window.location.assign("/error")
+      }
+  
   }
 
 }
