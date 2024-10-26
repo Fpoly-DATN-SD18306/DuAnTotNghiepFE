@@ -16,7 +16,7 @@ export class ProductComponent implements OnInit {
   constructor(private cdr: ChangeDetectorRef,private cartService: CartService, private snackBar: MatSnackBar){}
 
   
-  srcImage = "./img/noImage.jpg";
+  srcImage = "./img/tomdutlo.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 
   quantity =0;

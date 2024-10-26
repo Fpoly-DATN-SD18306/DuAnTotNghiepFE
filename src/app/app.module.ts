@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
@@ -12,7 +12,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
+
 import { ToastModule } from 'primeng/toast';
+
 
 
 import { StaffviewParentComponent } from './admin/component/staffview/staffview-parent/staffview-parent.component';
@@ -29,7 +31,7 @@ import { StaffviewParentComponent } from './admin/component/staffview/staffview-
     BrowserAnimationsModule, 
     FormsModule,
     RouterModule,
-    ToastModule
+    // ToastModule
   ],
   providers: [
     provideClientHydration()

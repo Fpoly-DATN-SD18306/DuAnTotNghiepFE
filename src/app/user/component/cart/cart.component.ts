@@ -21,7 +21,7 @@ export class CartComponent {
   // @Input() quantity:number=0;
   // @Output() quantityChange = new EventEmitter<number>();
   discount:number=0;
-  srcImage = "./img/noImage.jpg";
+  srcImage = "./img/noImage1.jpg";
 hostingImg = ApiConfigService.apiUrlimg;
 readonly cartKey: string = 'myCart';
 
@@ -125,4 +125,10 @@ ngOnInit(): void {
 }
  this.calculateTotal();
 }
+
+
+
+
+
+
 }
