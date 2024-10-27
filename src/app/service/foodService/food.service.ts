@@ -29,11 +29,11 @@ export class FoodService {
     data.append('nameFood',foodRequest.nameFood)
     data.append('priceFood',foodRequest.priceFood.toString())
     data.append('isSelling',foodRequest.isSelling?'True':'False'),
- 
     data.append('note',foodRequest.note)
     data.append('idCategory',foodRequest.idCategory.toString())
     data.append('file',file)
-
+    data.append('discount',foodRequest.discount.toString())
+    
     console.log(foodRequest.isSelling)
 
     return this.http.post<ApiRespone>(this.url+"/api/v1/foods",data)
@@ -49,6 +49,7 @@ export class FoodService {
     data.append('note',foodRequest.note)
     data.append('idCategory',foodRequest.idCategory.toString())
     data.append('file',file)
+    data.append('discount',foodRequest.discount.toString())
 
     console.log(foodRequest.isSelling)
  
