@@ -18,6 +18,7 @@ import { ToastModule } from 'primeng/toast';
 
 
 import { StaffviewParentComponent } from './admin/component/staffview/staffview-parent/staffview-parent.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { StaffviewParentComponent } from './admin/component/staffview/staffview-
     BrowserAnimationsModule, 
     FormsModule,
     RouterModule,
+    MatSnackBarModule
     // ToastModule
   ],
   providers: [

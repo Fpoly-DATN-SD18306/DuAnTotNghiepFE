@@ -10,6 +10,8 @@ import { ProductComponent } from './component/product/product.component';
 import { FormsModule } from '@angular/forms';
 import { ProductNgangComponent } from './component/product-ngang/product-ngang.component';
 import { CartComponent } from './component/cart/cart.component';
+import { ProductInCartComponent } from './component/product-in-cart/product-in-cart.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 
@@ -25,13 +27,16 @@ import { CartComponent } from './component/cart/cart.component';
     ProductComponent,
     ProductNgangComponent,
     CartComponent,
+    ProductInCartComponent,
+    
 
 
   ],
   imports: [
     CommonModule,
     UserRoutingModule,
-    FormsModule
+    FormsModule,
+    MatSnackBarModule
   ]
 })
 export class UserModule { }

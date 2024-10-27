@@ -29,16 +29,30 @@
         <img src="{{srcImage}}" class="card-img-top w-100" style="width: 100%;" alt="...">
         <h2>{{product.nameFood}}</h2>
         <div class="d-flex justify-content-between">
-        <span class="fw-medium">
-          đã bán 999+ 
-        </span>
-        <span  class="fw-medium">
-           {{ formatPrice(product.priceFood)}}
-        </span>
-        
-        </div>
+          <span class="fw-medium">
+            đã bán 999+ 
+          </span>
+          <span  class="fw-medium">
+            <span style="font-size: 12px; text-decoration: line-through; color: rgb(131, 131, 131)">
+              {{ formatPrice(product.priceFood)}} 
+            </span >
+           
+           <span style="font-size: 18px; color: darkorange">
+            {{ formatPrice(product.priceFood)}} 
+           </span>
+          </span>
+          
+          </div>
         <span>
           {{product.note}}
+        </span>
+        <br>
+        <span>
+          <div class="form-floating">
+            <textarea class="form-control" [(ngModel)]="noteOrder" placeholder="Ghi chú :  " id="floatingTextarea2" style="height: 100px"></textarea>
+            <label for="floatingTextarea2">Ghi Chú : </label>
+            <p class="text-end">0/100</p>
+          </div>
         </span>
       </div>
       <div class="modal-footer d-flex flex-nowrap">
