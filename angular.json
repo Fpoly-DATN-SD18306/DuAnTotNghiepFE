@@ -99,7 +99,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "node_modules/@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
