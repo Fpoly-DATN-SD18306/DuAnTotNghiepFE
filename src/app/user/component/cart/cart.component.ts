@@ -3,6 +3,8 @@ import { Icart } from '../../../interface/cart/iCart';
 import { ApiConfigService } from '../../../service/ApiConfigService';
 import { CartService } from '../../../service/cartService/cart.service';
 import { Router } from '@angular/router';
+import { RequestOrder } from '../../../service/requestOrder.service';
+import { verifyTable } from '../../../service/verifyTable.service';
 
 @Component({
   selector: 'app-cart',
@@ -15,13 +17,25 @@ export class CartComponent implements OnInit {
   discount: number = 0;
   message: string = '';
 
-  constructor(private cartService: CartService, private changeDetectorRef: ChangeDetectorRef, private router: Router) {}
+  constructor(private cartService: CartService, private changeDetectorRef: ChangeDetectorRef
+    , private router: Router,private requestOrderService :  RequestOrder) {}
 
   ngOnInit(): void {
     this.getAllCart();
     this.calculateTotal();
     console.log("alo");
     
+  }
+
+  callOrder(){
+    
+    this.requestOrderService.postRequestOrder()?.subscribe(
+      data=>{
+        console.log(data.result)
+      }, error =>{
+        console.log(error)
+      }
+    )
   }
 
   getAllCart() {
