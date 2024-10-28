@@ -1,4 +1,4 @@
-  <div>
+ <div>
     <div class="sticky-top border-bottom ">
     <div class="d-flex  flex-nowrap bg-white">
       <div class="mx-3 mt-1">
@@ -47,17 +47,18 @@
     <div *ngIf="listCate" class="nav nav-pills ">
      <div *ngFor="let cate of listCate" >
       <h4 [id]="'scrollspyHeading'+cate.idCategory">{{cate.nameCategory}}</h4>
+      
       <div   class="d-flex flex-wrap  w-100 ">
       
          <ng-container *ngFor="let product of listFood">
           <div class="mb-2 mx-2 rounded  shadow" style="width: 45% ;"*ngIf="cate.idCategory == product.idCategory">
-            <app-product *ngIf="cate.idCategory==product.idCategory" [product]="product"></app-product>  
+            <app-product (statusAdd)="getNotifyFromChild($event)" *ngIf="cate.idCategory==product.idCategory" [product]="product"></app-product>  
             
         </div>
          </ng-container>
         
   
-      </div>+
+      </div>
     </div>
   </div>
       
@@ -67,3 +68,4 @@
 
   </div>
 <div style="height: 80px;" ></div>
+

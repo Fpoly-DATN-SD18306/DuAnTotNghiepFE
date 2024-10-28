@@ -12,10 +12,7 @@ export class TableService {
   private apiUrl = 'http://localhost:8080/api/tables'; // Thay thế bằng URL của API của bạn
   url = ApiConfigService.apiUrl; 
   constructor(private http: HttpClient) {}
-
-  // getTables(): Observable<Table[]> {
-  //   return this.http.get<Table[]>(this.apiUrl);
-  // }
+  
   getTables(filters?: { status?: string }, searchTerm?: string, sortBy?: string, sortOrder?: string): Observable<Table[]> {
     let url = this.apiUrl;
     let params = new HttpParams();
