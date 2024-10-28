@@ -54,7 +54,7 @@
           </div>
 
           <div style="font-size: 22px; " class="py-2  container  d-flex justify-content-center"> 
-            <button type="button" class="btn w-100 btn-warning text-white" >Đặt đơn - {{formatPrice(total)}}</button>
+            <button type="button" (click)="callOrder()" class="btn w-100 btn-warning text-white" >Đặt đơn - {{formatPrice(total)}}</button>
              </div>
 
 

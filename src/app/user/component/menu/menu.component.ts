@@ -4,6 +4,7 @@ import { Component, OnInit, Output, output } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { Food } from '../../../interface/food/food';
+import { verifyTable } from '../../../service/verifyTable.service';
 import { FoodService } from '../../../service/foodService/food.service';
 import { CategoryService } from '../../../service/categoryService';
 import { FoodCategory } from '../../../entity/category/food-category';

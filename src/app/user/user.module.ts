@@ -6,6 +6,7 @@ import { UserviewComponent } from './component/userview/userview.component';
 import { HomeComponent } from './component/home/home.component';
 import { MenuComponent } from './component/menu/menu.component';
 import { OtherComponent } from './component/other/other.component';
+import { FileNotFounduserComponent } from './component/file-not-founduser/file-not-founduser.component';
 import { ProductComponent } from './component/product/product.component';
 import { FormsModule } from '@angular/forms';
 import { ProductNgangComponent } from './component/product-ngang/product-ngang.component';
@@ -23,6 +24,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     UserviewComponent,
     HomeComponent,
     MenuComponent,
+    OtherComponent,
+    FileNotFounduserComponent,
     OtherComponent,
     ProductComponent,
     ProductNgangComponent,
