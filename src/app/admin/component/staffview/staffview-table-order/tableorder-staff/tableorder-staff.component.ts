@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TableService } from '../../../../../service/table.service';
+import { TableService } from '../../../../../service/tableService/table.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tableResponse } from '../../../../../entity/response/table-response';
 import { error } from 'console';
