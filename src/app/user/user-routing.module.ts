@@ -13,10 +13,10 @@ const routes: Routes = [{
   
   path: '', component: UserviewComponent,
   children: [
-    { path: '', component: HomeComponent },
-    { path:'Menu', component: MenuComponent},
+    { path : '', component: HomeComponent },
+    { path : 'Menu', component: MenuComponent},
     { path : 'Product', component: ProductInfoComponent},
-    {path : 'Cart', component: CartComponent}
+    { path : 'Cart', component: CartComponent}
   ]
   },
   { path : 'error', component: FileNotFounduserComponent}

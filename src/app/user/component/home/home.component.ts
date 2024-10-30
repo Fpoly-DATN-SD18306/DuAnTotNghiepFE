@@ -30,7 +30,7 @@ ngOnInit(): void {
 
   this.router.queryParams.subscribe(
     param=>{
-      let idTable = param['idTable']
+      let idTable = param['table']
       let secretKey = param['secretKey']
       let currentId = sessionStorage.getItem("itb")
       if(currentId){
