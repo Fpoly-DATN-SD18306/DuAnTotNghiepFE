@@ -1,0 +1,92 @@
+
+  <div *ngIf="product"  data-bs-toggle="modal" [attr.data-bs-target]="'#exampleModalFullscreen'+product.idFood"  class="row w-100  container-fluid">
+    <div class="col-5">
+        <img [src]="srcImage" style="min-height: 143px; min-width: 137px;" class="card-img-top w-100 h-100"  alt="...">
+    </div>
+    <div class="col-7 ">
+      <div class="w-100 ">
+        <div class=" p-2 ư" style="height: 65%;" >
+          <span class=" fw-medium " style="font-size: 16;">{{product.nameFood}}</span>  <br>
+         
+           <span  style="font-size: 12px; height: 100%;">
+             Ghi chú : <span *ngIf="product.note.length>0" >  {{product.note}}   </span> 
+            </span> 
+         
+     
+      </div>  
+        <div class=" pb-1" style="height:35%;" >
+          <div class="d-flex  justify-content-between">
+            <span class="ms-2 fw-medium" >
+              <span style="font-size: 12px; text-decoration: line-through; color: rgb(131, 131, 131)">
+                {{ formatPrice(product.price)}} 
+              </span >
+              <br>
+             <span style="font-size: 16px; color: darkorange">
+              {{ formatPrice(product.price)}} 
+             </span>
+            </span>
+
+            <span class="me-1">
+              <br>
+              SL : {{product.quantity}}
+
+            </span>
+          </div>
+      
+        </div>
+      </div>
+       
+
+    </div>
+ 
+
+
+</div>
+
+<!-- Full screen modal -->
+<!-- Modal -->
+<div *ngIf="product" class="modal fade  " [id]="'exampleModalFullscreen'+product.idFood" tabindex="-1" aria-labelledby="exampleModalFullscreenLabel" aria-modal="true" role="dialog"  >
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title fs-4" id="exampleModalFullscreenLabel">Cập nhật món  </span>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="{{srcImage}}" class="card-img-top w-100" style="width: 100%;" alt="...">
+          <span class="h2">{{product.nameFood}}</span>
+          <div class="d-flex justify-content-between">
+          <span class="fw-medium">
+            đã bán 999+ 
+          </span>
+          <span  class="fw-medium">
+            <span style="font-size: 12px; text-decoration: line-through; color: rgb(131, 131, 131)">
+              {{ formatPrice(product.price)}} 
+            </span >
+           
+           <span style="font-size: 18px; color: darkorange">
+            {{ formatPrice(product.price)}} 
+           </span>
+          </span>
+          
+          </div>
+          <span>
+            <div class="form-floating">
+              <textarea class="form-control" [(ngModel)]="nodeFood" placeholder="Ghi chú :  " id="floatingTextarea2" style="height: 100px"></textarea>
+              <label for="floatingTextarea2">Ghi Chú : </label>
+              <p class="text-end">0/100</p>
+            </div>
+          </span>
+        </div>
+        <div class="modal-footer d-flex flex-nowrap">
+          <div class="input-group w-50">
+            <button class="input-group-text" (click)="downQuantity()">-</button>
+            <input type="number"  (change)="validQuantity($event)" [(ngModel)]="quantity" value="quantity" class="form-control text-center" min="0" aria-label="Amount (to the nearest dollar)">
+            <button class="input-group-text" (click)="upQuantity()">+</button>
+          </div>
+          
+          <button type="button" (click)="updateQuantity(product.idFood)" class="btn btn-warning text-white w-50" data-bs-dismiss="modal">Cập nhật</button>
+        </div>
+      </div>
+    </div>
+  </div>

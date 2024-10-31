@@ -14,15 +14,18 @@ export class verifyTable {
   url = ApiConfigService.apiUrl;
   constructor(private http: HttpClient) { }
   static  tableVerified : tableResponse | null ;
+ 
   
   getVerifyTable(idTable :number,secretKey:number):Observable<ApiRespone> {
-    let resquest =  {  
+     let resquest =  {  
       "idTable"  :idTable,
       "secretKey" : secretKey
     }
     return this.http.post<ApiRespone>(`${this.url}/api/verify-table`,resquest)
   }
 
+ 
+  
   // VerifyTable(idTable :number,secretKey:number):Observable<tableResponse|null>{
   //   return new Observable (  observer =>{
   //     this.getVerifyTable(idTable,secretKey).subscribe(

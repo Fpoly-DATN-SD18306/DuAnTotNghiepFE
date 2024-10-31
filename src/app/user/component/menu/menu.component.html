@@ -1,89 +1,71 @@
-<div>
-  <!-- search -->
-  <form class="row d-flex" action="">
-    <div class="col-12">
-      <input
-        class="form-control"
-        type="text"
-        
-        placeholder="Find"
-        
-      />
-    </div>
-  </form>
-
-
-  <!-- navbar List -->
-  <ul class="nav nav-pills mt-3">
-    <li class="nav-item">
-      <a class="nav-link text-dark "
-      [ngClass]="{'text-dark': activeLink1 !== '1','active': activeLink1 === '1'}"
-      (click)="setActive('1')"
-      >Active</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-link text-dark" 
-      [ngClass] = "{'text-dark': activeLink1 !== '2','active': activeLink1 === '2'}"
-      (click)="setActive('2')"
-      >Link</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-dark" 
-      [ngClass] = "{'text-dark': activeLink1 !== '3','active': activeLink1 === '3'}"
-      (click)="setActive('3')"
-      >Link</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-dark" 
-      [ngClass] = "{'text-dark': activeLink1 !== '4','active': activeLink1 === '4'}"
-      (click)="setActive('4')"
-      >Link</a>
-    </li>
-  </ul>
-
-
-  <!-- product list -->
-
-  <!---->
-  <!-- <div *ngFor="let x of listType">
-    <div class="mt-3" >
-      
-      <div class="row mt-3">
-        ádasdsa
-        <div class="col-6" *ngFor="let x of list">
-          <div class="card" style="height: 50%">
-            <img src="./img/sp1.jpg" class="card-img-top" alt="..." />
-            <div class="card-body row">
-              <div class="col-10">
-                <h5 class="card-title" style="color: orange;">phindi Cadila</h5>
-                <p class="card-text" >19.000đ</p>
-              </div>
-              <div class="mt-2 col-2" (click)="pickProduct(1)" >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                  </svg>
-              </div>
-              <div class="mt-2 col-2" >
-               <button (click)="addProductToCart(x)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg> 
-               </button>  
-        
-            </div>
-             
-                
-           
-            </div>
-          </div>
-          
-        </div>
+ <div>
+    <div class="sticky-top border-bottom ">
+    <div class="d-flex  flex-nowrap bg-white">
+      <div class="mx-3 mt-1">
+        <a [routerLink]="['/']"  >
+        <svg xmlns="http://www.w3.org/2000/svg" style="color: darkorange;" width="25" height="25" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+        </svg>
+      </a>
+      </div>
+      <div class=" input-group w-75">
+        <input type="email" (keydown.enter)="searchFood()" [(ngModel)]="inputSeach" class="form-control" id="exampleInputEmail1" 
+        placeholder="Tìm món ăn"
+        aria-describedby="emailHelp">
+        <button class="input-group-text " (click)="clearFormSearch()" [class.d-none]="searching==false" style="background: none;  ">x</button>
       </div>
     </div>
-  </div> -->
-  <div *ngFor="let product of products">
-    <button (click)="addToCart(product)">Thêm vào giỏ</button>
+  <!-- Nav scrollspy -->
+    <nav id="navbar-example2 navbar-list-food" [class.d-none]="searching" class="navbar bg-white px-3 "> 
+      <div *ngIf="listCate" class="nav nav-pills ">
+          <a *ngFor="let element of listCate" class="nav-link a_Tab" [href]="'/Menu#scrollspyHeading'+element.idCategory">{{element.nameCategory}}</a>
+      </div>
+    </nav>
+
+
   </div>
+    <!-- list search -->
+  <div id="for-search" [class.d-none]="searching==false" class="d-flex flex-wrap" >
+    <div class="d-flex justify-content-center w-100 h-100 my-5" [class.d-none]="!loadingCallAPI"> 
+      <div class="spinner-border text-warning  "  role="">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    <ng-container *ngFor="let product of listSeach">
+      <div class="mb-2 mx-2 rounded  shadow w-100" >
+         <app-product-ngang [product]="product"></app-product-ngang>
+    </div>
+     </ng-container>
+    
+  </div>
+    <!--  end list search -->
+
+    <div id="list-food" [class.d-none]="searching"  data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true"
+    class="scrollspy-example bg-white d-none p-1 rounded-2" tabindex="0">
+
+    <div *ngIf="listCate" class="nav nav-pills ">
+     <div *ngFor="let cate of listCate" >
+      <h4 [id]="'scrollspyHeading'+cate.idCategory">{{cate.nameCategory}}</h4>
+      
+      <div   class="d-flex flex-wrap  w-100 ">
+      
+         <ng-container *ngFor="let product of listFood">
+          <div class="mb-2 mx-2 rounded  shadow" style="width: 45% ;"*ngIf="cate.idCategory == product.idCategory">
+            <app-product (statusAdd)="getNotifyFromChild($event)" *ngIf="cate.idCategory==product.idCategory" [product]="product"></app-product>  
+            
+        </div>
+         </ng-container>
+        
   
-</div>
+      </div>
+    </div>
+  </div>
+      
+
+  
+    </div>
+
+  </div>
+<div style="height: 80px;" ></div>
+

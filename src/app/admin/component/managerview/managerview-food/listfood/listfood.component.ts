@@ -21,8 +21,7 @@ export class ListfoodComponent implements OnInit {
   filteredFoods!: Foods[];
   number = 0;
   totalPages = 0;
-  // thePageNumber: number = 1;
-  // thePageSize: number = 20;
+  
   theTotalElements: number = 0;
   size: number = 15;
   currentCategoryId: number = 1;  
@@ -30,6 +29,8 @@ export class ListfoodComponent implements OnInit {
   nameFoodFilter!: string ;
   nameCategoryFilter="" ;
   isSellingFilter: string='123';
+
+
   constructor(
     private foodService: FoodService,
     private cateService: CategoryService,

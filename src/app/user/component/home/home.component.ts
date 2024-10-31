@@ -32,20 +32,30 @@ ngOnInit(): void {
     param=>{
       let idTable = param['table']
       let secretKey = param['secretKey']
-      if(idTable && secretKey){
+      let currentId = sessionStorage.getItem("itb")
+      if(currentId){
+        console.log("co r");
+       
+      } else  if(idTable && secretKey ){
         this.verifyTable.getVerifyTable(idTable,secretKey).subscribe(
           data =>{
             verifyTable.tableVerified =  data.result
             this.tableCurrent=verifyTable.tableVerified
-            console.log(data);
+            console.log(data.result.idTable);
+            
+            sessionStorage.setItem("itb",data.result.idTable)
           }, error =>{
             console.log(error);
             // window.location.assign("/error")
           }
         );
       } else {
-        // window.location.assign("/error")
-      }   }  );
+        window.location.assign("/error")
+      } 
+
+  
+    
+    }  );
   
 }
 

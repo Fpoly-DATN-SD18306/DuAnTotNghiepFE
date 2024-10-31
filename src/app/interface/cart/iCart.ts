@@ -5,5 +5,5 @@ export interface Icart {
     price:number;
     quantity:number;
     thumbnail:string;
-
+    note: string;
 }
