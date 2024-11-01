@@ -1,8 +1,8 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { TableService } from '../../../../service/table.service';
+import { TableService } from '../../../../service/tableService/table.service';
 import { Router } from '@angular/router';
 import { tableResponse } from '../../../../entity/response/table-response';
-import { QrcodeService } from '../../../../service/qrcode.service';
+import { QrcodeService } from '../../../../service/qrCodeService/qrcode.service';
 import { qrCodeResponse } from '../../../../entity/response/qrcode-response';
 import { error, table } from 'console';
 import { ApiRespone } from '../../../../entity/api-respone';
@@ -12,8 +12,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { qrCodeRequest } from '../../../../entity/request/qrcode-request';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AreaService } from '../../../../service/area.service';
+import { AreaService } from '../../../../service/areaService/area.service';
 import { AreaResponse } from '../../../../entity/response/area-response';
+import { AreaRequest } from '../../../../entity/request/area-request';
 
 @Component({
   selector: 'app-managerview-table',
@@ -26,6 +27,9 @@ export class ManagerviewTableComponent implements OnInit {
   listAreas!: AreaResponse[]
   keyArea: number = 1
   selectedArea!: number
+  areaData: AreaRequest = {
+    nameArea : ''
+  }
 
   //Table 
   listTableContaiQR! : tableResponse[]
@@ -41,6 +45,7 @@ export class ManagerviewTableComponent implements OnInit {
 
 //*** */
   status : string = ''
+  nameTableSearch: string = ''
 
   tableData: tabelRequest = {
     nameTable: '',
@@ -59,6 +64,17 @@ export class ManagerviewTableComponent implements OnInit {
    }
 
   // AREA******************
+   createArea(){
+    this.areaService.createArea(this.areaData).subscribe(data => {
+      console.log(data);
+      this.getAllAreas()
+      this.openTotast('Tạo mới khu vực thành công!')
+      this.areaData.nameArea = ''
+    },error => {
+      console.log('Error',error);
+      this.openTotast('Tạo mới thất bại!')
+    })
+   }
 
   getAllAreas(){
     this.areaService.getAllAreas().subscribe(data =>{
@@ -69,6 +85,41 @@ export class ManagerviewTableComponent implements OnInit {
     })
   }
 
+
+  updateArea(keyArea: number) {
+    this.areaService.updateArea(this.areaData, keyArea).subscribe(
+      data => {
+        this.ngOnInit()
+        this.openTotast('Cập nhật khu vực thành công!');
+      }, 
+      error => {
+        console.log("Error update table: ", error);
+        this.openTotast('Lỗi cập nhật! ');
+      }
+    );
+}
+
+  deleteArea(keyArea : number){
+    this.areaService.deleteArea(this.keyArea).subscribe(data => {
+      console.log('data'+data);
+      this.getAllAreas()
+      this.openTotast('Xóa khu vực thành công!')
+    },err =>{
+      console.log('Error', err)
+      this.openTotast('Xóa thất bại!')
+    })
+  }
+  
+
+  openModalArea(idArea: number) {
+    this.areaService.getArea(idArea).subscribe(data => {
+      this.areaData = data.result
+      this.keyArea = idArea
+      console.log(data.result);
+    },error =>{
+      console.log('Error', error)
+    })
+  }
 
   // TABLE **********************
 
@@ -107,7 +158,7 @@ export class ManagerviewTableComponent implements OnInit {
   }
 
   getTablesFromFilter(keyArea : number) {
-    this.tableserive.getTablesByArea(this.tableData.nameTable, keyArea, this.status, this.currentPage, this.pagesize)
+    this.tableserive.getTablesByArea(this.nameTableSearch, keyArea, this.status, this.currentPage, this.pagesize)
       .subscribe(data => {
         console.log('data: ' + data.result)
         this.listTable = data.result.content;  // Lấy danh sách tables từ API
@@ -128,7 +179,7 @@ export class ManagerviewTableComponent implements OnInit {
   }
   createNewTable() {
     this.tableserive.createTable(this.tableData).subscribe(data => {
-      this.getAllTableASC(this.currentPage, this.pagesize, this.keyArea)
+      this.ngOnInit()
       this.openTotast('Tạo mới bàn thành công!')
     }, error => {
       console.log(error)
@@ -141,7 +192,7 @@ export class ManagerviewTableComponent implements OnInit {
   updateTable(keyTable: number) {
       this.tableserive.updateTable(this.tableData, keyTable).subscribe(
         data => {
-          this.getAllTableASC(this.currentPage, this.pagesize, this.keyArea)
+          this.ngOnInit()
             this.openTotast('Cập nhật bàn thành công!');
         }, 
         error => {
@@ -152,11 +203,12 @@ export class ManagerviewTableComponent implements OnInit {
   }
   
 
-  deleteTable(idTable: number) {
-    this.tableserive.deleteTable(idTable).subscribe(data => {
+  deleteTable(keyTable: number) {
+    this.tableserive.deleteTable(keyTable).subscribe(data => {
       this.ngOnInit()
       console.log("Delete success!", data);
-      this.openTotast('Đã xóa bàn '+data.result.nameTable+' thành công!')
+      this.openTotast('Đã xóa bàn thành công!')
+      this.keyTable = 0
     }, err => {
       console.log("Delete fail!");
       this.openTotast('Xóa bàn thất bại!')
@@ -244,6 +296,8 @@ export class ManagerviewTableComponent implements OnInit {
   printQrcode(){
     this.openTotast('Tiến hành in...');
   }
+
+
 
 
   // ****************
