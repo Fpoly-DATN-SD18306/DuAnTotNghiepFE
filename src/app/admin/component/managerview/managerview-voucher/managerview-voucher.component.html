@@ -5,7 +5,7 @@
     </div>
   
     <div class="search-section">
-      <input type="text" [(ngModel)]="searchText" (ngModelChange)="searchPromotion()" placeholder="Tìm theo tên voucher" class="search-input" aria-label="Search vouchers">
+      <input type="text" [(ngModel)]="searchText" (ngModelChange)="searchPromotion()" placeholder="Tìm theo tên" class="search-input" aria-label="Search vouchers">
       <select [(ngModel)]="sortField" (change)="sortVouchers()" class="sort-select" aria-label="Sort vouchers">
         <option value="name">Sắp xếp theo tên</option>
         <option value="discount">Sắp xếp theo phần trăm khuyến mãi</option>
