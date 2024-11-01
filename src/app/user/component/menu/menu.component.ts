@@ -39,7 +39,7 @@ export class MenuComponent implements OnInit {
       this.loadingCallAPI=true;
       this.listSeach = [];
       setTimeout(() => {
-        this.filterFoodService.filterFood(this.inputSeach, "", '123', 0, 1000000).subscribe(
+        this.filterFoodService.filterFood(this.inputSeach, "", '123', 0, 10).subscribe(
           data => {
             this.loadingCallAPI=false;
             this.listSeach = data.result.content
