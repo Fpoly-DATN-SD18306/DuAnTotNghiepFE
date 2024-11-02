@@ -18,6 +18,7 @@ export class ManagerviewVoucherComponent implements OnInit {
   voucherForm: FormGroup;
   showModal = false;
   editMode = false;
+  selectedStatus = '';
   searchText = "";
   sortField = "name";
   sortAscending = true;
@@ -29,6 +30,7 @@ export class ManagerviewVoucherComponent implements OnInit {
   size: number = 10;
     constructor(private fb: FormBuilder, private voucherService  : VourcherService, private snackBar: MatSnackBar) {
       this.voucherForm = this.createForm();
+      
     }
   
     createForm(): FormGroup {
@@ -93,11 +95,10 @@ export class ManagerviewVoucherComponent implements OnInit {
       if (confirm("Bạn muốn xóa voucher này?")) {
         if (index!==-1) {
           this.voucherService.deleteVoucher(id).subscribe(data => {
-            this.searchPromotion();
+            this.filterPromotion();
             this.filteredVouchers=data.result.content
             this.theTotalElements = data.result.totalElements;            
             this.totalPages = data.result.totalPages;  
-            this.filterVouchers();
             this.closeModal();
             this.openTotast('Xóa thành công !')
           },
@@ -126,7 +127,7 @@ export class ManagerviewVoucherComponent implements OnInit {
               this.theTotalElements = data.result.totalElements;            
               this.totalPages = data.result.totalPages;  
               this.ngOnInit();
-              this.filterVouchers();
+
               this.closeModal();
               this.openTotast('Cập nhật thành công !')
             });
@@ -136,8 +137,8 @@ export class ManagerviewVoucherComponent implements OnInit {
               this.filteredVouchers=data.result;
               this.theTotalElements = data.result.totalElements;            
               this.totalPages = data.result.totalPages; 
-              this.searchPromotion();
-                this.filterVouchers();
+              this.filterPromotion();
+
                 this.closeModal();
                 this.openTotast('Tạo mới thành công !')
               },
@@ -148,8 +149,9 @@ export class ManagerviewVoucherComponent implements OnInit {
         }
       }
     }
-    searchPromotion() {
-      this.voucherService.filterVoucher(this.searchText,  this.number, this.size).subscribe(
+    filterPromotion() {
+     
+      this.voucherService.filterVoucher(this.searchText,this.selectedStatus,  this.number, this.size).subscribe(
         data => {
           this.filteredVouchers = data.result.content;         
           this.theTotalElements = data.result.totalElements;            
@@ -161,25 +163,40 @@ export class ManagerviewVoucherComponent implements OnInit {
           console.log('Error fetching data:', error);
         }
       );
+      
     }
     filterVouchers() {
+
       this.filteredVouchers = this.vouchers
-        .filter(v => v.namePromotion.toLowerCase().includes(this.searchText.toLowerCase()));
-      this.sortVouchers();
-    }
+      
+      .filter(v => v.namePromotion.toLowerCase().includes(this.searchText.toLowerCase()));
+      
+   this.sortVouchers();
+      
+      }
 
     sortVouchers() {
       this.filteredVouchers.sort((a, b) => {
-        const valueA = this.sortField === "name" ? a.namePromotion : a.discount;
-        const valueB = this.sortField === "name" ? b.namePromotion : b.discount;
-        return this.sortAscending
-          ? valueA > valueB ? 1 : -1
-          : valueA < valueB ? 1 : -1;
+        if (this.sortField === "startDate" || this.sortField === "endDate") {
+          const dateA = new Date(a[this.sortField] ?? '1970-01-01'); 
+          const dateB = new Date(b[this.sortField] ?? '1970-01-01');
+          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+            return 0; 
+          }
+          return this.sortAscending
+            ? dateA.getTime() - dateB.getTime()
+            : dateB.getTime() - dateA.getTime();
+        } else {
+          const valueA = this.sortField === "name" ? a.namePromotion : a.discount;
+          const valueB = this.sortField === "name" ? b.namePromotion : b.discount;
+          return this.sortAscending
+            ? valueA > valueB ? 1 : -1
+            : valueA < valueB ? 1 : -1;
+        }
       });
     }
     ngOnInit() {
-      this.searchPromotion();
-      this.filterVouchers();
+      this.filterPromotion();
       this.paging(this.number);
     }
   toggleSortOrder() {
@@ -195,7 +212,7 @@ export class ManagerviewVoucherComponent implements OnInit {
 
     if (numberPage >= 0 && numberPage < this.totalPages) {
       this.number = numberPage;
-      this.searchPromotion(); 
+      this.filterPromotion(); 
     }
   }
   

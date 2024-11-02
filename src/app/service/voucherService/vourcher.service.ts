@@ -45,13 +45,10 @@ export class VourcherService {
     return this.http.delete<ApiRespone>(url);
   }
 
-  filterVoucher(theKeyword: string,thePage: number, thePageSize: number): Observable<ApiRespone> {
-    
-    // let idVoucher = theVoucherId ? `&idPromotion=${theVoucherId}` : '';
+  filterVoucher(theKeyword: string,theStatus: string,thePage: number, thePageSize: number): Observable<ApiRespone> {
     let nameVoucher = theKeyword ? `&namePromotion=${theKeyword}` : '';
-    // console.log(theVoucherId);
-    
-    const searchUrl = `${this.url}/filter?${nameVoucher}&page=${thePage}&size=${thePageSize}`;
+    let status = theStatus ? `&status=${theStatus}` : '';
+    const searchUrl = `${this.url}/filter?${nameVoucher}${status}&page=${thePage}&size=${thePageSize}`;
     console.log(searchUrl);
     return this.http.get<ApiRespone>(searchUrl);
   }
