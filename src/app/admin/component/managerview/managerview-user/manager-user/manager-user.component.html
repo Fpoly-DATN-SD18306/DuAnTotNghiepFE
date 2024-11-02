@@ -1,0 +1,64 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" routerLink="/admin/manager/managerUser/managerUser">Quản lý nhân
+            viên</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" routerLink="/admin/manager/managerUser/users">Danh sách nhân viên</a>
+    </li>
+</ul>
+
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+    <div class="row p-3">
+        <div class="col-3">
+            <img [src]="imgUser || './img/noImage.jpg'" class="img-thumbnail" alt="Preview"
+                style="height: 200px; width: 100%">
+            <div class="input-group my-3">
+                <input type="file" (change)="changeImage($event)" class="form-control">
+            </div>
+        </div>
+        <div class="col-8 row ">
+            <div class="mb-3">
+                <label for="fullname" class="form-label">Họ tên</label>
+                <input type="text" id="fullname" formControlName="fullname" class="form-control" placeholder="Tên...">
+                <div *ngIf="userForm.get('fullname')?.invalid && userForm.get('fullname')?.touched" class="text-danger">
+                    Name is required
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" formControlName="username" class="form-control"
+                    placeholder="Username...">
+                <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" class="text-danger">
+                    Username is required
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Mật khẩu</label>
+                <input type="password" id="password" formControlName="password" class="form-control"
+                    placeholder="Password..." [disabled]="!isEditing">
+            </div>
+            <div class="col-md-6">
+                <label for="isAdmin" class="form-label">Chức năng</label>
+                <select id="isAdmin" formControlName="isAdmin" class="form-select">
+                    <option [value]="true">Admin</option>
+                    <option [value]="false">User</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="isDeleted" class="form-label">Trạng thái</label>
+                <select id="isDeleted" formControlName="isDeleted" class="form-select">
+                    <option [value]="true">Đã khóa</option>
+                    <option [value]="false">Chưa khóa</option>
+                </select>
+            </div>
+
+            <div class="text-center mt-3">
+                <button type="submit" [disabled]="userForm.invalid" class="btn btn-outline-primary mx-2">Lưu</button>
+                <button type="button" *ngIf="idUserNeedUpdate!=null" (click)="putUser()" [disabled]="userForm.invalid"
+                    class="btn btn-outline-primary mx-2">Sửa nhân viên</button>
+                <button type="button" (click)="resetForm()" class="btn btn-outline-secondary mx-2">Làm mới</button>
+            </div>
+        </div>
+    </div>
+</form>
