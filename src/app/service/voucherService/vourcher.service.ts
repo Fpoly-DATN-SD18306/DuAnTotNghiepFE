@@ -20,7 +20,8 @@ export class VourcherService {
     data.append('endDate',voucherRequest.endDate.toString())
     data.append('description',voucherRequest.description)
     data.append('discount',voucherRequest.discount.toString())
-    console.log(voucherRequest.namePromotion);
+    console.log(voucherRequest.endDate);
+    console.log(voucherRequest.startDate);
     
     return this.http.post<ApiRespone>(this.url,data)
 
@@ -38,7 +39,8 @@ export class VourcherService {
     console.log(idVoucher);
     console.log(data.get('namePromotion'))
     return this.http.put<ApiRespone>(this.url +'/' +idVoucher,data);
-
+    console.log(voucherRequest.endDate);
+    console.log(voucherRequest.startDate);
   }
   deleteVoucher(id: number): Observable<ApiRespone> {
     const url = `${this.url}/${id}`;

@@ -134,7 +134,7 @@ export class ManagerviewVoucherComponent implements OnInit {
         } else {
           this.voucherService.postVoucher(newVoucherRequest).subscribe(
             data => {
-              this.filteredVouchers=data.result;
+              this.filteredVouchers=data.result.conntent;
               this.theTotalElements = data.result.totalElements;            
               this.totalPages = data.result.totalPages; 
               this.filterPromotion();
@@ -143,7 +143,7 @@ export class ManagerviewVoucherComponent implements OnInit {
                 this.openTotast('Tạo mới thành công !')
               },
             error => {
-              this.openTotast('Không thể thêm! (Voucher đã tồn tại)')
+              this.openTotast('Không thể thêm!')
               console.log('Error fetching data:', error);
             });
         }

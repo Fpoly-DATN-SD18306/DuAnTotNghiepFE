@@ -35,19 +35,20 @@
             <th>Thao tác</th>
           </tr>
         </thead>
-        <div *ngIf="filteredVouchers.length<1 || totalPages < 1"
+        <div *ngIf="!filteredVouchers|| totalPages < 1"
         class="d-flex justify-content-center align-content-center container-fluid">
         <i>Không có dữ liệu!</i>
-    </div>
+        </div>
         <tbody>
       
           <tr *ngFor="let voucher of filteredVouchers">
             <td>{{voucher.idPromotion}}</td>
             <td>{{voucher.namePromotion}}</td>
             <td>{{voucher.discount}}%</td>
-            <td>{{voucher.startDate | date:'dd/MM/yyyy' }}</td>
-            <td>{{voucher.endDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{voucher.startDate | date :'dd/MM/yyyy'}}</td>
+            <td>{{voucher.endDate | date :'dd/MM/yyyy'}}</td>
             <td>
+              <!-- :'dd/MM/yyyy' -->
               <button class="edit-btn mb-1" (click)="editVoucher(voucher)" aria-label="Edit voucher">Sửa</button>
               <button class="delete-btn" (click)="deleteVoucher(voucher.idPromotion)" aria-label="Delete voucher">Xóa</button>
             </td>
@@ -66,31 +67,31 @@
            
           </div> -->
           <div class="form-group">
-            <label for="namePromotion">Name</label>
+            <label for="namePromotion">Tên voucher</label>
             <input id="namePromotion" type="text" formControlName="namePromotion" [class.error]="hasError('namePromotion')">
             <span class="error-message" *ngIf="hasError('namePromotion')">Tên voucher đang trống</span>
           </div>
   
           <div class="form-group">
-            <label for="discount">Discount Percentage</label>
+            <label for="discount">Phần trăm khuyến mãi(%)</label>
             <input id="discount" type="number" formControlName="discount" [class.error]="hasError('discount')">
             <span class="error-message" *ngIf="hasError('discount')">Phần trăm khuyễn mãi (0-100)</span>
           </div>
   
           <div class="form-group">
-            <label for="startDate">Start Date</label>
+            <label for="startDate">Ngày bắt đầu</label>
             <input id="startDate" type="date" formControlName="startDate" [class.error]="hasError('startDate')">
             <span class="error-message" *ngIf="hasError('startDate')">Ngày bắt đầu đang trống</span>
           </div>
   
           <div class="form-group">
-            <label for="endDate">End Date</label>
+            <label for="endDate">Ngày kết thúc</label>
             <input id="endDate" type="date" formControlName="endDate" [class.error]="hasError('endDate')">
             <span class="error-message" *ngIf="hasError('endDate')">Ngày kết thúc phải sau ngày bắt đầu</span>
           </div>
   
           <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Mô tả</label>
             <textarea id="description" formControlName="description"></textarea>
           </div>
   
