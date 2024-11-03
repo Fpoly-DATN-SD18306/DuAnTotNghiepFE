@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ApiConfigService {
 
-  public static apiUrl ="http://192.168.1.20:8080" ;
-  public static apiUrlimg ="http://192.168.1.20:8080/images/" ;
-  public static apiFoods='http://192.168.1.20:8080/api/v1/foods'
+  public static apiUrl ="http://192.168.1.8:8080" ;
+  public static apiUrlimg ="http://192.168.1.8:8080/images/" ;
+  public static apiFoods='http://192.168.1.8:8080/api/v1/foods'
 }

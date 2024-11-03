@@ -33,7 +33,8 @@ export class CartService {
 
   addToCart(f: Icart) {
     if (isPlatformBrowser(this.platformId)) {
-      const existingProductIndex = CartService.items.findIndex((item: Icart) => item.idFood === f.idFood);
+    const cartItems = JSON.parse(sessionStorage.getItem('cart') || '[]');
+    const existingProductIndex = cartItems.findIndex((item: Icart) => item.idFood === f.idFood);
 
       if (existingProductIndex !== -1) {
         CartService.items[existingProductIndex].quantity += f.quantity;
@@ -49,8 +50,9 @@ export class CartService {
         });
       }
 
-      sessionStorage.setItem('cart', JSON.stringify(CartService.items));
-      console.log('Giỏ hàng sau khi thêm:', this.getCart());
+    CartService.items = cartItems;
+    sessionStorage.setItem('cart', JSON.stringify(cartItems));
+    console.log('Giỏ hàng sau khi thêm:', this.getCart());
     }
   }
 

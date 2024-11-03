@@ -335,6 +335,19 @@
                         </div>
                     </div>
                     <!--  -->
+                    <div class="col-12 container row text-center align-items-center">
+                        <div class="col-5">
+                            Phương thức thanh toán :
+                        </div>
+                        <div class="col-7">
+                            <select class="form-select " aria-label="Default select example">
+                                <option selected value="1">VN Pay</option>
+                                <option value="2">Tiền mặt</option>
+                              </select>
+                        </div>
+                     
+
+                    </div>
                     <div class="container px-3 pt-2 box-posvisional-invoice-3">
                         <div class="container-button">
                             <div class="row align-items-center">
@@ -349,13 +362,14 @@
                                         </button>
                                     </nav>
                                 </div>
+                               
                                 <div class="col-5">
                                     <button class="btn form-control btn-primary border-0 py-3 rounded-4 text-primary fw-bold"
                                         style="font-size: 1em;  background-color: #cde4f7;"><span>Lưu F9</span></button>
                                 </div>
                                 <div class="col-5">
                                     <button class="btn form-control btn-primary py-3 rounded-4 fw-bold"
-                                        style="font-size: 0.9em;"><span>Thanh toán F10</span></button>
+                                      (click)="paymentOrder()"  style="font-size: 0.9em;"><span>Thanh toán F10</span></button>
                                 </div>
 
                             </div>
