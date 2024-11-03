@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ApiConfigService } from './ApiConfigService';
+import { ApiConfigService } from '../ApiConfigService';
 import { HttpClient } from '@angular/common/http';
-import { ApiRespone } from '../entity/api-respone';
+import { ApiRespone } from '../../entity/api-respone';
 import { Observable } from 'rxjs';
 
 @Injectable({

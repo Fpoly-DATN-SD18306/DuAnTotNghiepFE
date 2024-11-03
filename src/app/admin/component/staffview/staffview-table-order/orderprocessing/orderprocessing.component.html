@@ -322,14 +322,14 @@
                         <div class="d-flex justify-content-between align-items-center">
 
                             <div class="box-button-printer">
-                                <button type="button" class="btn border py-1">
+                                <button type="button" (click)="getInvoice()" class="btn border py-1" data-bs-toggle="modal" data-bs-target="#invoice">
                                     <img src="https://png.pngtree.com/png-vector/20191011/ourmid/pngtree-printer-icon-png-image_1817556.jpg"
                                         width="19px" alt="">
-                                    <span class="d-block m-0 py-0" style="font-size: 0.7em;">In tạm tính</span>
+                                    <span class="d-block m-0 py-0" style="font-size: 0.7em;">Tạm tính</span>
                                 </button>
                             </div>
                             <div class="title-pricetotal">
-                                <p class="m-0 p-0 text-end fw-bold">Thành tiền</p>
+                                <p class="m-0 p-0 text-end fw-bold">Tổng</p>
                                 <h6 style="color: #3cd22f">104.000đ</h6>
                             </div>
                         </div>
@@ -380,3 +380,73 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal modal-xl fade" id="invoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          
+
+<div class="container" id="body_invoice">
+    <div  class="text-center">
+        <br>
+        <span class="h3 pt-5">Nhà hàng ABC</span><br>
+        <span>Đường số 5, ngã 5, Khu công nghiệp sơn trà</span> <br>
+        <span>Sđt : 0708000789 - 0708888886</span>  
+    </div>
+    <div  class="text-center">
+        <span class="h3">Hoá đơn bán hàng</span><br>
+        <span class="h4">bàn A1</span>  
+    </div>
+    <div  class="d-flex justify-content-between">
+        <span class="h3">Thu Ngân : Nguyễn văn a</span><br>
+        <span class="h4">Mã hoá đơn :  12345</span>  
+    </div>
+    <div style="min-height: 300px;">
+        <table class="table" >
+            <thead>
+              <tr>         
+                <th scope="col" style="width: 300px;">Tên món</th>
+                <th scope="col" >Số lượng</th>
+                <th scope="col">đơn giá</th>
+                <th scope="col">Giảm</th>
+                <th scope="col">Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+                
+              <tr *ngFor="let element of listDataInvoice">
+                <td scope="row">{{element.nameFood}}</td>
+                <td scope="row">{{element.quantityOrder}}</td>
+                <td scope="row">{{ formatPrice( element.priceFood)}}</td>
+                <td scope="row">{{formatPrice( (( element.priceFood*element.discountFood)/100 ) *element.quantityOrder)}}</td>
+                <td scope="row">{{formatPrice(element.totalPriceDetailFood) }}</td>
+              </tr>
+             
+            </tbody>
+          </table>
+    
+    </div>
+    
+      <div  class="d-flex justify-content-between">
+        <span class="h3">Tổng  :</span><br>
+        <span *ngIf="listDataInvoice" class="h4">{{ formatPrice(listDataInvoice[0].totalOrder) }}</span>  
+    </div>
+    <div  class="text-center">
+
+        <span class="h4">Cảm ơn quý khách, Hẹn gặp lại !</span> <br>
+
+    </div>
+
+</div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="downloadPdf()" class="btn btn-primary">in tạm tính</button>
+        </div>
+      </div>
+    </div>
+  </div>
