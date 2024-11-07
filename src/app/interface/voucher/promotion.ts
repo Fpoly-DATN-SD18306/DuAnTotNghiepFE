@@ -1,4 +1,4 @@
-export interface Voucher {
+export interface Promotion {
   idPromotion: number;
   namePromotion: string;
   discount: number;
