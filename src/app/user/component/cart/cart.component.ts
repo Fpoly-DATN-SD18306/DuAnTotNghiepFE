@@ -5,6 +5,10 @@ import { CartService } from '../../../service/cartService/cart.service';
 import { Router } from '@angular/router';
 import { RequestOrder } from '../../../service/requestOrder.service';
 import { verifyTable } from '../../../service/verifyTable.service';
+import { Subscription } from 'rxjs';
+
+import { WebsocketService } from '../../../service/websocketService/websocket.service';
+
 
 @Component({
   selector: 'app-cart',
@@ -12,27 +16,41 @@ import { verifyTable } from '../../../service/verifyTable.service';
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
+  isConfirmed: boolean = false; // Biến điều kiện để kiểm soát hiển thị thông báo xác nhận 
+
+
   items: Icart[] = [];
   total: number = 0;
   discount: number = 0;
   message: string = '';
+  private notificationSubscription: Subscription | undefined;
 
-  constructor(private cartService: CartService, private changeDetectorRef: ChangeDetectorRef
-    , private router: Router,private requestOrderService :  RequestOrder) {}
+  constructor(private cartService: CartService,
+    private changeDetectorRef: ChangeDetectorRef, 
+    private router: Router,
+    private requestOrderService: RequestOrder,
+    private websocketService: WebsocketService
+
+  ) { }
 
   ngOnInit(): void {
     this.getAllCart();
     this.calculateTotal();
-    console.log("alo");
-    
+    this.websocketService.connect()
   }
 
-  callOrder(){
-    
+
+
+  // ******End Notification*****
+
+  callOrder() {
     this.requestOrderService.postRequestOrder()?.subscribe(
-      data=>{
-        console.log(data.result)
-      }, error =>{
+      data => {
+        this.isConfirmed = true
+        sessionStorage.removeItem('cart')
+        this.getAllCart()
+        CartService.items = [];
+      }, error => {
         console.log(error)
       }
     )
@@ -47,20 +65,23 @@ export class CartComponent implements OnInit {
     this.total = 0
     this.items.forEach((item) => {
       console.log(item.price);
-      this.total +=  (item.price ) * item.quantity;
+      this.total += (item.price) * item.quantity;
     });
     console.log(this.total);
-    
+
   }
 
-  formatPrice(price :number){
+  formatPrice(price: number) {
 
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
   }
 
   onNotify(checkChange: number) {
     console.log(checkChange);
-    this.items  = CartService.items
+    this.items = CartService.items
     this.calculateTotal()
   }
+
+ 
+  
 }

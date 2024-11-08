@@ -182,23 +182,37 @@
 /* *********END STATUS TABLE************ */
 
 
-/* Button close notification */
-#liveToast{
-    position: relative;
-}
-#liveToast .btn-close{
+/* Status unpaid */ /*Trạng thái bàn khi ĐANG CHỜ XÁC NHẬN ĐƠN CHO BÀN*/
+.status-active-PENDING .box-status-table{
+    display: block;
     position: absolute;
-    top: -10px;
-    right: 0px;
-    padding: 7px;
-    font-size: 0.7em;
-    border-radius: 50%;
-    border: 1px black solid;
+    bottom: 0px;
+    width: 100%;
 }
-#liveToast .btn{
-    padding: 4px 13px;
-    box-shadow: 1px 1px 2px black;
-}   
+.status-active-PENDING .custom-card-header{
+    background-color: rgb(67, 213, 246);
+}
+.status-active-PENDING .custom-card-body{
+    background-color: rgb(125, 204, 222);
+}
+.status-active-PENDING .box-status-table{
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(5, 185, 226);
+}
+.status-active-PENDING .title-status{
+    display: block !important;
+}
+.status-active-PENDING .empty-table-status{
+    display: none !important;
+}
+.status-active-PENDING .title-unpaid{
+    display: block !important;
+}
+
+/* *********END STATUS TABLE************ */
+
+/* Button close notification */
 
 .custom-select {
     border: none;            /* Loại bỏ border */

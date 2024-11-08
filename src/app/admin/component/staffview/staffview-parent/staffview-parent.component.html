@@ -1,1 +1,35 @@
 <router-outlet></router-outlet>
+<!-- START Notification orderdetails ****** box thông báo đơn hàng -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" *ngIf="itemsorder?.statusOrder == 'Waiting'">
+    <div id="liveToast" class="toast bg-white px-4" 
+    *ngFor="let mess of orderMessages" [ngClass]="{'d-block': mess.visible}"
+     role="alert" aria-live="assertive" aria-atomic="true"
+        style="width: 100%;">
+        <div class="toast-header border-0 " >
+            <span>
+                <img src="./img/notificationStaff.png" class="me-2" width="30px" alt="">
+                <strong class="me-auto text-primary">Thông báo: {{mess.message}} <span class="text-success-emphasis"></span></strong>
+            </span>
+            <button type="button" class="btn-close" (click)="closedNotification(mess.id)"></button>
+        </div>
+        <div class="toast-body pt-0 d-flex justify-content-center">
+            <button type="button" class="btn"
+            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: rgb(125, 205, 5); color: white;"
+            (click)="fetchOrderDetails(itemsorder.idOrder, itemsorder.idTable)">
+            <i class="bi bi-info-circle-fill"></i> Chi tiết
+            </button>
+
+            <button type="button" class="btn btn-primary mx-3"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                (click)="confirmOrder(itemsorder.idOrder, itemsorder.idTable)">
+                <i class="bi bi-bag-check-fill"></i> Xác nhận 
+            </button>
+
+            <button type="button" class="btn btn-danger" (click)="closedNotification(mess.id)"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                <i class="bi bi-x-square-fill"></i> Đóng
+            </button>
+        </div>
+    </div>
+</div>
+<!-- END Notification orderdetails-->

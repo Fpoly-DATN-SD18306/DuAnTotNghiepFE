@@ -59,6 +59,7 @@ export class CartService {
       const cartItemsString =  sessionStorage.getItem('cart');
       if (cartItemsString) {
         try {
+          console.log('dataSessioncart: '+cartItemsString)
           return JSON.parse(cartItemsString);
         } catch (error) {
           console.error('Error parsing cart items:', error);
