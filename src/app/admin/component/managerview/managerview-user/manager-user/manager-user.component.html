@@ -57,6 +57,8 @@
                 <button type="submit" [disabled]="userForm.invalid" class="btn btn-outline-primary mx-2">Lưu</button>
                 <button type="button" *ngIf="idUserNeedUpdate!=null" (click)="putUser()" [disabled]="userForm.invalid"
                     class="btn btn-outline-primary mx-2">Sửa nhân viên</button>
+                <button type="button" *ngIf="idUserNeedUpdate!=null" (click)="resertPassword()" [disabled]="userForm.invalid"
+                    class="btn btn-outline-primary mx-2">Làm mới mật khẩu</button>
                 <button type="button" (click)="resetForm()" class="btn btn-outline-secondary mx-2">Làm mới</button>
             </div>
         </div>

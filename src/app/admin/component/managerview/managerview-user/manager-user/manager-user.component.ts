@@ -39,7 +39,7 @@ export class ManagerUserComponent implements OnInit {
             this.userForm.patchValue({
               fullname: userResponse.fullname,
               username: userResponse.username,
-              password: '123',
+              password: userResponse.password,
               isAdmin: userResponse.isAdmin,
               isDeleted: userResponse.isDeleted,
               imgUser: userResponse.imgUser
@@ -53,7 +53,32 @@ export class ManagerUserComponent implements OnInit {
       }
     });
   }
-
+resertPassword(){
+  this.router.params.subscribe(param => {
+    const userId = param['id'];
+    if (userId) {
+      this.isEditing = true;
+      this.userService.getById(userId).subscribe(
+        data => {
+          const userResponse = data.result as userResponse;
+          this.idUserNeedUpdate = userResponse.idUser;
+          this.userForm.patchValue({
+            fullname: userResponse.fullname,
+            username: userResponse.username,
+            password: "123",
+            isAdmin: userResponse.isAdmin,
+            isDeleted: userResponse.isDeleted,
+            imgUser: userResponse.imgUser
+          });
+          this.imgUser = userResponse.imgUser
+            ? `${this.hostingImg}${userResponse.imgUser}`
+            : './img/noImage.jpg';
+        },
+        error => console.error("Error fetching user data:", error)
+      );
+    }
+  });
+}
   refreshForm() {
     this.userForm = this.formBuilder.group({
       fullname: ['', Validators.required],
@@ -110,7 +135,7 @@ export class ManagerUserComponent implements OnInit {
     this.userForm.get('password')?.enable(); 
     formData.append('fullname', this.userForm.value.fullname);
     formData.append('username', this.userForm.value.username);
-    formData.append('password', this.userForm.value.password || '123'); 
+    formData.append('password', this.userForm.value.password ); 
     formData.append('isAdmin', this.userForm.value.isAdmin.toString());
     formData.append('isDeleted', this.userForm.value.isDeleted.toString());
 
