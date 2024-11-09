@@ -15,7 +15,10 @@ export class OrderprocessingComponent {
 
   constructor(private paymentService : PaymentService, private invoiceService : InvoiceService){}
 
-  paymentPaythod = "vnpay"
+  paymentPaythod = "cash"
+
+   errorCode :Record<number,string> = 
+   {1601:"Đơn hàng đã được hoàn thành trước đó !" }
 
   listDataInvoice  !: invoiceRespone[];
 
@@ -26,16 +29,20 @@ export class OrderprocessingComponent {
   }
 
   paymentOrder(){
-    this.paymentService.postRequestPaymentVNPay(16).subscribe(
+    if(this.paymentPaythod=="ewallet"){
+    this.paymentService.postRequestPaymentVNPay(11).subscribe(
       data =>{
         console.log(data);
         // window.location.assign(data.result.urlToRedirect)
         window.open(data.result.urlToRedirect)
       }, error =>{
+        alert(this.errorCode[error.error.code] )
         console.log(error);
         
       }
-    );
+   
+    ); 
+  }
   }
 
   getInvoice(){

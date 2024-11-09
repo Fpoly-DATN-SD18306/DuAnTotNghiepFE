@@ -10,7 +10,7 @@ import { ApiRespone } from '../../entity/api-respone';
   providedIn: 'root'
 })
 export class SearchFilterService {
-  private baseUrl = ApiConfigService.apiFoods;
+  private baseUrl = ApiConfigService.apiFoods
   url = ApiConfigService.apiUrl;
   constructor(private httpClient: HttpClient) { }
   getFoodPage(thePage: number, thePageSize: number): Observable<ApiRespone> {
@@ -46,18 +46,3 @@ interface GetResponseBookCategory {
     booksCategory: FoodCategory[];
   }
 }
-// getFood(theFoodId: number): Observable<Foods> {
-//   const bookUrl = `${this.url+"/api/foods"}/${theFoodId}`;
-//   return this.httpClient.get<Foods>(bookUrl);
-// }
-
-// getFoodCategories(): Observable<FoodCategory[]> {
-//   return this.httpClient.get<GetResponseBookCategory>(this.url+"/api/categoryFoodEntities").pipe(map(response => response._embedded.booksCategory));
-// }
-// getFoodList(): Observable<Foods[]> {
-//   return this.httpClient.get<GetResponseFood>(this.baseUrl).pipe(map(response => response._embedded.foodEntities));
-// }
-//  let isSelling = theSelling !== '' && theSelling !== false ? `&isSelling=${theSelling}` : '';
-// let isSelling = theSelling !== '' && theSelling !== false ? `&isSelling=${encodeURIComponent(theSelling)}` : '';
-// let idCategory = theCategoryId ===null?'':'&idCategory='+theCategoryId;
-// isSelling = theSelling ?'&isSelling='+theSelling:'';

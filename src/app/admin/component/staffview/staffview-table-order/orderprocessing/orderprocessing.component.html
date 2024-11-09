@@ -340,9 +340,10 @@
                             Phương thức thanh toán :
                         </div>
                         <div class="col-7">
-                            <select class="form-select " aria-label="Default select example">
-                                <option selected value="1">VN Pay</option>
-                                <option value="2">Tiền mặt</option>
+                            <select [(ngModel)]="paymentPaythod" class="form-select " aria-label="Default select example">
+                                <option selected value="cash">Tiền mặt</option>
+                                <option  value="ewallet">VN Pay</option>
+                               
                               </select>
                         </div>
                      
