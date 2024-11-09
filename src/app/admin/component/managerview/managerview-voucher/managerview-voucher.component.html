@@ -1,0 +1,125 @@
+<div class="voucher-container">
+    <div class="header">
+      <h3>Quản Lý Voucher</h3>
+      <button class="create-btn" (click)="openModal()">Tạo mới voucher</button>
+    </div>
+  
+    <div class="search-section">
+      <input type="text" [(ngModel)]="searchText" (ngModelChange)="filterPromotion()" placeholder="Tìm theo tên" class="search-input" aria-label="Search vouchers">
+      <select [(ngModel)]="sortField" (change)="sortVouchers()" class="sort-select" aria-label="Sort vouchers">
+        <option value="name">Sắp xếp theo tên</option>
+        <option value="discount">Sắp xếp theo phần trăm khuyến mãi</option>
+        <option value="startDate">Sắp xếp theo ngày bắt đâu</option>
+        <option value="endDate">Sắp xếp theo Ngày kết thúc</option>
+      </select>
+      <select [(ngModel)]="selectedStatus" class="sort-select" (ngModelChange)="filterPromotion()">
+        <option value="" selected>Tất cả</option>
+        <option value="expired">Hết hạn</option>
+        <option value="active">Còn hạn</option>
+      </select>
+      <button (click)="toggleSortOrder()" class="sort-btn" [attr.aria-label]="'Sort ' + (sortAscending ? 'descending' : 'ascending')">
+        {{ sortAscending ? '↓' : '↑' }}
+      </button>
+    </div>
+  
+    <div class="table-container">
+    
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên voucher</th>
+            <th>Phần trăm khuyến mãi(%)</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <div *ngIf="!filteredVouchers|| totalPages < 1"
+        class="d-flex justify-content-center align-content-center container-fluid">
+        <i>Không có dữ liệu!</i>
+        </div>
+        <tbody>
+      
+          <tr *ngFor="let voucher of filteredVouchers">
+            <td>{{voucher.idPromotion}}</td>
+            <td>{{voucher.namePromotion}}</td>
+            <td>{{voucher.discount}}%</td>
+            <td>{{voucher.startDate | date :'dd/MM/yyyy'}}</td>
+            <td>{{voucher.endDate | date :'dd/MM/yyyy'}}</td>
+            <td>
+              <!-- :'dd/MM/yyyy' -->
+              <button class="edit-btn mb-1" (click)="editVoucher(voucher)" aria-label="Edit voucher">Sửa</button>
+              <button class="delete-btn" (click)="deleteVoucher(voucher.idPromotion)" aria-label="Delete voucher">Xóa</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="modal" [class.show]="showModal" role="dialog" aria-labelledby="modalTitle">
+      <div class="modal-content">
+        <h3 id="modalTitle">{{editMode ? 'Edit' : 'Create'}} Voucher</h3>
+        <form [formGroup]="voucherForm" (ngSubmit)="submitForm()">
+          <!-- <div class="form-group" hidden>
+            <label for="id" >Id</label>
+            <input id="id" type="text" formControlName="id" [class.error]="hasError('id')">
+           
+          </div> -->
+          <div class="form-group">
+            <label for="namePromotion">Tên voucher</label>
+            <input id="namePromotion" type="text" formControlName="namePromotion" [class.error]="hasError('namePromotion')">
+            <span class="error-message" *ngIf="hasError('namePromotion')">Tên voucher đang trống</span>
+          </div>
+  
+          <div class="form-group">
+            <label for="discount">Phần trăm khuyến mãi(%)</label>
+            <input id="discount" type="number" formControlName="discount" [class.error]="hasError('discount')">
+            <span class="error-message" *ngIf="hasError('discount')">Phần trăm khuyễn mãi (0-100)</span>
+          </div>
+  
+          <div class="form-group">
+            <label for="startDate">Ngày bắt đầu</label>
+            <input id="startDate" type="date" formControlName="startDate" [class.error]="hasError('startDate')">
+            <span class="error-message" *ngIf="hasError('startDate')">Ngày bắt đầu đang trống</span>
+          </div>
+  
+          <div class="form-group">
+            <label for="endDate">Ngày kết thúc</label>
+            <input id="endDate" type="date" formControlName="endDate" [class.error]="hasError('endDate')">
+            <span class="error-message" *ngIf="hasError('endDate')">Ngày kết thúc phải sau ngày bắt đầu</span>
+          </div>
+  
+          <div class="form-group">
+            <label for="description">Mô tả</label>
+            <textarea id="description" formControlName="description"></textarea>
+          </div>
+  
+          <div class="button-group">
+            <button class="btn btn-primary" type="submit" [disabled]="!voucherForm.valid">{{editMode ? 'Update' : 'Create'}}</button>
+            <button class="btn btn-secondary" type="button" (click)="closeModal()">Thoát</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+  </div>
+  <div class="w-100 my-3 d-flex justify-content-center ">
+    <nav class="mx-auto text-center " aria-label="...">
+      <ul class="pagination">
+        <li class="page-item "  [class.disabled]="number==0" >
+          <button (click)="paging(number-1)"  class="page-link">Previous</button>
+        </li>
+        <li *ngIf="number>0" class="page-item ">
+          <button (click)="paging(number-1)" class="page-link" >{{number}} </button></li>
+        <li  class="page-item active">
+           <button class="page-link" >{{number+1}}  </button></li>
+           <li *ngIf="totalPages-1>number" class="page-item ">
+            <button (click)="paging(number+1)" class="page-link" >{{number+2}} </button></li>
+  
+        <li class="page-item" [class.disabled]="number==totalPages-1">
+          <button  (click)="paging(number+1)" class="page-link" >Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>

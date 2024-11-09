@@ -1,3 +1,4 @@
+
 import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -12,10 +13,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
-
 import { ToastModule } from 'primeng/toast';
-
-
 
 import { StaffviewParentComponent } from './admin/component/staffview/staffview-parent/staffview-parent.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -32,7 +30,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     BrowserAnimationsModule, 
     FormsModule,
     RouterModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    ToastModule
     // ToastModule
   ],
   providers: [
