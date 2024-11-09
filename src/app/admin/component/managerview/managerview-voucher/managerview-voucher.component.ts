@@ -1,9 +1,9 @@
 
 import { Component, OnInit } from '@angular/core';
-import { Voucher } from '../../../../interface/voucher/voucher';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Promotion } from '../../../../interface/voucher/promotion';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { VourcherService } from '../../../../service/voucherService/vourcher.service';
-import { voucherRequest } from '../../../../entity/request/voucher-request';
+import { promotionRequest } from '../../../../entity/request/promotion-request';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -13,8 +13,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 
 export class ManagerviewVoucherComponent implements OnInit {
-  vouchers: Voucher[] = [];
-  filteredVouchers: Voucher[] = [];
+  vouchers: Promotion[] = [];
+  filteredVouchers: Promotion[] = [];
   voucherForm: FormGroup;
   showModal = false;
   editMode = false;
@@ -23,7 +23,7 @@ export class ManagerviewVoucherComponent implements OnInit {
   sortField = "name";
   sortAscending = true;
   currentVoucherId: number | null = null;
-  voucherRequest!: voucherRequest[]
+  voucherRequest!: promotionRequest[]
   number = 0;
   totalPages = 0;
   theTotalElements: number = 0;
@@ -37,29 +37,62 @@ export class ManagerviewVoucherComponent implements OnInit {
       return this.fb.group({
         namePromotion: ['', Validators.required],
         discount: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
-        startDate: [null, Validators.required],
-        endDate: [null, Validators.required,],
+        startDate: ['', Validators.required,],
+        endDate: ['', Validators.required,],
         description: [""]
       }
-      , {
-        validators: this.dateRangeValidator
-      },
+      , {validator:this.dateRangeValidator}
+     
      
     );
     }
-    dateRangeValidator = (formGroup: FormGroup) => {
-      const { startDate, endDate } = formGroup.value;
-      const startDateObj = new Date(startDate);
-      const endDateObj = new Date(endDate);
-      if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
-        return { dateRange: 'Invalid date format' }; 
+
+    hasError(field: string): boolean {
+      const control = this.voucherForm.get(field);
+      return !!control && control.invalid && (control.dirty || control.touched); 
+    }
+    startDateChange() {
+      const startDate = this.voucherForm.get('startDate')?.value;
+      const endDate = this.voucherForm.get('endDate')?.value;
+     
+    const today = new Date();
+    const startDateOnly = new Date(startDate).setHours(0,0,0,0);
+    const todayOnly = today.setHours(0,0,0,0);
+      if (startDateOnly < todayOnly) {
+        this.openTotast('Ngày bắt đầu phải lớn hơn hoặc bằng ngày hôm nay!');
       }
-      const today = new Date();
-      return (
-        startDateObj >= today &&
-        startDateObj <= endDateObj
-      ) ? null : { dateRange: 'End date must be after start date' };
-    };
+    }
+    
+    endDateChange() {
+      const startDate = this.voucherForm.get('startDate')?.value;
+      const endDate = this.voucherForm.get('endDate')?.value;
+      
+      if (endDate < startDate) {
+        this.openTotast('Ngày kết thúc phải sau ngày bắt đầu!');
+      }
+    }
+  dateRangeValidator = (formGroup: FormGroup): ValidationErrors | null => {
+    const { startDate, endDate } = formGroup.value;
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+      return { dateRange: true };
+    }
+
+    const today = new Date();
+    const startDateOnly = new Date(startDateObj.setHours(0,0,0,0));
+    const todayOnly = new Date(today.setHours(0,0,0,0));
+  
+    if (startDateOnly < todayOnly) {
+      
+      return { dateRange:true };
+    }
+    if (startDateObj >= endDateObj) {
+      return { dateRange:true };
+    }
+    return  null ;
+  };
+
     openModal() {
       this.showModal = true;
       this.editMode = false;
@@ -70,16 +103,16 @@ export class ManagerviewVoucherComponent implements OnInit {
       this.voucherForm.reset();
     }
 
-    editVoucher(voucher: Voucher) {
+    editVoucher(promotion: Promotion) {
       this.editMode = true;
-      this.currentVoucherId = voucher.idPromotion;
+      this.currentVoucherId = promotion.idPromotion;
       console.log(this.currentVoucherId);
       this.voucherForm.patchValue({
-        namePromotion: voucher.namePromotion,
-        discount: voucher.discount,
-        startDate: this.formatDate(voucher.startDate),
-        endDate: this.formatDate(voucher.endDate),
-        description: voucher.description
+        namePromotion: promotion.namePromotion,
+        discount: promotion.discount,
+        startDate: this.formatDate(promotion.startDate),
+        endDate: this.formatDate(promotion.endDate),
+        description: promotion.description
       });
 
       this.showModal = true;
@@ -90,9 +123,11 @@ export class ManagerviewVoucherComponent implements OnInit {
     }
 
     deleteVoucher(id: number) {
-      const index = this.filteredVouchers.findIndex((item : Voucher)=>item.idPromotion===id);
-      
+
+      const index = this.filteredVouchers.findIndex((item : Promotion)=>item.idPromotion===id);
+    
       if (confirm("Bạn muốn xóa voucher này?")) {
+       
         if (index!==-1) {
           this.voucherService.deleteVoucher(id).subscribe(data => {
             this.filterPromotion();
@@ -112,12 +147,13 @@ export class ManagerviewVoucherComponent implements OnInit {
     submitForm() {
       if (this.voucherForm.valid) {
         const formValue = this.voucherForm.value;
-        const newVoucherRequest: voucherRequest = { 
+        const newVoucherRequest: promotionRequest = { 
           namePromotion: formValue.namePromotion,
           discount: formValue.discount,
           startDate: formValue.startDate,
           endDate: formValue.endDate,
           description: formValue.description || '', 
+          isDeleted:false
         };
     
         if (this.editMode && this.currentVoucherId) {
@@ -132,6 +168,7 @@ export class ManagerviewVoucherComponent implements OnInit {
               this.openTotast('Cập nhật thành công !')
             });
         } else {
+   
           this.voucherService.postVoucher(newVoucherRequest).subscribe(
             data => {
               this.filteredVouchers=data.result.conntent;
@@ -142,8 +179,9 @@ export class ManagerviewVoucherComponent implements OnInit {
                 this.closeModal();
                 this.openTotast('Tạo mới thành công !')
               },
+              
             error => {
-              this.openTotast('Không thể thêm!')
+              this.openTotast('Promotion đã tồn tại hoặc bị khóa!')
               console.log('Error fetching data:', error);
             });
         }
@@ -204,10 +242,15 @@ export class ManagerviewVoucherComponent implements OnInit {
     this.sortVouchers();
   }
 
-  hasError(field: string): boolean {
-    const control = this.voucherForm.get(field);
-    return !!control && control.invalid && (control.dirty || control.touched);
-  }
+
+  // hasError(controlName: string, errorType?: string): boolean {
+  //   if (errorType) {
+  //       const control = this.voucherForm.get(controlName);
+  //       return !!control && control.hasError(errorType);
+  //   } else {
+  //       return false;
+  //   }
+// }
   paging(numberPage: number) {
 
     if (numberPage >= 0 && numberPage < this.totalPages) {

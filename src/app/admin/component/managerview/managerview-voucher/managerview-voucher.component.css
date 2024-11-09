@@ -177,7 +177,11 @@
     max-height: 800px;
     overflow-y: auto;
 }
-
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
 /* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
 .modal-body::-webkit-scrollbar {
     display: none; /* Ẩn thanh cuộn trên trình duyệt WebKit */
