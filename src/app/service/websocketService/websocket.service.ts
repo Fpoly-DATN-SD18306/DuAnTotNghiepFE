@@ -39,6 +39,15 @@ export class WebsocketService {
   }
 
   // Phương thức để lắng nghe và xử lý thông báo từ topic/confirmorder
+  // private subscribeToConfirmOrder() {
+  //   this.stompClient.subscribe('/topic/confirmorder', (message: any) => {
+  //     if (message.body) {
+  //       console.log('Order confirmation:', JSON.parse(message.body));
+  //       this.confirmOrderSubject.next(JSON.parse(message.body));
+  //       this.messageSubject.next(message.body);
+  //     }
+  //   });
+  // }
   private subscribeToConfirmOrder() {
     this.stompClient.subscribe('/topic/confirmorder', (message: any) => {
       if (message.body) {
@@ -56,8 +65,15 @@ export class WebsocketService {
   sendConfirmOrder(order: OrderRequest) {
     this.stompClient.send('/app/api/v1/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
   }
+  // sendConfirmOrder(order: OrderRequest) {
+  //   this.stompClient.send('/app/api/v1/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
+  // }
   
   onMessage() {
     return this.messageSubject.asObservable(); // Trả về Observable để lắng nghe
+  }
+
+  onConfirmOrderMessage() {
+    return this.confirmOrderSubject.asObservable(); // Trả về Observable để lắng nghe
   }
 }

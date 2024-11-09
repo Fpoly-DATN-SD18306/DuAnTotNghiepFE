@@ -32,7 +32,7 @@ ngOnInit(): void {
     param=>{
       let idTable = param['table']
       let secretKey = param['secretKey']
-      sessionStorage.removeItem("itb"); // làm mới lại giá trị itb
+      // sessionStorage.removeItem("itb"); // làm mới lại giá trị itb
       let currentId = sessionStorage.getItem("itb")
       if(currentId){
         console.log("co r"+currentId);

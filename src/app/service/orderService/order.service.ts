@@ -37,4 +37,24 @@ export class OrderService {
       return throwError(error);
     }))
   }
+
+  // confirmOrder(idOrder: number | null, idTable: number | null): Observable<ApiRespone> {
+  //   let params = new HttpParams();
+
+  //   if (idOrder !== null && idOrder !== undefined) {
+  //     params = params.set('idOrder', idOrder.toString());
+  //   }
+
+  //   if (idTable !== null && idTable !== undefined) {
+  //     params = params.set('idTable', idTable.toString());
+  //   }
+
+  //   const orderRequest = { idOrder,  };
+
+  //   // Gửi yêu cầu qua WebSocket thay vì HTTP
+  //   this.websocketService.sendConfirmOrder(idOrder!, idTable!);
+
+  //   // Trả về một Observable để theo dõi phản hồi từ WebSocket
+  //   return this.websocketService.onConfirmOrderMessage();
+  // }
 }
