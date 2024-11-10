@@ -7,5 +7,5 @@ export class Users {
     imgUser!: string;
     isAdmin!: boolean;
     isDeleted!: boolean;
- 
+    isChangedPass!: boolean;
 }

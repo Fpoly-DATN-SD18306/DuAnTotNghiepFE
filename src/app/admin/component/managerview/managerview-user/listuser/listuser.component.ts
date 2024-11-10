@@ -23,7 +23,7 @@ export class ListuserComponent implements OnInit {
  fullnameFilter!: string ;
   usernameFilter!: string ;
   isAdminFilter: string='123';
-
+  isChangedPassFilter: string='123';
 
   constructor(
     private userService: UsersService,
@@ -39,7 +39,7 @@ export class ListuserComponent implements OnInit {
   }
 
   getAllFoods() {
-    this.searchFilterUserService.filterUser(this.usernameFilter, this.fullnameFilter, this.isAdminFilter,  this.number, this.size).subscribe(
+    this.searchFilterUserService.filterUser(this.usernameFilter, this.fullnameFilter, this.isAdminFilter,this.isChangedPassFilter , this.number, this.size).subscribe(
       data => {
         this.filteredUsers = data.result.content;         
         this.theTotalElements = data.result.totalElements;            

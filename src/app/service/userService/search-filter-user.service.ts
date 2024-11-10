@@ -18,13 +18,13 @@ export class SearchFilterUserService {
     return this.httpClient.get<ApiRespone>(`${this.url + "/api/v1/users"}?page=${thePage}&size=${thePageSize}`);
   }
 
-  filterUser(theUserName: string, theFullname: string, theIsAdmin: string, thePage: number, thePageSize: number): Observable<ApiRespone> {
+  filterUser(theUserName: string, theFullname: string, theIsAdmin: string, theIsChangedPass: string, thePage: number, thePageSize: number): Observable<ApiRespone> {
     let isAdmin = theIsAdmin === '123' ? "" : '&isAdmin=' + theIsAdmin;
-    let username = theUserName ? `&username=${theUserName}` : '';
+    let username = theUserName ? `&username=${theUserName}` : ''; 
     let fullname = theFullname ? `&fullname=${theFullname}` : '';
-   
+    let isChangedPass = theIsChangedPass === '123' ? "" : '&isChangedPass=' + theIsChangedPass;
     
-    const searchUrl = `${this.baseUrl}/filter?${username}${fullname}${isAdmin}&page=${thePage}&size=${thePageSize}`;
+    const searchUrl = `${this.baseUrl}/filter?${username}${fullname}${isAdmin}${isChangedPass}&page=${thePage}&size=${thePageSize}`;
     console.log(searchUrl);
     return this.httpClient.get<ApiRespone>(searchUrl);
   }

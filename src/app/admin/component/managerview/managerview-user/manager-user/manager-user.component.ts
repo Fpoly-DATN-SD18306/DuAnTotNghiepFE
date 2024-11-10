@@ -42,6 +42,7 @@ export class ManagerUserComponent implements OnInit {
               password: userResponse.password,
               isAdmin: userResponse.isAdmin,
               isDeleted: userResponse.isDeleted,
+              isChangedPass: userResponse.isChangedPass,
               imgUser: userResponse.imgUser
             });
             this.imgUser = userResponse.imgUser
@@ -68,6 +69,7 @@ resertPassword(){
             password: "123",
             isAdmin: userResponse.isAdmin,
             isDeleted: userResponse.isDeleted,
+            isChangedPass: userResponse.isChangedPass,
             imgUser: userResponse.imgUser
           });
           this.imgUser = userResponse.imgUser
@@ -124,6 +126,7 @@ resertPassword(){
 
   putUser() {
     const formData = this.prepareFormData();
+    
     this.userService.putUser(formData, this.idUserNeedUpdate).subscribe(
       () => this.openToast("Sửa Thành Công"),
       error => this.openToast("Sửa Không thành công")
