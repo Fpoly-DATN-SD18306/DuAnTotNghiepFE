@@ -4,7 +4,7 @@ import { ApiConfigService } from '../ApiConfigService';
 import { HttpClient } from '@angular/common/http';
 import { ApiRespone } from '../../entity/api-respone';
 import { Observable } from 'rxjs';
-import { voucherRequest } from '../../entity/request/voucher-request';
+import { promotionRequest } from '../../entity/request/promotion-request';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class VourcherService {
 
   url = ApiConfigService.apiUrlPromotion;
   constructor(private http : HttpClient) { }
-  postVoucher(voucherRequest : voucherRequest):Observable<ApiRespone>{
+  postVoucher(voucherRequest : promotionRequest):Observable<ApiRespone>{
     const data = new FormData();
     data.append('namePromotion',voucherRequest.namePromotion)
     data.append('startDate',voucherRequest.startDate.toString())
@@ -26,7 +26,7 @@ export class VourcherService {
     return this.http.post<ApiRespone>(this.url,data)
 
   }
-  putVoucher(voucherRequest : voucherRequest,idVoucher :Number):Observable<ApiRespone>{
+  putVoucher(voucherRequest : promotionRequest,idVoucher :Number):Observable<ApiRespone>{
     
     const data = new FormData();
     data.append('namePromotion',voucherRequest.namePromotion)
@@ -42,15 +42,17 @@ export class VourcherService {
     console.log(voucherRequest.endDate);
     console.log(voucherRequest.startDate);
   }
-  deleteVoucher(id: number): Observable<ApiRespone> {
-    const url = `${this.url}/${id}`;
-    return this.http.delete<ApiRespone>(url);
+  deleteVoucher(idVoucher: number): Observable<ApiRespone> {
+
+    return this.http.delete<ApiRespone>(this.url +'/' +idVoucher);
   }
 
-  filterVoucher(theKeyword: string,theStatus: string,thePage: number, thePageSize: number): Observable<ApiRespone> {
+  filterVoucher(theKeyword: string,theStatus: string,theSortField:string,theSortDirection:string, thePage: number, thePageSize: number): Observable<ApiRespone> {
     let nameVoucher = theKeyword ? `&namePromotion=${theKeyword}` : '';
     let status = theStatus ? `&status=${theStatus}` : '';
-    const searchUrl = `${this.url}/filter?${nameVoucher}${status}&page=${thePage}&size=${thePageSize}`;
+    let sortField = `&sortBy=${theSortField}`;
+    let sortDirection =`&orderBy=${theSortDirection}`;
+    const searchUrl = `${this.url}/filter?${nameVoucher}${status}${sortField}${sortDirection}&page=${thePage}&size=${thePageSize}`;
     console.log(searchUrl);
     return this.http.get<ApiRespone>(searchUrl);
   }
