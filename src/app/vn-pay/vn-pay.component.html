@@ -1,6 +1,6 @@
  <!--Begin display -->
  <div class="w-100 text-end pt-3 pe-3" >
-    <button type="button" class="btn btn-primary">Đóng</button>
+    <button type="button"  (click)="closePage()" class="btn btn-primary">Đóng</button>
 </div>
  <div class="container ">
 
@@ -10,7 +10,7 @@
     <div *ngIf="RspCode!='00'||finalCheck==false" class="w-100 h-50 text-center ">
         <img  src="./img/cancel.png" style="width: 10%;" alt=""> <br>
         <h4 class="text-muted mt-4">Giao dịch không thành công !</h4>
-        <h5 *ngIf="finalCheck==false" class="text-muted mt-4">Đã bị can thiệp đường dẫn !</h5>
+        <h5 *ngIf="finalCheck==false&&keyCheck.trim().length>1" class="text-muted mt-4">Đã bị can thiệp đường dẫn !</h5>
     </div>
     <div *ngIf="RspCode=='00'&&finalCheck==true" class="w-100 h-50 text-center ">
         <img  src="./img/checked.png" style="width: 10%;" alt=""> <br>

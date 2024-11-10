@@ -9,13 +9,19 @@ import { ApiRespone } from '../../entity/api-respone';
   providedIn: 'root'
 })
 export class PaymentService {
-  url = ApiConfigService.apiUrl +"/api/payment-VNPay";
+  url = ApiConfigService.apiUrl +"/api";
   constructor(private http: HttpClient) { }
  
  
   public postRequestPaymentVNPay(idOrder : number):Observable<ApiRespone> {
     
-    return this.http.post<ApiRespone> (this.url, {},{params :{"idOrder":idOrder}})
+    return this.http.post<ApiRespone> (this.url+"/payment-VNPay", {},{params :{"idOrder":idOrder}})
+  }
+
+
+  public postRequestPaymentManual(idOrder : number):Observable<ApiRespone> {
+    
+    return this.http.post<ApiRespone> (this.url+"/manual-Pay", {},{params :{"idOrder":idOrder}})
   }
   
   

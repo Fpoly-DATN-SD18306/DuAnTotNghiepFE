@@ -33,7 +33,8 @@ import { VnPayComponent } from './vn-pay/vn-pay.component';
     FormsModule,
     RouterModule,
     MatSnackBarModule,
-    ToastModule
+    ToastModule,
+
     // ToastModule
   ],
   providers: [

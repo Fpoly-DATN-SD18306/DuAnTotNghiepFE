@@ -11,7 +11,7 @@ export class CartService {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,private foodService : FoodService) {
     if (isPlatformBrowser(this.platformId)) {
-      const storedCart = sessionStorage.getItem(this.cartKey);
+      const storedCart = localStorage.getItem(this.cartKey);
       if (storedCart) {
         CartService.items = JSON.parse(storedCart);
       }
@@ -33,8 +33,7 @@ export class CartService {
 
   addToCart(f: Icart) {
     if (isPlatformBrowser(this.platformId)) {
-    const cartItems = JSON.parse(sessionStorage.getItem('cart') || '[]');
-    const existingProductIndex = cartItems.findIndex((item: Icart) => item.idFood === f.idFood);
+      const existingProductIndex = CartService.items.findIndex((item: Icart) => item.idFood === f.idFood);
 
       if (existingProductIndex !== -1) {
         CartService.items[existingProductIndex].quantity += f.quantity;
@@ -50,9 +49,8 @@ export class CartService {
         });
       }
 
-    CartService.items = cartItems;
-    sessionStorage.setItem('cart', JSON.stringify(cartItems));
-    console.log('Giỏ hàng sau khi thêm:', this.getCart());
+      sessionStorage.setItem('cart', JSON.stringify(CartService.items));
+      console.log('Giỏ hàng sau khi thêm:', this.getCart());
     }
   }
 

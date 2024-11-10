@@ -19,8 +19,11 @@ export class VnPayComponent implements OnInit{
   finalCheck  = false;
 
   checkValid(bank : string,amount: string,idOrder: string,date:String,rsp:string, keyCheckFromBE : string){
-    let  codeFE = bank+amount+idOrder+date+rsp
-    return codeFE==atob(keyCheckFromBE)
+    if(keyCheckFromBE){
+      let  codeFE = bank+amount+idOrder+date+rsp
+      return codeFE==atob(keyCheckFromBE)
+    }
+    return false
   }
  
 
@@ -50,7 +53,9 @@ export class VnPayComponent implements OnInit{
     });
   }
   
- 
+  closePage(){
+    window.close()
+  }
    
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -69,6 +74,7 @@ export class VnPayComponent implements OnInit{
         this.RspCode=RspCode;
         this.Amount= this.formatPrice(Amount/100);
         this.idOrder=idOrder;
+        this.keyCheck= keyCheck;
         console.log(this.datePayment);
       } else {
         console.log("Không tìm thấy tham số trong URL.");

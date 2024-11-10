@@ -5,10 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class ApiConfigService {
 
-  public static apiUrl ="http://192.168.1.2:8080" ;
-  public static apiUrlPromotion ="http://192.168.1.2:8080/api/v1/promotions" ;
-  public static apiFoods ="http://192.168.1.2:8080/api/v1/foods";
- public static apiUrlimg ="http://192.168.1.2:8080/images/";
+  public static apiUrlSocket ="http://192.168.1.12:8080" ;
+  public static apiUrl ="http://192.168.1.12:8080" ;
+  public static apiUrlPromotion ="http://192.168.1.12:8080/api/v1/promotions" ;
+  public static apiFoods ="http://192.168.1.12:8080/api/v1/foods";
+ public static apiUrlimg ="http://192.168.1.12:8080/images/";
 
 }
 
