@@ -6,8 +6,8 @@
     
       <div class="search-section">
         <input type="text" [(ngModel)]="searchText" (ngModelChange)="filterPromotion()" placeholder="Tìm theo tên" class="search-input" aria-label="Search vouchers">
-        <select [(ngModel)]="sortField" (change)="sortVouchers()" class="sort-select" aria-label="Sort vouchers">
-          <option value="name">Sắp xếp theo tên</option>
+        <select [(ngModel)]="sortField" (ngModelChange)="filterPromotion()" class="sort-select" aria-label="Sort vouchers">
+          <option  selected value="namePromotion">Sắp xếp theo tên</option>
           <option value="discount">Sắp xếp theo phần trăm khuyến mãi</option>
           <option value="startDate">Sắp xếp theo ngày bắt đâu</option>
           <option value="endDate">Sắp xếp theo Ngày kết thúc</option>
@@ -17,9 +17,13 @@
           <option value="expired">Hết hạn</option>
           <option value="active">Còn hạn</option>
         </select>
-        <button (click)="toggleSortOrder()" class="sort-btn" [attr.aria-label]="'Sort ' + (sortAscending ? 'descending' : 'ascending')">
-          {{ sortAscending ? '↓' : '↑' }}
-        </button>
+        <select [(ngModel)]="sortDirection" class="sort-select" (ngModelChange)="filterPromotion()">
+          <option selected value="asc">Tăng dần</option>
+          <option value="desc">Giảm dần</option>
+        </select>
+        <!-- <button (click)="toggleSortOrder()" class="sort-btn" [attr.aria-label]="'Sort ' + (sortDirection ? 'DESC' : 'ASC')">
+          {{ sortDirection ? 'DESC' : 'ASC' }}
+        </button> -->
       </div>
     
       <div class="table-container" style="height: 500px;">

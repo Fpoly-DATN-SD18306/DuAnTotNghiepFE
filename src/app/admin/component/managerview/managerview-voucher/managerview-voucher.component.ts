@@ -20,8 +20,8 @@ export class ManagerviewVoucherComponent implements OnInit {
   editMode = false;
   selectedStatus = '';
   searchText = "";
-  sortField = "name";
-  sortAscending = true;
+  sortField = "namePromotion";
+  sortDirection= "asc" ;
   currentVoucherId: number | null = null;
   voucherRequest!: promotionRequest[]
   number = 0;
@@ -187,70 +187,32 @@ export class ManagerviewVoucherComponent implements OnInit {
         }
       }
     }
+    
     filterPromotion() {
-     
-      this.voucherService.filterVoucher(this.searchText,this.selectedStatus,  this.number, this.size).subscribe(
-        data => {
-          this.filteredVouchers = data.result.content;         
-          this.theTotalElements = data.result.totalElements;            
-          this.totalPages = data.result.totalPages;  
-          this.vouchers = this.filteredVouchers; 
-       
-        },
-        error => {
-          console.log('Error fetching data:', error);
-        }
-      );
-      
-    }
-    filterVouchers() {
-
-      this.filteredVouchers = this.vouchers
-      
-      .filter(v => v.namePromotion.toLowerCase().includes(this.searchText.toLowerCase()));
-      
-   this.sortVouchers();
-      
-      }
-
-    sortVouchers() {
-      this.filteredVouchers.sort((a, b) => {
-        if (this.sortField === "startDate" || this.sortField === "endDate") {
-          const dateA = new Date(a[this.sortField] ?? '1970-01-01'); 
-          const dateB = new Date(b[this.sortField] ?? '1970-01-01');
-          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-            return 0; 
+      this.voucherService.filterVoucher(this.searchText, this.selectedStatus, this.sortField, this.sortDirection, this.number, this.size,)
+        .subscribe(
+          data => {
+            this.filteredVouchers = data.result.content;
+            this.theTotalElements = data.result.totalElements;
+            this.totalPages = data.result.totalPages;
+          },
+          error => {
+            console.log('Error fetching data:', error);
           }
-          return this.sortAscending
-            ? dateA.getTime() - dateB.getTime()
-            : dateB.getTime() - dateA.getTime();
-        } else {
-          const valueA = this.sortField === "name" ? a.namePromotion : a.discount;
-          const valueB = this.sortField === "name" ? b.namePromotion : b.discount;
-          return this.sortAscending
-            ? valueA > valueB ? 1 : -1
-            : valueA < valueB ? 1 : -1;
-        }
-      });
+        );
     }
+  
     ngOnInit() {
       this.filterPromotion();
       this.paging(this.number);
     }
-  toggleSortOrder() {
-    this.sortAscending = !this.sortAscending;
-    this.sortVouchers();
-  }
+    // toggleSortOrder() {
+    //   this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    //   this.filterPromotion();
+    // }
 
 
-  // hasError(controlName: string, errorType?: string): boolean {
-  //   if (errorType) {
-  //       const control = this.voucherForm.get(controlName);
-  //       return !!control && control.hasError(errorType);
-  //   } else {
-  //       return false;
-  //   }
-// }
+ 
   paging(numberPage: number) {
 
     if (numberPage >= 0 && numberPage < this.totalPages) {

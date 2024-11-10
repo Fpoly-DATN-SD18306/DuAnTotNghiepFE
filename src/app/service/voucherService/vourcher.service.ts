@@ -47,10 +47,12 @@ export class VourcherService {
     return this.http.delete<ApiRespone>(this.url +'/' +idVoucher);
   }
 
-  filterVoucher(theKeyword: string,theStatus: string,thePage: number, thePageSize: number): Observable<ApiRespone> {
+  filterVoucher(theKeyword: string,theStatus: string,theSortField:string,theSortDirection:string, thePage: number, thePageSize: number): Observable<ApiRespone> {
     let nameVoucher = theKeyword ? `&namePromotion=${theKeyword}` : '';
     let status = theStatus ? `&status=${theStatus}` : '';
-    const searchUrl = `${this.url}/filter?${nameVoucher}${status}&page=${thePage}&size=${thePageSize}`;
+    let sortField = `&sortBy=${theSortField}`;
+    let sortDirection =`&orderBy=${theSortDirection}`;
+    const searchUrl = `${this.url}/filter?${nameVoucher}${status}${sortField}${sortDirection}&page=${thePage}&size=${thePageSize}`;
     console.log(searchUrl);
     return this.http.get<ApiRespone>(searchUrl);
   }
