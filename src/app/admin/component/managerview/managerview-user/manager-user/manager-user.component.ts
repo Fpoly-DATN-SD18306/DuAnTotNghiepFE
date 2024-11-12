@@ -158,8 +158,6 @@ resertPassword(){
   }
 
   resetForm(): void {
-    this.refreshForm();
-    this.imgUser = "./img/noImage.jpg";
-    this.isEditing = false;
+    window.location.assign("/admin/manager/managerUser/managerUser");
   }
 }
