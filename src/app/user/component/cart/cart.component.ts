@@ -68,7 +68,6 @@ export class CartComponent implements OnInit {
       this.total += (item.price) * item.quantity;
     });
     console.log(this.total);
-
   }
 
   formatPrice(price: number) {
@@ -77,11 +76,8 @@ export class CartComponent implements OnInit {
   }
 
   onNotify(checkChange: number) {
-    console.log(checkChange);
+    console.log('chackCHange: ',checkChange);
     this.items = CartService.items
     this.calculateTotal()
   }
-
- 
-  
 }

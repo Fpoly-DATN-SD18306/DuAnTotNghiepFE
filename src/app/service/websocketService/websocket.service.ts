@@ -65,9 +65,6 @@ export class WebsocketService {
   sendConfirmOrder(order: OrderRequest) {
     this.stompClient.send('/app/api/v1/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
   }
-  // sendConfirmOrder(order: OrderRequest) {
-  //   this.stompClient.send('/app/api/v1/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
-  // }
   
   onMessage() {
     return this.messageSubject.asObservable(); // Trả về Observable để lắng nghe

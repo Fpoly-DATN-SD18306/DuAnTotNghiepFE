@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { TableService } from '../../../../../service/tableService/table.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tableResponse } from '../../../../../entity/response/table-response';
@@ -10,6 +10,8 @@ import { OrderdetailService } from '../../../../../service/orderdetailService/or
 import { Router } from '@angular/router';
 import { OrderResponse } from '../../../../../entity/response/order-response';
 import { OrderDetailResponse } from '../../../../../entity/response/orderdetail-response';
+import { ChangeDetectionStrategy } from '@angular/compiler';
+import e from 'express';
 
 
 @Component({
@@ -22,7 +24,7 @@ export class TableorderStaffComponent implements OnInit {
   constructor(private tableservice: TableService, private snackBar: MatSnackBar,
     private websocketservice: WebsocketService,
     private orderdetailsService: OrderdetailService,
-    private router: Router,
+    private router: Router
     ) { }
 
   listTable!: tableResponse[]
@@ -43,11 +45,12 @@ export class TableorderStaffComponent implements OnInit {
   }
 
 
+
 // Thông báo có đơn hàng vừa được đặt 
   notificationOrder(){
     this.websocketservice.onMessage().subscribe(message => {
         if(message){
-          this.ngOnInit()
+          this.getAllTables()
         }
     });
   }
@@ -110,12 +113,12 @@ export class TableorderStaffComponent implements OnInit {
     console.log("Updating Table:", id, status); // Xem giá trị id và status
     this.tableservice.updateTableStatus(id, status).subscribe(data => {
       console.log("Updated Table:", data);
-      this.ngOnInit()
+      this.getAllTables()
       this.openTotast('Đã cập nhật trạng thái!')
     }, error => {
       this.openTotast('Đã cập nhật trạng thái!')
       console.log("Error", error);
-    });
+    })
   }
 
 

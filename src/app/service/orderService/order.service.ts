@@ -4,6 +4,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiRespone } from '../../entity/api-respone';
 import { WebsocketService } from '../websocketService/websocket.service';
+import { foodResponse } from '../../entity/response/food-response';
+import { OrderRequest } from '../../entity/request/order-request';
 
 @Injectable({
   providedIn: 'root'
@@ -38,23 +40,15 @@ export class OrderService {
     }))
   }
 
-  // confirmOrder(idOrder: number | null, idTable: number | null): Observable<ApiRespone> {
-  //   let params = new HttpParams();
 
-  //   if (idOrder !== null && idOrder !== undefined) {
-  //     params = params.set('idOrder', idOrder.toString());
-  //   }
+  createNewOrder(itemOrderrequest: OrderRequest[], idTable: number):Observable<ApiRespone>|null{
+     if(idTable){  
+       return this.http.post<ApiRespone>(`${this.url}/api/v1/order/create`,itemOrderrequest  ,{params : {"idTable" : idTable} })
+     }
+     return null;
+    }
 
-  //   if (idTable !== null && idTable !== undefined) {
-  //     params = params.set('idTable', idTable.toString());
-  //   }
-
-  //   const orderRequest = { idOrder,  };
-
-  //   // Gửi yêu cầu qua WebSocket thay vì HTTP
-  //   this.websocketService.sendConfirmOrder(idOrder!, idTable!);
-
-  //   // Trả về một Observable để theo dõi phản hồi từ WebSocket
-  //   return this.websocketService.onConfirmOrderMessage();
-  // }
-}
+    updateOrder(idOrder: number, itemOrderrequest: OrderRequest[]): Observable<ApiRespone> {
+      return this.http.put<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`, itemOrderrequest);
+    }
+  }
