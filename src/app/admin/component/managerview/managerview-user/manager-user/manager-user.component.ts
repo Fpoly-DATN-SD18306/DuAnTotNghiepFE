@@ -39,7 +39,7 @@ export class ManagerUserComponent implements OnInit {
             this.userForm.patchValue({
               fullname: userResponse.fullname,
               username: userResponse.username,
-              password: userResponse.password,
+              password: "password old",
               isAdmin: userResponse.isAdmin,
               isDeleted: userResponse.isDeleted,
               isChangedPass: userResponse.isChangedPass,
@@ -125,8 +125,7 @@ resertPassword(){
   }
 
   putUser() {
-    const formData = this.prepareFormData();
-    
+    const formData = this.prepareFormData(); 
     this.userService.putUser(formData, this.idUserNeedUpdate).subscribe(
       () => this.openToast("Sửa Thành Công"),
       error => this.openToast("Sửa Không thành công")

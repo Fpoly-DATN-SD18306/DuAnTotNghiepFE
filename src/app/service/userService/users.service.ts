@@ -27,32 +27,32 @@ export class UsersService {
   putUser(formData: FormData, idUser: String): Observable<ApiRespone> {
     return this.http.put<ApiRespone>(`${this.url}/api/v1/users/${idUser}`, formData);
 }
-postFood(foodRequest : userRequest, file : File):Observable<ApiRespone>{
-    
-  const data = new FormData();
-  data.append('fullname',foodRequest.fullname)
-  data.append('username',foodRequest.username)
-  data.append('password',foodRequest.password),
-  data.append('isAdmin',foodRequest.isAdmin?'True':'False')
-  data.append('isDeleted',foodRequest.isDeleted?'True':'False')
-  data.append('file',file)
+// postUser(foodRequest : userRequest, file : File):Observable<ApiRespone>{  
+//   const data = new FormData();
+//   data.append('fullname',foodRequest.fullname)
+//   data.append('username',foodRequest.username)
+//   data.append('password',foodRequest.password),
+//   data.append('isAdmin',foodRequest.isAdmin?'True':'False')
+//   data.append('isDeleted',foodRequest.isDeleted?'True':'False')
+//   if (file) {
+//     data.append('file', file); 
+// }
+//   return this.http.post<ApiRespone>(this.url+"/api/v1/users",data)
 
-  return this.http.post<ApiRespone>(this.url+"/api/v1/users",data)
-
-}
-putFood(foodRequest : userRequest, file : File,idFood :Number):Observable<ApiRespone>{
+// }
+// putUser(foodRequest : userRequest, file : File,idFood :Number):Observable<ApiRespone>{
   
-  const data = new FormData();
-  data.append('fullname',foodRequest.fullname)
-  data.append('username',foodRequest.username)
-  data.append('password',foodRequest.password),
-  data.append('isAdmin',foodRequest.isAdmin?'True':'False')
-  data.append('isDeleted',foodRequest.isDeleted?'True':'False')
-  data.append('file',file)
+//   const data = new FormData();
+//   data.append('fullname',foodRequest.fullname)
+//   data.append('username',foodRequest.username)
+//   data.append('password',foodRequest.password),
+//   data.append('isAdmin',foodRequest.isAdmin?'True':'False')
+//   data.append('isDeleted',foodRequest.isDeleted?'True':'False')
+//   data.append('file',file)
 
-  return this.http.post<ApiRespone>(this.url+"/api/v1/users",data)
+//   return this.http.post<ApiRespone>(this.url+"/api/v1/users",data)
 
 
-}
+// }
 }
 

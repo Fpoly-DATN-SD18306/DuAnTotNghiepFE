@@ -10,20 +10,20 @@
 
   <form class="row g-3 mt-1">
     <div class="col-md-4">
-      <input type="text" class="form-control" placeholder="Tìm kiếm theo tên tài khoản" [(ngModel)]="usernameFilter" name="usernameFilter" (ngModelChange)="getAllFoods()">
+      <input type="text" class="form-control" placeholder="Tìm kiếm theo tên tài khoản" [(ngModel)]="usernameFilter" name="usernameFilter" (ngModelChange)="getAllUsers()">
     </div>
     <div class="col-md-4">
-      <input type="text" class="form-control" placeholder="Tìm kiếm theo họ tên" [(ngModel)]="fullnameFilter" name="fullnameFilter" (ngModelChange)="getAllFoods()">
+      <input type="text" class="form-control" placeholder="Tìm kiếm theo họ tên" [(ngModel)]="fullnameFilter" name="fullnameFilter" (ngModelChange)="getAllUsers()">
     </div>
     <div class="col-md-2">
-      <select id="inputState" class="form-select" [(ngModel)]="isAdminFilter" name="isAdminFilter" (ngModelChange)="getAllFoods()">
+      <select id="inputState" class="form-select" [(ngModel)]="isAdminFilter" name="isAdminFilter" (ngModelChange)="getAllUsers()">
         <option [value]="123" selected >Chức năng</option>
         <option [value]='true'>Admin</option>
         <option [value]='false'>User</option>
       </select>
     </div>
     <div class="col-md-2">
-      <select id="inputState" class="form-select" [(ngModel)]="isChangedPassFilter" name="isChangedPassFilter" (ngModelChange)="getAllFoods()">
+      <select id="inputState" class="form-select" [(ngModel)]="isChangedPassFilter" name="isChangedPassFilter" (ngModelChange)="getAllUsers()">
         <option [value]="123" selected >Đổi mật khẩu</option>
         <option [value]='true'>Đã đổi</option>
         <option [value]='false'>Chưa đổi</option>
@@ -32,7 +32,7 @@
   </form>
   
   <div class="mt-2">
-    <button type="button" class="btn btn-primary w-100" (click)="getAllFoods()">Tìm kiếm</button>
+    <button type="button" class="btn btn-primary w-100" (click)="getAllUsers()">Tìm kiếm</button>
   </div>
   
   <div class="mx-auto" style="overflow-y: scroll; height: 370px;">

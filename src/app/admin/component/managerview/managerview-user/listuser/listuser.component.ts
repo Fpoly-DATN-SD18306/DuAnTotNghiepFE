@@ -35,10 +35,10 @@ export class ListuserComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getAllFoods()
+    this.getAllUsers()
   }
 
-  getAllFoods() {
+  getAllUsers() {
     this.searchFilterUserService.filterUser(this.usernameFilter, this.fullnameFilter, this.isAdminFilter,this.isChangedPassFilter , this.number, this.size).subscribe(
       data => {
         this.filteredUsers = data.result.content;         
@@ -55,7 +55,7 @@ paging(numberPage: number) {
   console.log(numberPage);
   console.log(this.totalPages);
   this.number = numberPage;
-  this.getAllFoods();  
+  this.getAllUsers();  
 }
 
 editUser(idUser: string) {
