@@ -33,11 +33,11 @@
                     Username is required
                 </div>
             </div>
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="password" class="form-label">Mật khẩu</label>
                 <input type="password" id="password" formControlName="password" class="form-control"
                     placeholder="Password..." [disabled]="!isEditing">
-            </div>
+            </div> -->
             <div class="col-md-6">
                 <label for="isAdmin" class="form-label">Chức năng</label>
                 <select id="isAdmin" formControlName="isAdmin" class="form-select">
@@ -54,7 +54,7 @@
             </div>
 
             <div class="text-center mt-3">
-                <button type="submit" [disabled]="userForm.invalid" class="btn btn-outline-primary mx-2">Lưu</button>
+                <button type="submit" *ngIf="idUserNeedUpdate==null" [disabled]="userForm.invalid" class="btn btn-outline-primary mx-2">Lưu</button>
                 <button type="button" *ngIf="idUserNeedUpdate!=null" (click)="putUser()" [disabled]="userForm.invalid"
                     class="btn btn-outline-primary mx-2">Sửa nhân viên</button>
                 <button type="button" *ngIf="idUserNeedUpdate!=null" (click)="resertPassword()" [disabled]="userForm.invalid"

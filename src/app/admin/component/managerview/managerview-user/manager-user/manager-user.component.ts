@@ -38,8 +38,7 @@ export class ManagerUserComponent implements OnInit {
             this.idUserNeedUpdate = userResponse.idUser;
             this.userForm.patchValue({
               fullname: userResponse.fullname,
-              username: userResponse.username,
-              password: "password old",
+              username: userResponse.username,        
               isAdmin: userResponse.isAdmin,
               isDeleted: userResponse.isDeleted,
               isChangedPass: userResponse.isChangedPass,
@@ -55,37 +54,25 @@ export class ManagerUserComponent implements OnInit {
     });
   }
 resertPassword(){
-  this.router.params.subscribe(param => {
-    const userId = param['id'];
-    if (userId) {
-      this.isEditing = true;
-      this.userService.getById(userId).subscribe(
-        data => {
-          const userResponse = data.result as userResponse;
-          this.idUserNeedUpdate = userResponse.idUser;
-          this.userForm.patchValue({
-            fullname: userResponse.fullname,
-            username: userResponse.username,
-            password: "123",
-            isAdmin: userResponse.isAdmin,
-            isDeleted: userResponse.isDeleted,
-            isChangedPass: userResponse.isChangedPass,
-            imgUser: userResponse.imgUser
-          });
-          this.imgUser = userResponse.imgUser
-            ? `${this.hostingImg}${userResponse.imgUser}`
-            : './img/noImage.jpg';
-        },
-        error => console.error("Error fetching user data:", error)
-      );
-    }
-  });
+  const formData = new FormData(); 
+  formData.append('fullname', this.userForm.value.fullname);
+  formData.append('username', this.userForm.value.username);
+  formData.append('password', '123');
+  formData.append('isAdmin', this.userForm.value.isAdmin.toString());
+  formData.append('isDeleted', this.userForm.value.isDeleted.toString());
+  if (this.selectedFiles) {
+    formData.append('file', this.selectedFiles);
+  }
+  this.userService.putUser(formData, this.idUserNeedUpdate).subscribe(
+    () => this.openToast("Làm mới mật khẩu Thành Công"),
+    error => this.openToast("Làm mới mật khẩu Không thành công")
+  );
 }
+
   refreshForm() {
     this.userForm = this.formBuilder.group({
       fullname: ['', Validators.required],
       username: ['', Validators.required],
-      password: [{ value: '123', disabled: !this.isEditing }, Validators.required],
       isAdmin: [false, Validators.required],
       isDeleted: [false, Validators.required],
       imgUser: ['']
@@ -119,7 +106,7 @@ resertPassword(){
   createUser() {
     const formData = this.prepareFormData();
     this.userService.postUser(formData).subscribe(
-      () => this.openToast('User added successfully'),
+      () => this.openToast('Thêm mới nhân viên thành công'),
       error => this.openToast(`Error: ${error}`)
     );
   }
@@ -137,15 +124,12 @@ resertPassword(){
     this.userForm.get('password')?.enable(); 
     formData.append('fullname', this.userForm.value.fullname);
     formData.append('username', this.userForm.value.username);
-    formData.append('password', this.userForm.value.password ); 
     formData.append('isAdmin', this.userForm.value.isAdmin.toString());
     formData.append('isDeleted', this.userForm.value.isDeleted.toString());
 
     if (this.selectedFiles) {
       formData.append('file', this.selectedFiles);
     }
-
-    this.userForm.get('password')?.disable(); 
     return formData;
   }
 
