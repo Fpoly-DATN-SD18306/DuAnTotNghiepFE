@@ -13,8 +13,13 @@ export class AudioService {
 
   playSound(): void {
     this.audio.currentTime = 0; // Đặt lại thời gian phát để phát lại âm thanh
+    this.audio.loop = true;
     this.audio.play().catch(error => {
       console.error('Error playing sound:', error);
     });
+  }
+
+  pauseSound(): void {
+    this.audio.pause()
   }
 }

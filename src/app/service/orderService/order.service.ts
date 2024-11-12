@@ -4,6 +4,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiRespone } from '../../entity/api-respone';
 import { WebsocketService } from '../websocketService/websocket.service';
+import { foodResponse } from '../../entity/response/food-response';
+import { OrderRequest } from '../../entity/request/order-request';
 
 @Injectable({
   providedIn: 'root'
@@ -37,4 +39,16 @@ export class OrderService {
       return throwError(error);
     }))
   }
-}
+
+
+  createNewOrder(itemOrderrequest: OrderRequest[], idTable: number):Observable<ApiRespone>|null{
+     if(idTable){  
+       return this.http.post<ApiRespone>(`${this.url}/api/v1/order/create`,itemOrderrequest  ,{params : {"idTable" : idTable} })
+     }
+     return null;
+    }
+
+    updateOrder(idOrder: number, itemOrderrequest: OrderRequest[]): Observable<ApiRespone> {
+      return this.http.put<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`, itemOrderrequest);
+    }
+  }

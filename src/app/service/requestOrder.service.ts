@@ -27,6 +27,7 @@ export class RequestOrder {
    if(items){
     items.forEach(Element=>{
       itemsOrder.push(new OrderRequest(Element.idFood,Element.quantity,Element.note))
+      console.log('Element: ',Element)
     })
     if(idTable){  
       return this.http.post<ApiRespone>(this.url,itemsOrder  ,{params : {"idTable" : idTable} })
@@ -40,7 +41,5 @@ export class RequestOrder {
     }
    }
    return null;
-
   }
-
 }
