@@ -9,13 +9,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ManagerviewUserComponent } from './managerview-user/managerview-user.component';
 
 
 @NgModule({
   declarations: [
     ManagerviewparentComponent,
     ManagerviewFoodComponent,
-    ManagerviewTableComponent
+    ManagerviewTableComponent,
+    ManagerviewUserComponent
   ],
   imports: [
  
