@@ -1,3 +1,4 @@
+import { AreaService } from './../../../../../service/areaService/area.service';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableService } from '../../../../../service/tableService/table.service';
@@ -19,6 +20,9 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { InvoiceService } from '../../../../../service/paymentService/Invoice.service';
 import { invoiceRespone } from '../../../../../interface/invoice/invoice';
+import { AreaResponse } from '../../../../../entity/response/area-response';
+import { foodRequest } from '../../../../../entity/request/food-request';
+import { OrderDetailRequest } from '../../../../../entity/request/orderdetail-request';
 
 @Component({
   selector: 'app-orderprocessing',
@@ -34,7 +38,14 @@ export class OrderprocessingComponent implements OnInit {
 
   activeCategoryId: number | null = null;
 
+  listArea : AreaResponse[]=[];
+  listTable :tableResponse[]=[];
+  selectedAreaId: number=0;
+  seletedListFood:OrderDetailRequest[]=[];
+  listFoodRequest:foodRequest[]=[];
+  quantity:number=0;
   constructor(private tableservice: TableService, private snackBar: MatSnackBar,
+    private areaService :AreaService,
     private route: ActivatedRoute,
     private orderdetailsService: OrderdetailService,
     private orderService: OrderService,
@@ -58,7 +69,54 @@ export class OrderprocessingComponent implements OnInit {
       this.order = data.result
     })
   }
+  getAllArea(){
+   this.areaService.getAllAreas().subscribe(data =>{
+    this.listArea=data.result
+   }, error => {
+    console.log('Error', error)
+  }
+   )
+  }
 
+  getTable() {
+    console.log("areaid",this.selectedAreaId)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "", 0, 100000)
+      .subscribe(data => {
+        this.listTable = data.result.content;
+        console.log("Table", this.listTable);
+      });
+  }
+  
+
+  updateQuantity(index: number, newQuantity: string) {
+    this.listOrderDetails[index].quantity = this.listOrderDetails[index].quantity - parseInt(newQuantity);
+    this.quantity = parseInt(newQuantity);
+  }
+  moveToNewTable(id: number) {
+    const food = this.listOrderDetails.find(item => item.idFood === id);
+  
+    if (food) {
+ 
+      const existingItem = this.seletedListFood.find(item => item.idFood === id);
+  
+      if (existingItem) {
+     
+        existingItem.quantity += this.quantity;
+      } else {
+   
+        const orderRequest: OrderDetailRequest = {
+          idFood: food.idFood,
+          namefood: food.namefood,
+          quantity: this.quantity,
+          noteFood: food.noteFood,
+          price: food.price,
+          totalPrice: food.totalPrice,
+          discount: food.discount
+        };
+        this.seletedListFood.push(orderRequest);
+      }
+    }
+  }
   getData() {
     this.route.params.subscribe(param => {
       let idOrder = param['idOrder']

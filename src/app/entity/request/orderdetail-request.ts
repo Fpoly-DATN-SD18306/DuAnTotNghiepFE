@@ -1,7 +1,6 @@
-export class OrderDetailResponse{
+export class OrderDetailRequest{
     constructor(
-        public idOrderDetail :number,
-        public idFood : number,
+        public idFood:number,
         public quantity : number,
         public price : number,
         public totalPrice : number,

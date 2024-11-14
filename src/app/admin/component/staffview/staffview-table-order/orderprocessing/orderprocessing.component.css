@@ -43,3 +43,7 @@
     top: 5px;
     right: 20px;
 }
+.inputQuantity{
+    border-radius: 3%;
+    border: bisque;
+}
