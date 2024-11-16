@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { OrderResponse } from '../../../../../entity/response/order-response';
 import { OrderDetailResponse } from '../../../../../entity/response/orderdetail-response';
 import { ChangeDetectionStrategy } from '@angular/compiler';
-import e from 'express';
 
 
 @Component({
@@ -26,6 +25,8 @@ export class TableorderStaffComponent implements OnInit {
     private orderdetailsService: OrderdetailService,
     private router: Router
     ) { }
+
+   
 
   listTable!: tableResponse[]
   listStatuses! : tableStatusResponse[]
@@ -56,14 +57,12 @@ export class TableorderStaffComponent implements OnInit {
   }
   
     selectTable(item: tableResponse) {
-    this.selectedTable = item;
-    if (item.currentOrderId != null) {
-      console.log("item has idorder")
+    if (item.currentOrderId !== null) {
+    // this.selectedTable = item;
       this.fetchOrderDetails(item.currentOrderId, item.idTable);
       this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', item.currentOrderId, item.idTable]);
     } else {
       this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing/', item.idTable]);
-      // this.selectedTable = item;
       console.log("item no has idorder", item)
     // Xóa dữ liệu đơn hàng cũ
       this.listOrderDetails = [];

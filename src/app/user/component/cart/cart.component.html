@@ -57,7 +57,8 @@
     </div>
 
     <div style="font-size: 22px; " class="py-2  container  d-flex justify-content-center">
-      <button type="button" class="btn w-100 btn-warning text-white w3-button w3-large" style="background-color: orange;" onclick="document.getElementById('id01').style.display='block'">Đặt đơn -
+      <button type="button" class="btn w-100 btn-warning text-white w3-button w3-large"
+        style="background-color: orange;" onclick="document.getElementById('id01').style.display='block'">Đặt đơn -
         {{formatPrice(total)}}</button>
     </div>
 
@@ -67,20 +68,32 @@
   </div>
 </section>
 <div id="id01" class="w3-modal">
-  <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2 " [ngClass]="{'d-none':isConfirmed}" style="max-width:600px">
+  <!-- Modal Xác nhận đặt hàng -->
+  <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" 
+       [ngClass]="{'d-none': isConfirmed || iserror}" 
+       style="max-width:600px">
     <div class="tittle-confilm text-center">
       <img src="./img/chamthan.png" width="65px" alt="">
       <h6 class="fw-bold">Xác nhận đặt hàng?</h6>
-      <span style="font-size: 0.8em; line-height: 10px;">Đơn hàng của bạn sẽ được gửi thông báo đến nhân viên sau khi bạn xác nhận!</span>
+      <span style="font-size: 0.8em; line-height: 10px;">
+        Đơn hàng của bạn sẽ được gửi thông báo đến nhân viên sau khi bạn xác nhận!
+      </span>
     </div>
     <div class="box-btn d-flex justify-content-end pt-2">
-      <button class="w3-button text-white rounded-2 py-3" style="background-color: rgba(241, 159, 71, 0.987);" (click)="callOrder()">Xác nhận</button>
-      <button class="w3-button rounded-2 text-white py-3" onclick="document.getElementById('id01').style.display='none'" type="button" style="background-color: rgba(239, 25, 54, 0.831);">Hủy</button>
+      <button class="w3-button text-white rounded-2 py-3" 
+              style="background-color: rgba(241, 159, 71, 0.987);" 
+              (click)="callOrder()">Xác nhận</button>
+      <button class="w3-button rounded-2 text-white py-3" 
+              onclick="document.getElementById('id01').style.display='none'" 
+              type="button" 
+              style="background-color: rgba(239, 25, 54, 0.831);">Hủy</button>
     </div>
-    
   </div>
 
-  <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" [ngClass]="{'d-none':!isConfirmed}" style="max-width:600px">
+  <!-- Modal Đặt hàng thành công -->
+  <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" 
+       [ngClass]="{'d-none': !isConfirmed || iserror}" 
+       style="max-width:600px">
     <div class="tittle-confilm text-center">
       <img src="./img/successcheft.png" width="170px" alt="">
       <div class="title-success">
@@ -89,8 +102,30 @@
       </div>
     </div>
     <div class="box-btn d-flex justify-content-end pt-2">
-      <button onclick="document.getElementById('id01').style.display='none'" type="button" class="w3-button rounded-3 text-white" style="background-color:rgba(122, 234, 127, 0.891);">Xác nhận</button>
+      <button onclick="document.getElementById('id01').style.display='none'" 
+              type="button" 
+              class="w3-button rounded-3 text-white" 
+              style="background-color: rgba(122, 234, 127, 0.891);">Xác nhận</button>
     </div>
-    
+  </div>
+
+  <!-- Modal Đặt bàn không thành công -->
+  <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" 
+       [ngClass]="{'d-none': !iserror}" 
+       style="max-width:600px">
+    <div class="tittle-confilm text-center">
+      <img src="./img/warning.png" width="170px" alt="">
+      <div class="title-success">
+        <h5 class="fw-bold">Đặt bàn không thành công!</h5>
+        <i style="font-size: 0.9em;">Bàn này hiện tại đang được phục vụ bởi người khác.</i> <br>
+        <i style="font-size: 0.9em;">Quý khách vui lòng đến tại quầy hoặc gọi nhân viên để được hổ trợ trực tiếp.</i>
+      </div>
+    </div>
+    <div class="box-btn d-flex justify-content-end pt-2">
+      <button onclick="document.getElementById('id01').style.display='none'" 
+              type="button" 
+              class="w3-button rounded-3 text-white" 
+              style="background-color: rgba(239, 25, 54, 0.831);">Xác nhận</button>
+    </div>
   </div>
 </div>

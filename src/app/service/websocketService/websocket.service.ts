@@ -4,6 +4,8 @@ import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { OrderRequest } from '../../entity/request/order-request';
 import { Subject } from 'rxjs';
+import { Cartitem } from '../../interface/cart/cartitem';
+import { Icart } from '../../interface/cart/iCart';
 
 
 @Injectable({
@@ -60,6 +62,10 @@ export class WebsocketService {
 
   sendOrderUpdate(order: OrderRequest) {
     this.stompClient.send('/app/api/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
+  }
+
+  sendItemCart(item : Icart[]){
+    this.stompClient.send('/app/api/order', {}, item); // Gửi thông tin đơn hàng đến broker
   }
   
   sendConfirmOrder(order: OrderRequest) {

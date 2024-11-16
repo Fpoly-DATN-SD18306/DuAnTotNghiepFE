@@ -88,4 +88,6 @@
     opacity: 1;
   }
 
-  
+  .bg-orderdetail{
+    background-color: rgb(255, 241, 230);
+  }

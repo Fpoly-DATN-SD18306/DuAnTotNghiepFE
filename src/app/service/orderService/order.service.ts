@@ -19,15 +19,15 @@ export class OrderService {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`);
   } 
 
-  confirmOrder(idOrder: number | null, idTable: number| null,): Observable<ApiRespone> {
+  confirmOrder(idOrderOld: number | null, idOrderNew: number| null): Observable<ApiRespone> {
     let params = new HttpParams();
 
-    if (idOrder !== null && idOrder !== undefined) {
-      params = params.set('idOrder', idOrder.toString());
+    if (idOrderOld !== null && idOrderOld !== undefined) {
+      params = params.set('idOrderOld', idOrderOld.toString());
     }
 
-    if (idTable !== null && idTable !== undefined) {
-      params = params.set('idTable', idTable.toString());
+    if (idOrderNew !== null && idOrderNew !== undefined) {
+      params = params.set('idOrderNew', idOrderNew.toString());
     }
 
     const urlWithParams = `${this.url}/api/v1/order?${params.toString()}`;
@@ -48,7 +48,17 @@ export class OrderService {
      return null;
     }
 
-    updateOrder(idOrder: number, itemOrderrequest: OrderRequest[]): Observable<ApiRespone> {
+    updateOrder(idOrder: number, itemOrderrequest: OrderRequest): Observable<ApiRespone> {
       return this.http.put<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`, itemOrderrequest);
     }
+
+    updateOrderDetailQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
+      const url = `${this.url}/api/v1/order/${idOrder}/orderdetails/${idOrderDetail}`;
+      return this.http.put(url, newQuantity); // Gửi newQuantity trực tiếp
+    }
+
+    removeOrderDetail(idOrderDetail: number):Observable<ApiRespone>{
+      return this.http.delete<ApiRespone>(`${this.url}/api/v1/order/${idOrderDetail}`);
+    }
   }
+
