@@ -40,6 +40,8 @@ export class OrderprocessingComponent implements OnInit {
   
   //lưu trữ idOrder cũ
   oldIdOrders: Map<number, number | null> = new Map();
+  cancelReason: string = '';
+  itemOrderDetailToCancel: number | null = null;
   
 
   constructor(
@@ -369,38 +371,73 @@ export class OrderprocessingComponent implements OnInit {
 
   removeOrderDetails(idOrderDetail: number) {
     if (this.order) {
-      this.orderService.removeOrderDetail(idOrderDetail).subscribe(
-        (data) => {
-          this.getDataOrderdetail();
-          setTimeout(() => {
-            console.log('ok: ', this.listOrderDetails.length);
-            if (this.listOrderDetails.length === 0 ) {
-              sessionStorage.removeItem(`order-${this.order?.idTable}`);
-              this.routerActive.params.subscribe((param) => {
-                let idTable = param['idTable'];
-                this.router.navigate([
-                  `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
-                ]);
-              });
-            }
-          }, 100);
-        },
-        (err) => {
-          console.log('Delete fail!', err);
-        }
-      );
+      // Kiểm tra nếu là phần tử cuối cùng trong danh sách
+      if (this.listOrderDetails.length === 1) {
+        // Hiển thị modal yêu cầu nhập lý do hủy
+        this.showCancelModal(idOrderDetail);
+      } else {
+        // Xóa phần tử nếu không phải phần tử cuối
+        this.executeRemove(idOrderDetail);
+      }
     } else {
+      // Nếu không có order, xóa trực tiếp từ listOrderDetails và tempProducts
       this.listOrderDetails = this.listOrderDetails.filter(
         (orderDetail) => orderDetail.idOrderDetail !== idOrderDetail
       );
-
       this.tempProducts = this.tempProducts.filter(
         (tempProduct) => tempProduct.idOrderDetail !== idOrderDetail
       );
-
       this.updateTotal();
     }
-
+  }
+  
+  showCancelModal(idOrderDetail: number) {
+    // Mở modal để yêu cầu người dùng nhập lý do hủy
+    const modalElement = document.getElementById('cancelModal');
+    if (modalElement) {
+      modalElement.style.display = 'block';
+    }
+    // Lưu idOrderDetail của item cần xóa
+    this.itemOrderDetailToCancel = idOrderDetail;
+  }
+  
+  cancelModalClose() {
+    // Đóng modal khi nhấn hủy
+    const modalElement = document.getElementById('cancelModal');
+    if (modalElement) {
+      modalElement.style.display = 'none';
+    }
+  }
+  
+  confirmCancel() {
+    // Xóa phần tử khi xác nhận
+    if (this.itemOrderDetailToCancel) {
+      this.executeRemove(this.itemOrderDetailToCancel);
+    }
+    this.cancelModalClose();
+  }
+  
+  executeRemove(idOrderDetail: number) {
+    // Thực hiện xóa phần tử
+    this.orderService.removeOrderDetail(idOrderDetail).subscribe(
+      (data) => {
+        this.getDataOrderdetail();
+        setTimeout(() => {
+          if (this.listOrderDetails.length === 0) {
+            sessionStorage.removeItem(`order-${this.order?.idTable}`);
+            this.routerActive.params.subscribe((param) => {
+              let idTable = param['idTable'];
+              this.router.navigate([
+                `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
+              ]);
+            });
+          }
+        }, 100);
+      },
+      (err) => {
+        console.log('Delete fail!', err);
+      }
+    );
   }
 
   formatPrice(price: number) {
