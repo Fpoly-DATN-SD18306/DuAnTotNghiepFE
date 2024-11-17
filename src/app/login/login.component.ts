@@ -38,7 +38,8 @@ export class LoginComponent {
     
     if (resultLogin) {
       this.errorMessage = this.errorRecord[resultLogin];
-      console.log(this.errorRecord[resultLogin]);
+      console.log( this.errorMessage);
+      console.log(resultLogin);
     }
     
     console.log(resultLogin);

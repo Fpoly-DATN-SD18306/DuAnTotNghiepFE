@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LoginService } from '../../../service/loginService/login.service';
 
 @Component({
   selector: 'app-adminview',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrl: './adminview.component.css'
 })
 export class AdminviewComponent {
+  constructor(private loginLogoutService : LoginService){}
+
+  logout(){
+    this.loginLogoutService.logout()
+
+  }
 
 }

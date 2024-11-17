@@ -5,7 +5,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ApiRespone } from '../../entity/api-respone';
 import { Observable } from 'rxjs';
 import { promotionRequest } from '../../entity/request/promotion-request';
-import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class LoginService{
   
   url = ApiConfigService.apiUrl
 
-  constructor(private  httpClient : HttpClient){}
+  constructor(private  httpClient : HttpClient,private router :Router){}
 
 
    async login(username:string,password:string):Promise<number|void>{
@@ -25,7 +26,19 @@ export class LoginService{
     try {
       // Chuyển `post` thành `Promise`
       const data = await this.httpClient.post<ApiRespone>(this.url + "/api/login", obj).toPromise();
-      console.log(data);
+      console.log(data?.result);
+      if(data){
+        localStorage.setItem("jwt",data.result.token)
+        
+        let decodeToken: any = jwtDecode(data.result.token);
+        let roleToken = decodeToken.scope
+        if(roleToken=="MANAGER"){
+          this.router.navigate(["/admin/manager/managerFood/manager"])
+        } else if(roleToken=="STAFF"){
+          this.router.navigate(["/admin/staff/tableorder_staff/tableorder"])
+        }
+
+      }
       
   } catch (error ) {
     const e = error as HttpErrorResponse;  
@@ -34,6 +47,21 @@ export class LoginService{
   }
 
   }
-
+  async logout():Promise<number|void>{
+    try {
+      let token = localStorage.getItem("jwt")
+      if(token){
+      var data= await this.httpClient.post<ApiRespone>(this.url + "/api/logout",{"token":token} as object).toPromise();
+   
+    }
+    } catch (error) {
+      var e = error as HttpErrorResponse
+      return e.error.code;
+    } finally  {
+      localStorage.removeItem("jwt")
+      this.router.navigate(["/login"])
+    }
+   
+  }
 }
 

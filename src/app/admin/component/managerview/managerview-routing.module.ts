@@ -4,13 +4,14 @@ import { ManagerviewparentComponent } from './managerviewparent/managerviewparen
 import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
 import { ManagerviewFoodModule } from './managerview-food/managerview-food.module';
 import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-voucher.component';
+import { RoleGuardService } from '../../../service/authService/RoleGuard.service';
 
 const routes: Routes = [{
   path: '', component: ManagerviewparentComponent,
   children: [
    { path: 'managerFood', loadChildren: () => import('./managerview-food/managerview-food.module').then(m => m.ManagerviewFoodModule) },
-   { path: 'managerTable', component: ManagerviewTableComponent},
-   {path: 'managerVoucher', component: ManagerviewVoucherComponent},
+   { path: 'managerTable', component: ManagerviewTableComponent,canActivate:[RoleGuardService], data:{expectedRole :"MANAGER"} },
+   {path: 'managerVoucher', component: ManagerviewVoucherComponent,canActivate:[RoleGuardService], data:{expectedRole :"MANAGER"}},
    { path: 'managerUser', loadChildren: () => import('./managerview-user/managerview-user.module').then(m => m.ManagerviewUserModule) }
   ]
 }
