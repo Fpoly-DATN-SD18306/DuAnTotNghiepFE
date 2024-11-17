@@ -12,7 +12,12 @@
           <option value="startDate">Sắp xếp theo ngày bắt đâu</option>
           <option value="endDate">Sắp xếp theo Ngày kết thúc</option>
         </select>
-        <select [(ngModel)]="selectedStatus" class="sort-select" (ngModelChange)="filterPromotion()">
+        <select [(ngModel)]="isIncreasePrice" class="sort-select" (ngModelChange)="filterPromotion()">
+          <option [value]="123" selected>Tất cả</option>
+          <option [value]='true'>Tăng Giá</option>
+          <option [value]='false'>Giảm Giá</option>
+        </select>
+        <select [(ngModel)]="selectedStatus"  class="sort-select" (ngModelChange)="filterPromotion()">
           <option value="" selected>Tất cả</option>
           <option value="expired">Hết hạn</option>
           <option value="active">Còn hạn</option>
@@ -36,6 +41,7 @@
               <th>Phần trăm khuyến mãi(%)</th>
               <th>Ngày bắt đầu</th>
               <th>Ngày kết thúc</th>
+              <th>Loại promotion</th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -50,6 +56,11 @@
               <td>{{voucher.discount}}%</td>
               <td>{{voucher.startDate | date :'dd/MM/yyyy'}}</td>
               <td>{{voucher.endDate | date :'dd/MM/yyyy'}}</td>
+              
+              <td>
+               
+                {{voucher.increasePrice?"Tăng giá":"Giảm giá"}}
+              </td>
               <td>
                 <!-- :'dd/MM/yyyy' -->
                 <button class="edit-btn mb-1" (click)="editVoucher(voucher)" aria-label="Edit voucher">Sửa</button>
@@ -91,7 +102,13 @@
                 Ngày kết thúc không được để trống
               </span>
             </div>
-    
+            <div class="form-group">
+              <label for="isIncreasePrice">Loại promotion</label>
+              <select class="sort-select" id="isIncreasePrice" formControlName="isIncreasePrice"  (change)="update()">
+                <option  value="true">Tăng Giá</option>
+                <option value="false">Giảm Giá</option>
+              </select>
+            </div>
             <div class="form-group">
               <label for="description">Mô tả</label>
               <textarea id="description" formControlName="description"></textarea>
