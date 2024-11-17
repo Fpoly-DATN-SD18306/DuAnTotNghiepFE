@@ -73,19 +73,32 @@ export class StaffviewParentComponent implements OnInit {
   }
 
 
-  confirmOrder(idOrder: number | null, idTable: number | null) {
+  confirmOrder(idOrder: number , idTable : number) {
+    if (idOrder === null || idTable === null) { 
+      console.log('Lỗi: idOrder hoặc idTable không hợp lệ!');
+      return; 
+    }
+     const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
+     console.log('oldIdOrdersession', oldIdOrder);
     this.audioService.pauseSound()
-    this.orderService.confirmOrder(idOrder, idTable).subscribe(data => {
-      console.log('Order confirmed', data.result)
-
-      const notification = this.orderMessages.find(msg => msg.message.includes(`#${idOrder}`));
-      if (notification) {
-        notification.visible = false; // Đánh dấu thông báo là không hiển thị
-      }
-    }, error => {
-      console.log('Error', error)
-    })
-
+    if (oldIdOrder) {
+      this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
+        (data) => {
+        },
+        (error) => {
+          console.log('Error', error);
+        }
+      );
+    } else {
+      this.orderService.confirmOrder(idOrder, null).subscribe(
+        (data) => {
+          sessionStorage.setItem(`order-${idTable}`, idOrder!.toString());
+        },
+        (error) => {
+          console.log('Error', error);
+        }
+      );
+    }
 
   }
 

@@ -8,7 +8,9 @@ export class tableResponse{
         public linkImageQr : String,
         public nameImageQr : String,
         public displayName : String,
-        public currentOrderId: number
+        public currentOrderId: number,
+        public currentIP: String
+        
     ){}
 
 }
