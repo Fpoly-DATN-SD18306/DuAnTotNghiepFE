@@ -23,6 +23,8 @@ import { invoiceRespone } from '../../../../../interface/invoice/invoice';
 import { AreaResponse } from '../../../../../entity/response/area-response';
 import { foodRequest } from '../../../../../entity/request/food-request';
 import { OrderDetailRequest } from '../../../../../entity/request/orderdetail-request';
+import { OrderRequest } from '../../../../../entity/request/order-request';
+import { RequestOrder } from '../../../../../service/requestOrder.service';
 
 @Component({
   selector: 'app-orderprocessing',
@@ -31,24 +33,34 @@ import { OrderDetailRequest } from '../../../../../entity/request/orderdetail-re
 })
 export class OrderprocessingComponent implements OnInit {
   listOrderDetails: OrderDetailResponse[] = []
+  listOrderDetailsTableMerge: OrderDetailResponse[] = []
   listProducts: foodResponse[] = []
   listCategories: CategoryResponse[] = []
   itemTable?: tableResponse
+  selectedTable: tableResponse | null = null;
   order?: OrderResponse
-
+  selectedTableId: number | null = null;
+  mergerOrderId: number | null = null;
   activeCategoryId: number | null = null;
 
   listArea : AreaResponse[]=[];
   listTable :tableResponse[]=[];
+  tableMergerId !:number;
+  indexOrder !:number;
+ 
   selectedAreaId: number=0;
-  seletedListFood:OrderDetailRequest[]=[];
+  seletedListFood:OrderRequest[]=[];
+  seletedListUpdateFood:OrderRequest[]=[];
+  seletedListMergerFood:OrderRequest[]=[];
   listFoodRequest:foodRequest[]=[];
   quantity:number=0;
+  test!: any;
   constructor(private tableservice: TableService, private snackBar: MatSnackBar,
     private areaService :AreaService,
     private route: ActivatedRoute,
     private orderdetailsService: OrderdetailService,
     private orderService: OrderService,
+    private requestOrder: RequestOrder,
     private productService: FoodService,
     private categoryService: CategoryService,
     private webSocketService: WebsocketService,
@@ -80,44 +92,283 @@ export class OrderprocessingComponent implements OnInit {
 
   getTable() {
     console.log("areaid",this.selectedAreaId)
-    this.tableservice.getTablesByArea("", this.selectedAreaId, "", 0, 100000)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "AVAILABLE", 0, 100000)
       .subscribe(data => {
         this.listTable = data.result.content;
         console.log("Table", this.listTable);
       });
   }
+  getTableOpen() {
+    console.log("areaid",this.selectedAreaId)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "PENDING", 0, 100000)
+      .subscribe(data => {
+        this.listTable = data.result.content;
+        console.log("Table", this.listTable);
+      });
+  }
+
+  updateQuantity(index: number,event:Event,id: number, ) {
+    let target = event.currentTarget as HTMLInputElement
+    if(target.valueAsNumber){
+      this.quantity = target.valueAsNumber ;
+    }else{
+      this.quantity = 0
+    }
+    
+    this.moveToNewTable(id,index)
+    
+  }
+  
+  moveToNewTable(id: number, index: number): void {
+    
+  
+      const food = this.listOrderDetails.find(item => item.idFood === id);
+    if (food) {
+        // Kiểm tra số lượng nhập vào có hợp lệ không
+        if (this.quantity <= 0) {
+            this.openTotast("Số lượng phải là số dương.");
+            return;
+        }
+
+        // Kiểm tra số lượng chuyển có vượt quá số lượng hiện có không
+        if ( this.quantity>food.quantity ) {
+            this.openTotast("Số lượng chuyển không được lớn hơn số lượng hiện có ở bàn cũ.");
+            return;
+        }
+   
+        // Tìm món hàng trong danh sách bàn mới
+        const existingItem = this.seletedListFood.find(item => item.idFood === id);
+
+        // Nếu món hàng đã tồn tại trong danh sách bàn mới
+        if (existingItem) {
+            // Cập nhật số lượng
+            existingItem.quantity += this.quantity;
+        } else {
+            // Nếu món hàng chưa tồn tại, tạo mới
+              const orderRequest: OrderRequest = {
+              idFood: food.idFood,
+              quantity: this.quantity,
+              noteFood: food.noteFood,
+              nameFood: food.namefood,
+              
+            };    
+           
+
+          
+            this.seletedListFood.push(orderRequest);
+        }
+
+        const currentFood = this.listOrderDetails.find(item => item.idFood === id);
+        if (currentFood) {
+            currentFood.quantity -= this.quantity;
+
+            if (currentFood.quantity < 0) {
+                currentFood.quantity = 0;
+                this.openTotast("Số lượng bàn cũ không đủ");
+            }
+          if (this.listOrderDetails[index].quantity === 0) {
+         
+          this.listOrderDetails.splice(index, 1);
+        }
+            
+            const orderRequestOld: OrderRequest = {
+              idFood: food.idFood,
+              quantity: food.quantity,
+              noteFood: food.noteFood,
+              nameFood: food.namefood,
+              
+            };
+            console.log(orderRequestOld.quantity)
+            this.seletedListUpdateFood.push(orderRequestOld);
+            console.log( this.seletedListUpdateFood)
+        }
+    }
+    
+    
+   
+}
+removeFromNewTable(index: number): void {
+  const removedItem = this.seletedListFood[index];
+  this.seletedListFood.splice(index, 1);
+  const existingItem = this.listOrderDetails.find(item => item.idFood === removedItem.idFood);
+
+  if (existingItem) {
+      existingItem.quantity += removedItem.quantity;
+  } else {
+      this.listOrderDetails.push({
+          idOrderDetail: 0, 
+          idFood: removedItem.idFood,
+          quantity: removedItem.quantity,
+          price: 0, 
+          totalPrice: 0, 
+          noteFood: removedItem.noteFood || "",
+          namefood: removedItem.nameFood,
+          discount: 0, 
+      });
+  }
+}
+createNewOrder(): void {
   
 
-  updateQuantity(index: number, newQuantity: string) {
-    this.listOrderDetails[index].quantity = this.listOrderDetails[index].quantity - parseInt(newQuantity);
-    this.quantity = parseInt(newQuantity);
+  if (this.selectedTableId) {
+    this.requestOrder.postNewOrder(this.seletedListFood, this.selectedTableId)
+      .subscribe(
+        response => {
+          console.log('New order created:', response);
+          this.openTotast('Đơn hàng mới đã được tạo thành công!');
+          this.seletedListFood = [];
+          this.selectedTableId = null;
+          this.route.params.subscribe(param => {
+            let idOrder = param['idOrder'];
+        
+            if (idOrder) {
+              this.requestOrder.updateOrder(idOrder, this.seletedListUpdateFood)
+                .subscribe(
+                  response => {
+                    console.log('Order updated successfully:', response);
+                    this.openTotast('Đơn hàng cũ đã được cập nhật thành công!');
+                  },
+                  error => {
+                    console.error('Error updating order:', error);
+                    this.openTotast('Lỗi khi cập nhật đơn hàng cũ.');
+                  }
+                );
+            }
+          });
+        },
+        error => {
+          console.error('Error creating new order:', error);
+          this.openTotast('Lỗi khi tạo đơn hàng.');
+        }
+      );
+  } else {
+    this.openTotast('Vui lòng chọn bàn mới.');
   }
-  moveToNewTable(id: number) {
-    const food = this.listOrderDetails.find(item => item.idFood === id);
-  
-    if (food) {
+}
+onTableSelectChange(mergerOrder: tableResponse | null): void  {
+  if (mergerOrder) {
+    
+    const currentOrderId = mergerOrder.currentOrderId;
+    const  idTable = mergerOrder.idTable;
+    this.tableMergerId = idTable;
+    this.mergerOrderId = currentOrderId;
+
+    
+    console.log('Selected currentOrderId:', currentOrderId);
+    console.log('Selected idTable:', idTable);
+    
+    
+    this.orderdetailsService.getOrderDetail(currentOrderId, idTable).subscribe(data => {
+      console.log('DataOrderget: ', data.result)
+      this.listOrderDetailsTableMerge = data.result
+    })
+
+  } else {
  
-      const existingItem = this.seletedListFood.find(item => item.idFood === id);
-  
-      if (existingItem) {
-     
-        existingItem.quantity += this.quantity;
-      } else {
-   
-        const orderRequest: OrderDetailRequest = {
-          idFood: food.idFood,
-          namefood: food.namefood,
-          quantity: this.quantity,
-          noteFood: food.noteFood,
-          price: food.price,
-          totalPrice: food.totalPrice,
-          discount: food.discount
-        };
-        this.seletedListFood.push(orderRequest);
+  } 
+}
+mergeOrder() {
+  this.route.params.subscribe(param => {
+    let idTable = param['idTable'];
+    let idOrder = param['idOrder'];
+    if(idTable == this.tableMergerId ){
+      this.openTotast('Không thể gộp cùng 1 bàn lại với nhau.')
+    }else{
+      for (const element of this.listOrderDetailsTableMerge) {
+        const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
+        let orderRequestOld: OrderRequest;
+    
+        if (existingItem) {
+          orderRequestOld = {
+            idFood: element.idFood,
+            quantity: element.quantity + existingItem.quantity,
+            noteFood: element.noteFood,
+            nameFood: element.namefood,
+          };
+        } else {
+    
+          orderRequestOld = {
+            idFood: element.idFood,
+            quantity: element.quantity,
+            noteFood: element.noteFood,
+            nameFood: element.namefood,
+          };
+        }
+        this.seletedListMergerFood.push(orderRequestOld);
       }
+      
+      
+      for (const element of this.listOrderDetailsTableMerge) {
+        const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
+    
+        if (existingItem) {
+    
+          existingItem.quantity += element.quantity;
+        } else {
+          this.listOrderDetails.push({
+            idOrderDetail: 0, 
+            idFood: element.idFood,
+            quantity: element.quantity,
+            price: 0, 
+            totalPrice: 0, 
+            noteFood: element.noteFood || "",
+            namefood: element.namefood,
+            discount: 0, 
+        });
+        }
+      }
+      
+    
+        if (idOrder) {
+          this.requestOrder.updateOrder(idOrder, this.seletedListMergerFood)
+            .subscribe(
+              response => {
+                console.log('Order updated successfully:', response)
+                const orderId = Number(this.mergerOrderId);
+                this.requestOrder.deleteOrder(orderId).subscribe(
+                  () => {
+                    
+                    console.log('Order deleted successfully');
+                  },
+                  (error) => {
+                    console.error('Error deleting order:', error);
+                  }
+                );
+                this.tableservice.updateTableStatus(this.tableMergerId, 'AVAILABLE').subscribe(data => {
+                  console.log("Updated Table:", data);
+                  this.ngOnInit()
+                  this.openTotast('Đã cập nhật trạng thái!')
+                }, error => {
+                  this.openTotast('Đã cập nhật trạng thái!')
+                  console.log("Error", error);
+                });
+                this.openTotast('Gộp bàn thành công!');
+               
+              },
+              error => {
+                console.error('Error updating order:', error);
+                this.openTotast('Lỗi khi Gộp bàn.');
+              }
+            );
+        }
+      
+    
+      this.listOrderDetailsTableMerge = [];
     }
-  }
+
+  });
+}
+
+openTotast(status: string) {
+  this.snackBar.open
+    (status, "Đóng", {
+      duration: 4000,
+      horizontalPosition: 'end', //  'start', 'end'
+      verticalPosition: 'bottom', //  'bottom'
+    })
+}
   getData() {
+
     this.route.params.subscribe(param => {
       let idOrder = param['idOrder']
       let idTable = param['idTable']
@@ -238,7 +489,7 @@ export class OrderprocessingComponent implements OnInit {
             // window.location.assign(data.result.urlToRedirect)
             window.open(data.result.urlToRedirect)
           }, error => {
-            alert(this.errorCode[error.error.code])
+          
             console.log(error);
 
           }
@@ -253,7 +504,7 @@ export class OrderprocessingComponent implements OnInit {
             // window.location.assign(data.result.urlToRedirect)
             this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
           }, error => {
-            alert(this.errorCode[error.error.code])
+        
             console.log(error);
 
           }

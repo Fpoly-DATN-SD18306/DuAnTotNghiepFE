@@ -27,4 +27,6 @@ export class OrderdetailService {
 
     return this.http.get<ApiRespone>(`${this.url}/api/v1/orderdetail`, { params });
   }
+
+  
 }

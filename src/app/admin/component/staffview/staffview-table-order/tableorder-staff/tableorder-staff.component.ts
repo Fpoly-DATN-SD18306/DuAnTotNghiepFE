@@ -96,7 +96,7 @@ export class TableorderStaffComponent implements OnInit {
       console.log('Both idOrder and idTable are null');
     }
   }
-// ****************************************************************
+
 
   getAllStatuses(){
     this.tableservice.getAllStatuses().subscribe(data => {
