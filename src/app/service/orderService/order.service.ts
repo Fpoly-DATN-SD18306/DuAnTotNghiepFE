@@ -60,5 +60,19 @@ export class OrderService {
     removeOrderDetail(idOrderDetail: number):Observable<ApiRespone>{
       return this.http.delete<ApiRespone>(`${this.url}/api/v1/order/${idOrderDetail}`);
     }
+
+    cancelOrder( idOld:  number| null, idNew: number | null,  cancellationReason: String):Observable<ApiRespone>{
+      let params = new HttpParams();
+      if (idOld !== null && idOld !== undefined) {
+        params = params.set('idOld', idOld.toString());
+      }
+      
+      if (idNew !== null && idNew !== undefined) {
+        params = params.set('idNew', idNew.toString());
+      }
+    
+      return this.http.put<ApiRespone>(`${this.url}/api/v1/order/cancel?${params.toString()}`, cancellationReason);
+    }
+
   }
 

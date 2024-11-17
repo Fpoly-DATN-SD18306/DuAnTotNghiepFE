@@ -205,10 +205,11 @@
             <div class="row align-items-center">
               <div class="col-6">
                 <button class="btn form-control btn-primary py-3 rounded-4 fw-bold" style="font-size: 0.9em;"
-                  (click)="confirmOrder(order?.idOrder ?? null, order!.idTable ?? null)"><span>Xác nhận</span></button>
+                  (click)="confirmOrder(order?.idOrder ?? null, order?.idTable ?? null)"><span>Xác nhận</span></button>
               </div>
               <div class="col-6">
-                <button class="btn form-control btn-danger py-3 rounded-4 fw-bold" style="font-size: 0.9em;"><span>Hủy
+                <button  class="btn form-control btn-danger py-3 rounded-4 fw-bold" style="font-size: 0.9em;"
+                (click)="openModalCancel()"><span>Hủy
                     đơn</span></button>
               </div>
             </div>
@@ -234,11 +235,11 @@
     <div class="w3-modal-content w3-card-4 p-4 rounded-2 position-absolute d-block" style="max-width:600px; top: 30%; left: 27%;">
       <div class="title-success">
         <h5 class="fw-bold">Hủy đơn</h5>
-        <input type="text" class="form-control" placeholder="Nhập lý do hủy đơn" [(ngModel)]="cancelReason">
+        <input type="text" class="form-control "  placeholder="Nhập lý do hủy đơn" [(ngModel)]="cancelReason" id="validationDefaultUsername" aria-describedby="inputGroupPrepend2" required>
       </div>
       <div class="box-btn d-flex justify-content-end pt-2">
         <button (click)="cancelModalClose()" type="button" class="w3-button rounded-3 text-white" style="background-color: rgba(239, 25, 54, 0.831);">Hủy</button>
-        <button (click)="confirmCancel()" type="button" class="w3-button rounded-3 text-white mx-2" style="background-color: rgba(71, 174, 242, 0.642);">Xác nhận</button>
+        <button (click)="handleCancelAction()" type="submit" class="w3-button rounded-3 text-white mx-2" style="background-color: rgba(71, 174, 242, 0.642);">Xác nhận</button>
       </div>
     </div>
   </div>

@@ -37,12 +37,12 @@ export class OrderprocessingComponent implements OnInit {
   iOrder!: OrderRequest;
   activeCategoryId: number | null = null;
   tempTotal!: number
-  
+
   //lưu trữ idOrder cũ
   oldIdOrders: Map<number, number | null> = new Map();
   cancelReason: string = '';
   itemOrderDetailToCancel: number | null = null;
-  
+
 
   constructor(
     private tableservice: TableService,
@@ -54,7 +54,7 @@ export class OrderprocessingComponent implements OnInit {
     private categoryService: CategoryService,
     private webSocketService: WebsocketService,
     private router: Router,
-    private ipService : IpServiceService
+    private ipService: IpServiceService
   ) { }
 
   ngOnInit(): void {
@@ -68,7 +68,7 @@ export class OrderprocessingComponent implements OnInit {
     this.orderService.getOrder(idOrder).subscribe((data) => {
       console.log('Data order: wwww', data.result);
       this.order = data.result;
-     
+
       console.log('status: ' + this.order?.statusOrder);
     });
   }
@@ -81,7 +81,6 @@ export class OrderprocessingComponent implements OnInit {
     ) {
       this.tableservice.updateTableStatus(idTable, 'AVAILABLE').subscribe(
         (data) => {
-          // Xử lý thành công nếu cần
         },
         (error) => {
           console.log('Error', error);
@@ -102,7 +101,7 @@ export class OrderprocessingComponent implements OnInit {
           .getOrderDetail(idOrder, idTable)
           .subscribe((data) => {
             this.listOrderDetails = data.result;
-            if(this.order== null){
+            if (this.order == null) {
               sessionStorage.removeItem(`order-${idTable}`)
             }
           });
@@ -115,14 +114,15 @@ export class OrderprocessingComponent implements OnInit {
   }
 
   confirmOrder(idOrder: number | null, idTable: number | null) {
-    if (idOrder === null || idTable === null) { 
-      return; 
+    if (idOrder === null || idTable === null) {
+      return;
     }
     const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
-    
+
     if (oldIdOrder) {
       this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
-        (data) => {;
+        (data) => {
+          ;
           this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', oldIdOrder, idTable]);
         },
         (error) => {
@@ -141,29 +141,29 @@ export class OrderprocessingComponent implements OnInit {
       );
     }
   }
-  
-  
-    //Save Order
-    saveOrder(idTable: number) {
-      this.tempProducts.forEach((product) => {
-        this.itemOrder.push(
-          new OrderRequest(product.idOrderDetail, product.quantity)
-        );
-      });
-      this.orderService.createNewOrder(this.itemOrder, idTable)?.subscribe(
-        (data) => {
-          const idOrder = data.result.idOrder;
-          console.log('Updated Map in saveOrder: ', this.oldIdOrders);
-          this.router.navigate([
-            `/admin/staff/tableorder_staff/orderprocessing/${idOrder}/${idTable}`,
-          ]);
-        },
-        (error) => {
-          console.log('Error', error);
-        }
+
+
+  //Save Order
+  saveOrder(idTable: number) {
+    this.tempProducts.forEach((product) => {
+      this.itemOrder.push(
+        new OrderRequest(product.idOrderDetail, product.quantity)
       );
-    }
-  
+    });
+    this.orderService.createNewOrder(this.itemOrder, idTable)?.subscribe(
+      (data) => {
+        const idOrder = data.result.idOrder;
+        console.log('Updated Map in saveOrder: ', this.oldIdOrders);
+        this.router.navigate([
+          `/admin/staff/tableorder_staff/orderprocessing/${idOrder}/${idTable}`,
+        ]);
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    );
+  }
+
   notificationOrder() {
     this.webSocketService.onMessage().subscribe((message) => {
       if (message) {
@@ -227,14 +227,12 @@ export class OrderprocessingComponent implements OnInit {
       console.log('update', this.listOrderDetails);
       this.updateOrder(this.order.idOrder, this.iOrder);
     } else {
-      // Nếu chưa có order, thêm sản phẩm vào danh sách tạm thời
       this.addToTemp(product);
     }
   }
 
-  // Phương thức thêm sản phẩm vào danh sách tạm thời
+  // Thêm sản phẩm vào danh sách tạm thời
   addToTemp(product: foodResponse) {
-    // Kiểm tra xem sản phẩm đã tồn tại trong tempProducts chưa
     let existingProductInTemp = this.tempProducts.find(
       (item) => item.namefood === product.nameFood
     );
@@ -284,10 +282,6 @@ export class OrderprocessingComponent implements OnInit {
       this.listOrderDetails.push(newOrderDetail);
     }
     this.updateTotal();
-
-    // Kiểm tra kết quả
-    console.log('Temp Products: ', this.tempProducts);
-    console.log('List Order Details: ', this.listOrderDetails);
   }
 
 
@@ -298,7 +292,7 @@ export class OrderprocessingComponent implements OnInit {
     this.orderService.updateOrder(idOrder, itemOrder).subscribe(
       (data) => {
         console.log('Order updated successfully', data);
-        this.getDataOrderdetail(); // Refresh dữ liệu nếu cần
+        this.getDataOrderdetail(); 
       },
       (error) => {
         console.log('Error', error);
@@ -347,10 +341,11 @@ export class OrderprocessingComponent implements OnInit {
 
     }
     item.totalPrice = item.price * item.quantity * ((100 - item.discount) / 100)
-    this.updateTotal(); // Cập nhật tổng tiền sau khi thay đổi số lượng
-    console.log('Temppr: ',this.tempProducts)
-    console.log('ListOrr: ',this.listOrderDetails)
+    this.updateTotal();
+    console.log('Temppr: ', this.tempProducts)
+    console.log('ListOrr: ', this.listOrderDetails)
   }
+
   //cập nhật số lượng orderdetail
   updateQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
     if (newQuantity < 1) {
@@ -371,7 +366,6 @@ export class OrderprocessingComponent implements OnInit {
 
   removeOrderDetails(idOrderDetail: number) {
     if (this.order) {
-      // Kiểm tra nếu là phần tử cuối cùng trong danh sách
       if (this.listOrderDetails.length === 1) {
         // Hiển thị modal yêu cầu nhập lý do hủy
         this.showCancelModal(idOrderDetail);
@@ -380,7 +374,6 @@ export class OrderprocessingComponent implements OnInit {
         this.executeRemove(idOrderDetail);
       }
     } else {
-      // Nếu không có order, xóa trực tiếp từ listOrderDetails và tempProducts
       this.listOrderDetails = this.listOrderDetails.filter(
         (orderDetail) => orderDetail.idOrderDetail !== idOrderDetail
       );
@@ -390,55 +383,94 @@ export class OrderprocessingComponent implements OnInit {
       this.updateTotal();
     }
   }
-  
+
   showCancelModal(idOrderDetail: number) {
-    // Mở modal để yêu cầu người dùng nhập lý do hủy
     const modalElement = document.getElementById('cancelModal');
     if (modalElement) {
       modalElement.style.display = 'block';
     }
-    // Lưu idOrderDetail của item cần xóa
     this.itemOrderDetailToCancel = idOrderDetail;
   }
-  
+
   cancelModalClose() {
-    // Đóng modal khi nhấn hủy
     const modalElement = document.getElementById('cancelModal');
     if (modalElement) {
       modalElement.style.display = 'none';
     }
   }
-  
+
   confirmCancel() {
-    // Xóa phần tử khi xác nhận
     if (this.itemOrderDetailToCancel) {
-      this.executeRemove(this.itemOrderDetailToCancel);
-    }
+          this.executeRemove(this.itemOrderDetailToCancel!);
+        }
     this.cancelModalClose();
   }
-  
+
+
   executeRemove(idOrderDetail: number) {
-    // Thực hiện xóa phần tử
     this.orderService.removeOrderDetail(idOrderDetail).subscribe(
       (data) => {
         this.getDataOrderdetail();
-        setTimeout(() => {
-          if (this.listOrderDetails.length === 0) {
-            sessionStorage.removeItem(`order-${this.order?.idTable}`);
-            this.routerActive.params.subscribe((param) => {
-              let idTable = param['idTable'];
-              this.router.navigate([
-                `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
-              ]);
-            });
-          }
-        }, 100);
+          setTimeout(() => {
+            if (this.listOrderDetails.length === 0) {
+              sessionStorage.removeItem(`order-${this.order?.idTable}`);
+              this.routerActive.params.subscribe((param) => {
+                let idTable = param['idTable'];
+                this.router.navigate([
+                  `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
+                ]);
+              });
+            }
+          }, 100);
       },
       (err) => {
         console.log('Delete fail!', err);
       }
     );
   }
+
+
+
+  openModalCancel() {
+    const modalElement = document.getElementById('cancelModal');
+    if (modalElement) {
+      modalElement.style.display = 'block';
+    }
+  }
+
+  handleCancelAction() {
+    if (this.cancelReason.trim() !== '') {
+      if (this.itemOrderDetailToCancel) {
+        this.executeRemove(this.itemOrderDetailToCancel);
+      } else {
+        const oldIdOrder = sessionStorage.getItem(`order-${this.order?.idTable}`);
+        if (Number(oldIdOrder) != 0) {
+          this.orderService.cancelOrder(Number(oldIdOrder), this.order!.idOrder, this.cancelReason).subscribe(
+            (res) => {
+              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', Number(oldIdOrder), this.order!.idTable]);
+            },
+            (error) => {
+              console.log('Error', error);
+            }
+          );
+        } else {
+          this.orderService.cancelOrder(0, this.order!.idOrder, this.cancelReason).subscribe(
+            (res) => {
+              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order!.idTable]);
+            },
+            (error) => {
+              console.log('Error', error);
+            }
+          );
+        }
+      }
+
+    }
+    this.cancelReason = ''; 
+    this.cancelModalClose();
+  }
+
+
 
   formatPrice(price: number) {
     return new Intl.NumberFormat('vi-VN').format(price)
