@@ -72,7 +72,6 @@ export class OrderprocessingComponent implements OnInit {
     this.getData()
     this.getAllProducts()
     this.getAllCategories()
-    // this.notificationOrder()
   }
 
   getOrder(idOrder: number) {
@@ -124,27 +123,25 @@ export class OrderprocessingComponent implements OnInit {
   
       const food = this.listOrderDetails.find(item => item.idFood === id);
     if (food) {
-        // Kiểm tra số lượng nhập vào có hợp lệ không
+
         if (this.quantity <= 0) {
             this.openTotast("Số lượng phải là số dương.");
             return;
         }
 
-        // Kiểm tra số lượng chuyển có vượt quá số lượng hiện có không
         if ( this.quantity>food.quantity ) {
             this.openTotast("Số lượng chuyển không được lớn hơn số lượng hiện có ở bàn cũ.");
             return;
         }
    
-        // Tìm món hàng trong danh sách bàn mới
         const existingItem = this.seletedListFood.find(item => item.idFood === id);
 
-        // Nếu món hàng đã tồn tại trong danh sách bàn mới
+       
         if (existingItem) {
-            // Cập nhật số lượng
+          
             existingItem.quantity += this.quantity;
         } else {
-            // Nếu món hàng chưa tồn tại, tạo mới
+           
               const orderRequest: OrderRequest = {
               idFood: food.idFood,
               quantity: this.quantity,
@@ -215,7 +212,7 @@ createNewOrder(): void {
       .subscribe(
         response => {
           console.log('New order created:', response);
-          this.openTotast('Đơn hàng mới đã được tạo thành công!');
+          this.openTotast('Đã tách bàn thành công!');
           this.seletedListFood = [];
           this.selectedTableId = null;
           this.route.params.subscribe(param => {
@@ -226,7 +223,7 @@ createNewOrder(): void {
                 .subscribe(
                   response => {
                     console.log('Order updated successfully:', response);
-                    this.openTotast('Đơn hàng cũ đã được cập nhật thành công!');
+                    console.log('Đơn hàng cũ đã được cập nhật thành công!');
                   },
                   error => {
                     console.error('Error updating order:', error);
@@ -337,9 +334,9 @@ mergeOrder() {
                 this.tableservice.updateTableStatus(this.tableMergerId, 'AVAILABLE').subscribe(data => {
                   console.log("Updated Table:", data);
                   this.ngOnInit()
-                  this.openTotast('Đã cập nhật trạng thái!')
+                  console.log('Đã cập nhật trạng thái!')
                 }, error => {
-                  this.openTotast('Đã cập nhật trạng thái!')
+                  console.log('Đã cập nhật trạng thái!')
                   console.log("Error", error);
                 });
                 this.openTotast('Gộp bàn thành công!');
@@ -396,27 +393,6 @@ openTotast(status: string) {
   }
 
 
-  // notificationOrder(){
-  //   this.webSocketService.onMessage().subscribe(message => {
-  //       if(message){
-  //         this.ngOnInit()
-  //       console.log('ordermess:'+message)
-  //       }
-  //   });
-  // }
-
-  // notificationPayment() {
-  //   this.webSocketService.onPaymentMessage().subscribe(message => {
-  //     if (message) {
-  //       let obj = JSON.parse(message)
-  //       console.log('alooooooooooooooooooo:' + message)
-  //       this.speakText();
-  //       this.ngOnInit()
-  //       console.log('payment:' + message)
-  //     }
-  //   });
-  // }
-  // ********************************
   getAllProducts() {
     this.productService.getAllList().subscribe(data => {
       this.activeCategoryId = null;
