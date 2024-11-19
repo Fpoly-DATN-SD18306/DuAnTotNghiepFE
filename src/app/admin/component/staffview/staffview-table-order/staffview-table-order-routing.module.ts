@@ -6,7 +6,9 @@ import { TableorderStaffComponent } from './tableorder-staff/tableorder-staff.co
 
 const routes: Routes = [{
     path: '', component: StaffviewTableOrderComponent, children: [
-      { path: 'orderprocessing', component : OrderprocessingComponent  },
+
+      { path: 'orderprocessing/:idOrder/:idTable', component : OrderprocessingComponent  },
+      { path: 'orderprocessing/:idTable', component : OrderprocessingComponent  },
       { path: 'tableorder', component : TableorderStaffComponent  },
       
      ]

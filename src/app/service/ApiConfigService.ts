@@ -9,6 +9,7 @@ export class ApiConfigService {
   public static apiFoods='http://192.168.1.12:8080/api/v1/foods';
   public static apiUsers='http://192.168.1.12:8080/api/v1/users';
   public static apiUrlPromotion ="http://192.168.1.12:8080/api/v1/promotions" ;
+  public static apiUrlSocket ="http://192.168.1.12:8080" ;
 
 
 }

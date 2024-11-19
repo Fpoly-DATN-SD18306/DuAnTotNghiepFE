@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Promotion } from '../../../../interface/voucher/promotion';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
@@ -14,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class ManagerviewVoucherComponent implements OnInit {
   vouchers: Promotion[] = [];
-  filteredVouchers: Promotion[] = [];
+  filteredVouchers!: Promotion[];
   voucherForm: FormGroup;
   showModal = false;
   editMode = false;
@@ -22,6 +21,7 @@ export class ManagerviewVoucherComponent implements OnInit {
   searchText = "";
   sortField = "namePromotion";
   sortDirection= "asc" ;
+  isIncreasePrice:string="123";
   currentVoucherId: number | null = null;
   voucherRequest!: promotionRequest[]
   number = 0;
@@ -39,6 +39,7 @@ export class ManagerviewVoucherComponent implements OnInit {
         discount: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
         startDate: ['', Validators.required,],
         endDate: ['', Validators.required,],
+        isIncreasePrice: [false],
         description: [""]
       }
       , {validator:this.dateRangeValidator}
@@ -102,20 +103,25 @@ export class ManagerviewVoucherComponent implements OnInit {
       this.showModal = false;
       this.voucherForm.reset();
     }
-
+update(){
+console.log(this.voucherForm.value)
+}
     editVoucher(promotion: Promotion) {
       this.editMode = true;
       this.currentVoucherId = promotion.idPromotion;
-      console.log(this.currentVoucherId);
+
       this.voucherForm.patchValue({
         namePromotion: promotion.namePromotion,
         discount: promotion.discount,
         startDate: this.formatDate(promotion.startDate),
         endDate: this.formatDate(promotion.endDate),
-        description: promotion.description
+        isIncreasePrice: promotion.increasePrice ===true,
+        description: promotion.description,
+        
+        
       });
-
       this.showModal = true;
+      
     }
 
     formatDate(date: Date): string {
@@ -152,10 +158,11 @@ export class ManagerviewVoucherComponent implements OnInit {
           discount: formValue.discount,
           startDate: formValue.startDate,
           endDate: formValue.endDate,
-          description: formValue.description || '', 
+          description: formValue.description || '',
+          isIncreasePrice: formValue.isIncreasePrice === 'true',
           isDeleted:false
         };
-    
+        console.log("form hheheh",newVoucherRequest.isIncreasePrice)
         if (this.editMode && this.currentVoucherId) {
 
           this.voucherService.putVoucher(newVoucherRequest, this.currentVoucherId).subscribe(data => {
@@ -166,9 +173,9 @@ export class ManagerviewVoucherComponent implements OnInit {
 
               this.closeModal();
               this.openTotast('Cập nhật thành công !')
-            });
+              console.log("voucher",newVoucherRequest)});
         } else {
-   
+          
           this.voucherService.postVoucher(newVoucherRequest).subscribe(
             data => {
               this.filteredVouchers=data.result.conntent;
@@ -189,7 +196,7 @@ export class ManagerviewVoucherComponent implements OnInit {
     }
     
     filterPromotion() {
-      this.voucherService.filterVoucher(this.searchText, this.selectedStatus, this.sortField, this.sortDirection, this.number, this.size,)
+      this.voucherService.filterVoucher(this.searchText, this.selectedStatus,this.isIncreasePrice, this.sortField, this.sortDirection, this.number, this.size,)
         .subscribe(
           data => {
             this.filteredVouchers = data.result.content;
@@ -200,6 +207,7 @@ export class ManagerviewVoucherComponent implements OnInit {
             console.log('Error fetching data:', error);
           }
         );
+       console.log(this.filteredVouchers)
     }
   
     ngOnInit() {

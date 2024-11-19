@@ -59,7 +59,7 @@ export class ProductComponent implements OnInit {
 
     }
     this.cartService.addToCart(cartItem);
-    console.log("đơn hàng  đã thêm: ", cartItem);
+    console.log("đơn hàng  đã thêm: ", this.cartService.getCart());
     this.throwStatusForParent("Đã thêm vào đơn hàng!")
     this.quantity=0;
   } 
