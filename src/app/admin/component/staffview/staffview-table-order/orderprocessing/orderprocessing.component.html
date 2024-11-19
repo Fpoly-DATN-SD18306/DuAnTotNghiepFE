@@ -1,368 +1,245 @@
-<div class="row p-0 m-0">
-    <div class="col-8 m-0 p-0">
-        <nav class="navbar navbar-expand-lg py-3 nav-category">
-            <div class="container-fluid">
-                <ul class="nav d-flex flex-nowrap align-items-center gap-2">
-                    <li class="nav-item">
-                        <a type="button"
-                            class="btn-active btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Tất
-                            cả</a>
-                    </li>
-                    <li class="nav-item">
-                        <a type="button"
-                            class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Trà</a>
-                    </li>
-                    <li class="nav-item">
-                        <a type="button"
-                            class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Coffee</a>
-                    </li>
-                    <li class="nav-item">
-                        <a type="button"
-                            class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Sinh
-                            tố</a>
-                    </li>
-                    <li class="nav-item">
-                        <a type="button"
-                            class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Nước
-                            ngọt</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+<div class="row p-0 m-0 position-relative">
+  <div class="col-8 m-0 p-0">
+    <nav class="navbar navbar-expand-lg py-3 nav-category">
+      <div class="container-fluid">
+        <ul class="nav d-flex flex-nowrap align-items-center gap-2">
+          <li class="nav-item">
+            <a type="button" class="btn btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7"
+              [ngClass]="{'btn-active': activeCategoryId === null}" (click)="getAllProducts()">Tất cả</a>
+          </li>
+          <li class="nav-item" *ngFor="let category of listCategories">
+            <a type="button" class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7"
+              [ngClass]="{'btn-active': activeCategoryId === category.idCategory}"
+              (click)="getByIdCategory(category.idCategory)">{{category.nameCategory}}</a>
+          </li>
 
-       
-        <div class="row p-3">
-            <div class="container-listproducts" style="height: calc(93.2vh - 120px); overflow-y: auto;">
-                <div class="box-listproducts">
-                    <div class="row p-0 m-0">
-                        <!-- start item product -->
-                        <div class="item-product col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2">
-                            <div class="box-item-product">
-                                <div class="img-product p-3 border border-secondary rounded-3">
-                                    <img src="https://inbimi.com/wp-content/uploads/2021/05/java-coffee-tea.jpg" alt=""
-                                        class="w-100">
-                                </div>  
-                                <div class="box-name-product text-center p-1" style="line-height: 20px;">                 
-                                    <span class="fw-bold" style="font-size: 0.9em;">Freeze Quả Mọng Anh Đào</span>    
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end item product -->
+        </ul>
+      </div>
+    </nav>
 
-                    </div>
+
+    <div class="row p-3">
+      <div class="container-listproducts" style="height: calc(93.2vh - 120px); overflow-y: auto;">
+        <div class="box-listproducts">
+          <div class="row p-0 m-0">
+            <!-- start item product -->
+            <div
+              class="item-product col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2 position-relative d-flex align-items-center"
+              *ngFor="let product of listProducts">
+              <div class="box-item-product">
+                <div class="img-product p-3 border border-secondary rounded-3">
+                  <img src="http://localhost:8080/images/{{product.imgFood}}" alt="" class="w-100">
+                  <div class="position-absolute" *ngIf="product.discount" [ngClass]="{'box-sale': product.discount}">
+                    <span class="tittle-discount">-{{product.discount}}%</span>
+                  </div>
+                  <!-- <div class="buttons-overlay" [ngClass]="{'d-none': order?.statusOrder == 'Waiting' || !order}">
+                                        <button class="btn btn-sm mx-2 me-2 btn-dark rounded-3" (click)="addProductToTemp(product)"><i class="bi bi-plus-circle-dotted fs-5" ></i></button>
+                                      </div> -->
+                  <div class="buttons-overlay">
+                    <button class="btn btn-sm mx-2 me-2 btn-dark rounded-3" (click)="clickProduct(product)"><i
+                        class="bi bi-plus-circle-dotted fs-5"></i></button>
+                  </div>
                 </div>
-            </div>
-        </div>
+                <div class="box-name-product text-center p-1" style="line-height: 20px;">
+                  <span class="fw-bold" style="font-size: 0.9em;">{{product.nameFood}}</span>
+                </div>
+              </div>
 
+
+            </div>
+
+            <!-- end item product -->
+
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col-4 p-0 m-0 container-orderdetails" style="box-shadow: 0px 2px 5px 3px rgb(171, 167, 167);" >
-        <div class="box-orderdetails" style="font-size: 0.9em;">
-            <div class="box-idorder-nametable bg-secondary d-flex justify-content-around p-1 fw-bold text-white">
-                <span class="p-2">#Mã hóa đơn</span>
-                <span class="p-2 border border border-primary rounded-3 px-4 border-0 text-primary"
-                    style="background-color: rgba(218, 233, 243, 0.936);">Khu A - Bàn 1</span>
-            </div>
-            <div class="box-search">
-                <form class="d-flex p-3" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm" aria-label="Search">
-                </form>
-            </div>
-            <div class="box-listproducts">
-                <div class="container-order-product" style="height: calc(60vh - 120px); overflow-y: auto;">
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
+  </div>
 
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-                    <!--Start Item product -->
-                    <div class="container item-product border-secondary p-3"
-                        style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;">
-                        <div class="row m-0 p-0 ">
-                            <div class="col-3">
-                                <div class="row">
-                                    <span class="fw-bold">Trà Ô Long</span>
-                                </div>
-                                <span>39.000đ</span>
-                            </div>
-                            <div class="col-3 p-0">
-                                <span>Size(M)</span>
-                            </div>
-                            <div class="col-3 text-end">
-                                <span>x1</span>
-                            </div>
-                            <div class="col-3 text-center">
-                                <span class="fw-bold">39.000đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Item product -->
-
-
+  <div class="col-4 p-0 m-0 container-orderdetails" [ngClass]="{'bg-orderdetail': order?.statusOrder == 'Waiting'}"
+    style="box-shadow: 0px 2px 5px 3px rgb(171, 167, 167);">
+    <div class="box-orderdetails " style="font-size: 0.9em;">
+      <div class="box-idorder-nametable bg-secondary d-flex justify-content-around p-1 fw-bold text-white">
+        <span class="p-2" *ngIf="order">Mã đơn hàng #{{order.idOrder}}</span>
+        <span *ngIf="listOrderDetails.length > 0"
+          class="p-2 border border border-primary rounded-3 px-4 border-0 text-primary"
+          style="background-color: rgba(218, 233, 243, 0.936);">{{order?.nameArea}} -
+          {{order?.nameTable}}</span>
+        <span *ngIf="itemTable" class="p-2 border border border-primary rounded-3 px-4 border-0 text-primary"
+          style="background-color: rgba(218, 233, 243, 0.936);">{{itemTable.nameArea}} -
+          {{itemTable.nameTable}}</span>
+      </div>
+      <div class="box-search">
+        <form class="d-flex p-3" role="search">
+          <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm" aria-label="Search">
+        </form>
+      </div>
+      <div class="box-listproducts" *ngIf="listOrderDetails.length > 0">
+        <div class="container-order-product" style="height: calc(60vh - 120px); overflow-y: auto;">
+          <!--Start Item product -->
+          <div class="container item-product border-secondary py-3 px-2"
+            style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;"
+            *ngFor="let item of listOrderDetails">
+            <div class="row d-flex align-items-center">
+              <div class="col-1 ms-1" style="width: 12px;">
+                <button class="btn btn-sm text-danger p-0 " (click)="removeOrderDetails(item.idOrderDetail)"><i
+                    class="bi bi-trash3"></i></button>
+              </div>
+              <div class="col-4 ms-1">
+                <div class="row">
+                  <span class="fw-bold">{{item.namefood}}</span>
                 </div>
-
-
-
-                <div class="container-bill-calculation">
-                    <div class="box-posvisional-invoice-1" style="font-size: 0.8em; background-color: #fdc9b1;">
-                        <div class="container">
-                            <div class="row px-3 py-1">
-                                <div class="d-flex justify-content-between  fw-bold">
-                                    <span>Tạm tính</span>
-                                    <span>104.000đ</span>
-                                </div>
-                                <div class="d-flex justify-content-between fw-bold">
-                                    <span>Thuế</span>
-                                    <span>0đ</span>
-                                </div>
-                                <div class="d-flex justify-content-between fw-bold">
-                                    <span>Mã giảm giá</span>
-                                    <span>0đ</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--  -->
-                    <div class="container px-3 pt-2 box-posvisional-invoice-2 text-center">
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="box-button-printer">
-                                <button type="button" class="btn border py-1">
-                                    <img src="https://png.pngtree.com/png-vector/20191011/ourmid/pngtree-printer-icon-png-image_1817556.jpg"
-                                        width="19px" alt="">
-                                    <span class="d-block m-0 py-0" style="font-size: 0.7em;">In tạm tính</span>
-                                </button>
-                            </div>
-                            <div class="title-pricetotal">
-                                <p class="m-0 p-0 text-end fw-bold">Thành tiền</p>
-                                <h6 style="color: #3cd22f">104.000đ</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!--  -->
-                    <div class="container px-3 pt-2 box-posvisional-invoice-3">
-                        <div class="container-button">
-                            <div class="row align-items-center">
-                                <div class="col-2">
-                                    <nav class="navbar navbar-dark">
-                                        <button class="navbar-toggler border"
-                                            style="box-shadow: 0px 0px 5px 1px #d9d9d9;" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent"
-                                            aria-controls="navbarToggleExternalContent" aria-expanded="false"
-                                            aria-label="Toggle navigation">
-                                            <i class="bi bi-list fw-bold fs-2" style="color: #d9d9d9;"></i>
-                                        </button>
-                                    </nav>
-                                </div>
-                                <div class="col-5">
-                                    <button class="btn form-control btn-primary border-0 py-3 rounded-4 text-primary fw-bold"
-                                        style="font-size: 1em;  background-color: #cde4f7;"><span>Lưu F9</span></button>
-                                </div>
-                                <div class="col-5">
-                                    <button class="btn form-control btn-primary py-3 rounded-4 fw-bold"
-                                        style="font-size: 0.9em;"><span>Thanh toán F10</span></button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+                <span>{{formatPrice(item.price)}}</span>
+              </div>
+              <div class="col-2">
+                <span *ngIf="item.discount" class="text-danger fw-bold">-{{item.discount}}%</span>
+              </div>
+              <ng-container *ngIf="order; else elseTemplate">
+                <div class="col-2 text-end justify-content-end d-flex align-items-center pe-0">
+                  <button class="rounded-5 p-1 py-0 btn-success btn"
+                    (click)="updateQuantity(order!.idOrder, item.idOrderDetail, item.quantity + 1)"><i
+                      class="bi bi-plus-circle-fill"></i></button>
+                  <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span>
+                  <button class="rounded-5 p-1 py-0 btn-danger btn"
+                    (click)="updateQuantity(order!.idOrder, item.idOrderDetail, item.quantity - 1)"><i
+                      class="bi bi-dash-circle-fill"></i></button>
                 </div>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <div class="col-2 text-end justify-content-end d-flex align-items-center pe-0">
+                  <button class="rounded-5 p-1 py-0 btn-success btn"
+                    (click)="updateQuantityTemp(item, item.quantity+1)"><i class="bi bi-plus-circle-fill"></i></button>
+                  <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span>
+                  <button class="rounded-5 p-1 py-0 btn-danger btn"
+                    (click)="updateQuantityTemp(item, item.quantity-1)"><i class="bi bi-dash-circle-fill"></i></button>
+                </div>
+              </ng-template>
+
+              <div class="col-3 d-flex justify-content-end align-items-center ps-0">
+                <span class="fw-bold">{{formatPrice(item.totalPrice)}}</span>
+              </div>
             </div>
+          </div>
+          <!--End Item product -->
         </div>
+
+
+
+        <div class="container-bill-calculation">
+          <div class="box-posvisional-invoice-1" style="font-size: 0.8em; background-color: #fdc9b1;">
+            <div class="container">
+              <div class="row px-3 py-1">
+                <div class="d-flex justify-content-between  fw-bold">
+                  <span>Tạm tính</span>
+                  <ng-container *ngIf="order; else elseTemplate">
+                    <span>{{formatPrice(order.total)}}</span>
+
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <span>{{formatPrice(tempTotal)}}</span>
+                  </ng-template>
+
+                </div>
+                <div class="d-flex justify-content-between fw-bold">
+                  <span>Thuế</span>
+                  <span>0</span>
+                </div>
+                <div class="d-flex justify-content-between fw-bold">
+                  <span>Mã giảm giá</span>
+                  <span>0 %</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--  -->
+          <div class="container px-4 pt-2 box-posvisional-invoice-2 text-center">
+            <div class="d-flex justify-content-between align-items-center">
+
+              <div class="box-button-printer">
+                <button type="button" class="btn border py-1">
+                  <img
+                    src="https://png.pngtree.com/png-vector/20191011/ourmid/pngtree-printer-icon-png-image_1817556.jpg"
+                    width="19px" alt="">
+                  <span class="d-block m-0 py-0" style="font-size: 0.7em;">In tạm tính</span>
+                </button>
+              </div>
+              <div class="title-pricetotal">
+                <p class="m-0 p-0 text-end fw-bold"><span>Thành tiền</span></p>
+                <h6 *ngIf="order" style="color: #3cd22f;" class="fw-bold ">{{formatPrice(order.total)}}</h6>
+                <h6 *ngIf="!order" style="color: #3cd22f;" class="fw-bold ">{{formatPrice(tempTotal)}}</h6>
+              </div>
+            </div>
+          </div>
+          <!--  -->
+          <div class="container px-3 pt-2 box-posvisional-invoice-3" *ngIf="order?.statusOrder != 'Waiting'">
+            <div class="container-button">
+              <div class="row align-items-center">
+                <div class="col-2">
+                  <nav class="navbar navbar-dark">
+                    <button class="navbar-toggler border" style="box-shadow: 0px 0px 5px 1px #d9d9d9;" type="button"
+                      data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent"
+                      aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <i class="bi bi-list fw-bold fs-2" style="color: #d9d9d9;"></i>
+                    </button>
+                  </nav>
+                </div>
+                <div class="col-10" *ngIf="!order">
+                  <button (click)="saveOrder(itemTable!.idTable)"
+                    class="btn form-control btn-primary border-0 py-3 rounded-4 text-primary fw-bold"
+                    style="font-size: 1em;  background-color: #cde4f7;"><span>Lưu F9</span></button>
+                </div>
+                <div class="col-10" *ngIf="order?.statusOrder == 'Preparing'">
+                  <button class="btn form-control btn-primary py-3 rounded-4 fw-bold"
+                    style="font-size: 0.9em;"><span>Thanh toán F10</span></button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+          <!--  -->
+          <div class="container px-3 pt-2 box-posvisional-invoice-3" *ngIf="order?.statusOrder == 'Waiting'">
+            <div class="row align-items-center">
+              <div class="col-6">
+                <button class="btn form-control btn-primary py-3 rounded-4 fw-bold" style="font-size: 0.9em;"
+                  (click)="confirmOrder(order?.idOrder ?? null, order?.idTable ?? null)"><span>Xác nhận</span></button>
+              </div>
+              <div class="col-6">
+                <button  class="btn form-control btn-danger py-3 rounded-4 fw-bold" style="font-size: 0.9em;"
+                (click)="openModalCancel()"><span>Hủy
+                    đơn</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="box-listproducts d-flex justify-content-center align-items-center" style="height: 400px;"
+        *ngIf="listOrderDetails.length <= 0">
+        <i>Chưa có đơn hàng nào!</i>
+      </div>
+      <!-- Button trigger modal -->
+
     </div>
+    <!-- Modal -->
+
+  </div>
 </div>
+
+<!-- Modal yêu cầu nhập lý do hủy -->
+<div id="cancelModal" class="w3-modal" style="display: none;">
+    <div class="w3-modal-content w3-card-4 p-4 rounded-2 position-absolute d-block" style="max-width:600px; top: 30%; left: 27%;">
+      <div class="title-success">
+        <h5 class="fw-bold">Hủy đơn</h5>
+        <input type="text" class="form-control "  placeholder="Nhập lý do hủy đơn" [(ngModel)]="cancelReason" id="validationDefaultUsername" aria-describedby="inputGroupPrepend2" required>
+      </div>
+      <div class="box-btn d-flex justify-content-end pt-2">
+        <button (click)="cancelModalClose()" type="button" class="w3-button rounded-3 text-white" style="background-color: rgba(239, 25, 54, 0.831);">Hủy</button>
+        <button (click)="handleCancelAction()" type="submit" class="w3-button rounded-3 text-white mx-2" style="background-color: rgba(71, 174, 242, 0.642);">Xác nhận</button>
+      </div>
+    </div>
+  </div>

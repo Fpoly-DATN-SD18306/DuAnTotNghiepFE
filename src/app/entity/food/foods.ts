@@ -10,4 +10,5 @@ export class Foods {
     isDeleted!: boolean;
     idCategory!:number;
     note!:string;
+    discount!:number;
 }

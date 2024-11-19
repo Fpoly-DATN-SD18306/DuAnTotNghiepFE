@@ -16,6 +16,10 @@ export class FoodService {
   getAllList():Observable<ApiRespone>{
     return this.http.get<ApiRespone>(this.url+"/api/v1/foods");
   }
+
+  getByIdCategory(idCategory : number):Observable<ApiRespone>{
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/category/"+idCategory);
+  }
   
   getById(idFood : number):Observable<ApiRespone>{
     

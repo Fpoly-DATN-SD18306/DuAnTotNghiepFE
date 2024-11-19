@@ -34,9 +34,9 @@ ngOnInit(): void {
       let secretKey = param['secretKey']
       let currentId = sessionStorage.getItem("itb")
       if(currentId){
-        console.log("co r");
+        console.log("co r"+currentId);
        
-      } else  if(idTable && secretKey ){
+      } else if(idTable && secretKey ){
         this.verifyTable.getVerifyTable(idTable,secretKey).subscribe(
           data =>{
             verifyTable.tableVerified =  data.result
@@ -44,6 +44,7 @@ ngOnInit(): void {
             console.log(data.result.idTable);
             
             sessionStorage.setItem("itb",data.result.idTable)
+            // console.log("co r"+idTable);
           }, error =>{
             console.log(error);
             // window.location.assign("/error")
@@ -52,12 +53,6 @@ ngOnInit(): void {
       } else {
         window.location.assign("/error")
       } 
-
-  
-    
     }  );
-  
 }
-
-
 }
