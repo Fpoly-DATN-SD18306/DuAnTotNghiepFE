@@ -3,7 +3,8 @@ export class OrderRequest {
     constructor(
         public idFood: number,
         public quantity: number,
-        public noteFood?: String,
+        public noteFood: string,
+        public nameFood:string
        ) {
     }
 
