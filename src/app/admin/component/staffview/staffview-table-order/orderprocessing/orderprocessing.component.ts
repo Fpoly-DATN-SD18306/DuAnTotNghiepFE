@@ -42,6 +42,9 @@ export class OrderprocessingComponent implements OnInit {
   oldIdOrders: Map<number, number | null> = new Map();
   cancelReason: string = '';
   itemOrderDetailToCancel: number | null = null;
+  
+  //lưu trữ item orderdetail
+  selectedOrderDetail?: OrderDetailResponse;
 
 
   constructor(
@@ -364,6 +367,23 @@ export class OrderprocessingComponent implements OnInit {
       );
   }
 
+  onQuantityChange(idOrder: number, idOrderDetail: number, event: any) {
+    const newQuantity = parseInt(event.target.value, 10)
+    const orderDetail = this.listOrderDetails.find(
+      (item) => item.idOrderDetail === idOrderDetail
+    );
+    if (!orderDetail) {
+      return;
+    }
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      event.target.value = orderDetail.quantity;
+      return;
+    }
+    this.updateQuantity(idOrder, idOrderDetail, newQuantity);
+  }
+  
+  
+
   removeOrderDetails(idOrderDetail: number) {
     if (this.order) {
       if (this.listOrderDetails.length === 1) {
@@ -383,6 +403,11 @@ export class OrderprocessingComponent implements OnInit {
       this.updateTotal();
     }
   }
+
+  selectOrderDetail(item: OrderDetailResponse) {
+    this.selectedOrderDetail = item; // Lưu sản phẩm chi tiết được chọn
+  }
+  
 
   showCancelModal(idOrderDetail: number) {
     const modalElement = document.getElementById('cancelModal');
@@ -469,6 +494,8 @@ export class OrderprocessingComponent implements OnInit {
     this.cancelReason = ''; 
     this.cancelModalClose();
   }
+
+
 
 
 
