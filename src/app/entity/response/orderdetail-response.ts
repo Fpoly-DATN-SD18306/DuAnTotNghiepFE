@@ -1,11 +1,12 @@
 export class OrderDetailResponse{
     constructor(
         public idOrderDetail: number,
+        public idFood:number,
         public quantity : number,
         public price : number,
         public totalPrice : number,
-        public note : String,
-        public namefood : String,
+        public noteFood : string,
+        public nameFood : string,
         public discount : number,
     ){}
 }

@@ -17,6 +17,8 @@ import { IpServiceService } from './ipService/ip-service.service';
 export class RequestOrder {
   currentIpCustomer : string = ''
   url = ApiConfigService.apiUrl+"/api/order";
+  urlOrder = ApiConfigService.apiUrl+"/api/v1/order";
+  urlDeleteOrder = ApiConfigService.apiUrl+"/api/v1/order/delete";
   constructor(private http: HttpClient,
     private cartService : CartService,
     private  verifyTable : verifyTable, 
@@ -41,7 +43,7 @@ export class RequestOrder {
    console.log('itemscart: '+idTable)
    if(items){
     items.forEach(Element=>{
-      itemsOrder.push(new OrderRequest(Element.idFood,Element.quantity,Element.note))
+      itemsOrder.push(new OrderRequest(Element.idFood,Element.quantity,Element.note,Element.nameFood))
       console.log('Element: ',Element)
     })
     if(idTable){  
@@ -56,5 +58,41 @@ export class RequestOrder {
     }
    }
    return null;
+  }
+  postNewOrder(itemsOrder: OrderRequest[], idTable: number): Observable<ApiRespone> {
+    let ipCustomer = this.currentIpCustomer
+    if(idTable){  
+      return this.http.post<ApiRespone>(this.url,itemsOrder  ,{params : {"idTable" : idTable, "ipCustomer" : ipCustomer} })
+      .pipe(tap(response => {
+        this.websocketService.sendOrderUpdate(response.result); 
+      }),
+      catchError(error => {
+        console.error('Error:', error); 
+        return throwError(error);
+      }))
+    }
+   
+
+    return new Observable(); 
+  }
+
+   updateOrder(idOrder: number, itemsOrder: OrderRequest[]): Observable<ApiRespone> {
+    if (idOrder ) {
+     
+      return this.http.put<ApiRespone>(`${this.urlOrder}/${idOrder}`, itemsOrder)
+        .pipe(
+          tap(response => {
+            this.websocketService.sendOrderUpdate(response.result); 
+          }),
+          catchError(error => {
+            console.error('Error:', error);
+            return throwError(error);
+          })
+        );
+    }
+    return new Observable();
+  }
+  deleteOrder(idOrder: number): Observable<void> {
+    return this.http.delete<void>(`http://192.168.2.5:8080/api/v1/order/delete/${idOrder}`);
   }
 }
