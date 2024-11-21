@@ -407,6 +407,8 @@ export class OrderprocessingComponent implements OnInit {
   selectOrderDetail(item: OrderDetailResponse) {
     this.selectedOrderDetail = item; // Lưu sản phẩm chi tiết được chọn
   }
+
+
   
 
   showCancelModal(idOrderDetail: number) {
@@ -472,6 +474,7 @@ export class OrderprocessingComponent implements OnInit {
         if (Number(oldIdOrder) != 0) {
           this.orderService.cancelOrder(Number(oldIdOrder), this.order!.idOrder, this.cancelReason).subscribe(
             (res) => {
+              sessionStorage.removeItem(`order-${this.order?.idTable}`)
               this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', Number(oldIdOrder), this.order!.idTable]);
             },
             (error) => {
@@ -481,6 +484,7 @@ export class OrderprocessingComponent implements OnInit {
         } else {
           this.orderService.cancelOrder(0, this.order!.idOrder, this.cancelReason).subscribe(
             (res) => {
+              sessionStorage.removeItem(`order-${this.order?.idTable}`)
               this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order!.idTable]);
             },
             (error) => {
@@ -491,6 +495,7 @@ export class OrderprocessingComponent implements OnInit {
       }
 
     }
+    
     this.cancelReason = ''; 
     this.cancelModalClose();
   }
