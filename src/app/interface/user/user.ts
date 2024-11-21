@@ -5,4 +5,5 @@ export interface User {
   password: string; // Consider not including password in the interface for security reasons
   isAdmin?: boolean; // Optional property for admin status
   isDeleted?: boolean; // Optional property for deleted status
+  imgUser: string;
 }

@@ -8,6 +8,7 @@ import { verifyTable } from '../../../service/verifyTable.service';
 import { Subscription } from 'rxjs';
 
 import { WebsocketService } from '../../../service/websocketService/websocket.service';
+import { IpServiceService } from '../../../service/ipService/ip-service.service';
 
 
 @Component({
@@ -16,8 +17,8 @@ import { WebsocketService } from '../../../service/websocketService/websocket.se
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
-  isConfirmed: boolean = false; // Biến điều kiện để kiểm soát hiển thị thông báo xác nhận 
-
+  isConfirmed: boolean = false; 
+  iserror : boolean = false; 
 
   items: Icart[] = [];
   total: number = 0;
@@ -30,7 +31,6 @@ export class CartComponent implements OnInit {
     private router: Router,
     private requestOrderService: RequestOrder,
     private websocketService: WebsocketService
-
   ) { }
 
   ngOnInit(): void {
@@ -46,14 +46,18 @@ export class CartComponent implements OnInit {
   callOrder() {
     this.requestOrderService.postRequestOrder()?.subscribe(
       data => {
-        this.isConfirmed = true
-        // sessionStorage.removeItem('cart')
-        this.getAllCart()
+        this.isConfirmed = true;
+        sessionStorage.removeItem('cart');
+        this.getAllCart();
         CartService.items = [];
-      }, error => {
-        console.log(error)
+      },
+      error => {
+          if (error.error.code === 1005) {
+            console.error(error.error.code === 1005);
+            this.iserror = true; 
+          }
       }
-    )
+    );
   }
 
   getAllCart() {
@@ -68,7 +72,6 @@ export class CartComponent implements OnInit {
       this.total += (item.price) * item.quantity;
     });
     console.log(this.total);
-
   }
 
   formatPrice(price: number) {
@@ -77,11 +80,8 @@ export class CartComponent implements OnInit {
   }
 
   onNotify(checkChange: number) {
-    console.log(checkChange);
+    console.log('chackCHange: ',checkChange);
     this.items = CartService.items
     this.calculateTotal()
   }
-
- 
-  
 }

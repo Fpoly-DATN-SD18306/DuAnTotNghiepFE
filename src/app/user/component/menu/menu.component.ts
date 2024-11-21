@@ -18,10 +18,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit { 
 
 
 
+  
   listCate: FoodCategory[] = []
   listFood: Foods[] = []
   listSeach: Foods[] = []
@@ -86,23 +87,21 @@ export class MenuComponent implements OnInit {
   getAlldata() {
     this.foodService.getAllList().subscribe(
       data => {
-        this.listFood = data.result.content;
-        // console.log(this.listFood);
+        this.listFood = data.result.content;    
       }
       , error => {
-        console.log(error)
+        alert(error)
 
       }
     )
 
     this.cateService.getAllCate().subscribe(
       data => {
-        this.listCate = data.result;
-        console.log(this.listCate);
+        this.listCate = data.result;        
       }
       , error => {
         console.log(error)
-
+        alert(error)
       }
     )
   }
@@ -118,7 +117,7 @@ export class MenuComponent implements OnInit {
   open(){
     console.log("alo");
     
-    this.openToast("alo ?")
+    this.openToast("alo?")
   }
 
   ngOnInit(): void {

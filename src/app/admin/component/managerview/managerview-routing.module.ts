@@ -10,7 +10,8 @@ const routes: Routes = [{
   children: [
    { path: 'managerFood', loadChildren: () => import('./managerview-food/managerview-food.module').then(m => m.ManagerviewFoodModule) },
    { path: 'managerTable', component: ManagerviewTableComponent},
-   {path: 'managerVoucher', component: ManagerviewVoucherComponent}
+   {path: 'managerVoucher', component: ManagerviewVoucherComponent},
+   { path: 'managerUser', loadChildren: () => import('./managerview-user/managerview-user.module').then(m => m.ManagerviewUserModule) }
   ]
 }
 ];

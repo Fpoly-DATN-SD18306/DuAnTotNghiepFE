@@ -1,5 +1,6 @@
 export class OrderDetailResponse{
     constructor(
+        public idOrderDetail: number,
         public quantity : number,
         public price : number,
         public totalPrice : number,
