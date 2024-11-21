@@ -602,7 +602,7 @@ removeFromNewTable(index: number): void {
   }
 }
 createNewOrder(): void {
-  
+
 
   if (this.selectedTableId) {
     this.requestOrder.postNewOrder(this.seletedListFood, this.selectedTableId)
@@ -615,32 +615,39 @@ createNewOrder(): void {
           this.routerActive.params.subscribe(param => {
             let idOrder = param['idOrder'];
             let idTable = param['idTable']
-        
-            if (idOrder) {
-              this.requestOrder.updateOrder(idOrder, this.seletedListUpdateFood)
-                .subscribe(
-                  response => {
-                    console.log('Order updated successfully:', response);
-                    console.log('Đơn hàng cũ đã được cập nhật thành công!');
-                    
-                  },
-               
-                  error => {
-                    
-                      this.tableservice.updateTableStatus(idTable, 'AVAILABLE').subscribe(data => {
-                        console.log("Updated Table:", data);
-                        this.ngOnInit()
-                        this.openTotast('Chuyển bàn thành công!');
-                        console.log('Đã cập nhật trạng thái!')
-                      }, error => {
-                        console.log('Đã cập nhật trạng thái!')
-                        console.log("Error", error);
-                      });
-                    
-                    console.error('Error updating order:', error);
-                    // this.openTotast('Lỗi khi cập nhật đơn hàng cũ.');
-                  }
-                );
+            if(this.listOrderDetails.length ==0){
+              alert(this.listOrderDetails.length)
+              this.requestOrder.deleteOrder(idOrder).subscribe(
+                () => {  
+                  console.log('Order deleted successfully');
+                },
+                (error) => {
+                  console.error('Error deleting order:', error);
+                }
+              );
+                
+              
+           
+            }
+            
+           
+              if (idOrder) {
+
+                this.requestOrder.updateOrderAll(idOrder, this.seletedListUpdateFood)
+                  .subscribe(
+                    response => {
+                      console.log('Order updated successfully:', response);
+                      console.log('Đơn hàng cũ đã được cập nhật thành công!');
+                      console.log(this.seletedListUpdateFood)
+                    },
+                 
+                    error => {
+                      
+                      console.error('Error updating order:', error);
+                      }
+                      
+                  );
+              
             }
           });
         },
@@ -660,7 +667,7 @@ onTableSelectChange(mergerOrder: tableResponse | null): void  {
     const  idTable = mergerOrder.idTable;
     this.tableMergerId = idTable;
     this.mergerOrderId = currentOrderId;
-
+    
     
     console.log('Selected currentOrderId:', currentOrderId);
     console.log('Selected idTable:', idTable);
@@ -728,7 +735,7 @@ mergeOrder() {
       
     
         if (idOrder) {
-          this.requestOrder.updateOrder(idOrder, this.seletedListMergerFood)
+          this.requestOrder.updateOrderAll(idOrder, this.seletedListMergerFood)
             .subscribe(
               response => {
                 console.log('Order updated successfully:', response)
@@ -743,14 +750,7 @@ mergeOrder() {
                     console.error('Error deleting order:', error);
                   }
                 );
-                this.tableservice.updateTableStatus(this.tableMergerId, 'AVAILABLE').subscribe(data => {
-                  console.log("Updated Table:", data);
-                  this.ngOnInit()
-                  console.log('Đã cập nhật trạng thái!')
-                }, error => {
-                  console.log('Đã cập nhật trạng thái!')
-                  console.log("Error", error);
-                });
+                
                 this.openTotast('Gộp bàn thành công!');
                
               },
@@ -769,7 +769,7 @@ mergeOrder() {
 }
 getTable() {
   console.log("areaid",this.selectedAreaId)
-  this.tableservice.getTablesByArea("", this.selectedAreaId, "AVAILABLE", 0, 100000)
+  this.tableservice.getTablesByArea("", this.selectedAreaId, "AVAILABLE", 0, 1000)
     .subscribe(data => {
       this.listTable = data.result.content;
       console.log("Table", this.listTable);
@@ -777,7 +777,7 @@ getTable() {
 }
 getTableOpen() {
   console.log("areaid",this.selectedAreaId)
-  this.tableservice.getTablesByArea("", this.selectedAreaId, "OCCUPIED", 0, 100000)
+  this.tableservice.getTablesByArea("", this.selectedAreaId, "OCCUPIED", 0, 1000)
     .subscribe(data => {
       this.listTable = data.result.content;
       console.log("Table", this.listTable);

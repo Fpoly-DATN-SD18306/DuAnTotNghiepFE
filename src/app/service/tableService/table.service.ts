@@ -55,7 +55,9 @@ export class TableService {
   lockedTable(idtable: number): Observable<ApiRespone> {
     return this.http.put<ApiRespone>(`${this.url}/api/v1/tables/${idtable}/locked`, null);
   }
-
+  updateTableStatusCurrent(idtable: number, status: string,currentOrderId:number|null): Observable<ApiRespone> {
+    return this.http.put<ApiRespone>(`${this.url}/api/v1/tables/${idtable}/statusAndCurrent`, { status,currentOrderId })
+  }
 
    // Hàm để gọi API với các tham số lọc
   //  getTablesFromFilter(nameTable: string, status: string, page: number, size: number): Observable<ApiRespone> {

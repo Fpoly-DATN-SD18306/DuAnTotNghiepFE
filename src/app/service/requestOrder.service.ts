@@ -76,10 +76,10 @@ export class RequestOrder {
     return new Observable(); 
   }
 
-   updateOrder(idOrder: number, itemsOrder: OrderRequest[]): Observable<ApiRespone> {
+   updateOrderAll(idOrder: number, itemsOrder: OrderRequest[]): Observable<ApiRespone> {
     if (idOrder ) {
      
-      return this.http.put<ApiRespone>(`${this.urlOrder}/${idOrder}`, itemsOrder)
+      return this.http.put<ApiRespone>(`${this.urlOrder}/update/${idOrder}`, itemsOrder)
         .pipe(
           tap(response => {
             this.websocketService.sendOrderUpdate(response.result); 
@@ -93,6 +93,6 @@ export class RequestOrder {
     return new Observable();
   }
   deleteOrder(idOrder: number): Observable<void> {
-    return this.http.delete<void>(`http://192.168.2.5:8080/api/v1/order/delete/${idOrder}`);
+    return this.http.delete<void>(`${this.urlDeleteOrder}/${idOrder}`);
   }
 }
