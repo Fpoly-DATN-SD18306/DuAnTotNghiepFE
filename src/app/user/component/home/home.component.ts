@@ -47,7 +47,7 @@ ngOnInit(): void {
             // console.log("co r"+idTable);
           }, error =>{
             console.log(error);
-            // window.location.assign("/error")
+            window.location.assign("/error")
           }
         );
       } else {

@@ -22,4 +22,6 @@ export class AudioService {
   pauseSound(): void {
     this.audio.pause()
   }
+
+
 }

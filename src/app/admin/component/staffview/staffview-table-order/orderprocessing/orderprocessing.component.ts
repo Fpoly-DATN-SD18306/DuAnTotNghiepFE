@@ -14,6 +14,11 @@ import { foodResponse } from '../../../../../entity/response/food-response';
 import e from 'express';
 import { CategoryService } from '../../../../../service/categoryService';
 import { CategoryResponse } from '../../../../../entity/response/category-response';
+import { PaymentService } from '../../../../../service/paymentService/Payment.service';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { InvoiceService } from '../../../../../service/paymentService/Invoice.service';
+import { invoiceRespone } from '../../../../../interface/invoice/invoice';
 import { foodRequest } from '../../../../../entity/request/food-request';
 import { OrderRequest } from '../../../../../entity/request/order-request';
 import { IpServiceService } from '../../../../../service/ipService/ip-service.service';
@@ -24,11 +29,11 @@ import { IpServiceService } from '../../../../../service/ipService/ip-service.se
   styleUrl: './orderprocessing.component.css',
 })
 export class OrderprocessingComponent implements OnInit {
-  listOrderDetails: OrderDetailResponse[] = [];
-  listProducts: foodResponse[] = [];
-  listCategories: CategoryResponse[] = [];
-  itemTable?: tableResponse;
-  order?: OrderResponse;
+  listOrderDetails: OrderDetailResponse[] = []
+  listProducts: foodResponse[] = []
+  listCategories: CategoryResponse[] = []
+  itemTable?: tableResponse
+  order?: OrderResponse
   itemOrderdetail!: OrderDetailResponse;
 
   //biến lưu trữ các sản phẩm tạm thời
@@ -54,7 +59,9 @@ export class OrderprocessingComponent implements OnInit {
     private categoryService: CategoryService,
     private webSocketService: WebsocketService,
     private router: Router,
-    private ipService: IpServiceService
+    private ipService: IpServiceService,
+    private paymentService : PaymentService,
+    private invoiceService : InvoiceService
   ) { }
 
   ngOnInit(): void {
@@ -200,6 +207,7 @@ export class OrderprocessingComponent implements OnInit {
       console.log('data food by category', data.result);
     });
   }
+
 
   // // ********************************************************************************************
   clickProduct(product: foodResponse) {
@@ -477,4 +485,106 @@ export class OrderprocessingComponent implements OnInit {
   }
 
 
+
+  paymentPaythod = "cash"
+
+  errorCode: Record<number, string> =
+    { 1601: "Đơn hàng đã được hoàn thành trước đó !" }
+
+  listDataInvoice  !: invoiceRespone[];
+
+  paymentOrder() {
+    if (this.paymentPaythod == "ewallet") {
+      if (this.order) {
+        this.paymentService.postRequestPaymentVNPay(this.order.idOrder).subscribe(
+          data => {
+            console.log(data);
+            // window.location.assign(data.result.urlToRedirect)
+            window.open(data.result.urlToRedirect)
+          }, error => {
+            alert(this.errorCode[error.error.code])
+            console.log(error);
+
+          }
+
+        );
+      }
+    } else {
+      if (this.order) {
+        this.paymentService.postRequestPaymentManual(this.order.idOrder).subscribe(
+          data => {
+            console.log(data);
+            // window.location.assign(data.result.urlToRedirect)
+            this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
+          }, error => {
+            alert(this.errorCode[error.error.code])
+            console.log(error);
+
+          }
+
+        );
+      }
+    }
+  }
+
+  getInvoice() {
+    if (this.order)
+      this.invoiceService.getInvoiceByIdOrder(this.order.idOrder).subscribe(
+        data => {
+          this.listDataInvoice = data.result
+          console.log(this.listDataInvoice);
+          console.log("alo");
+
+        }, error => {
+          console.log(error)
+        }
+      )
+  }
+
+
+  downloadPdf() {
+    const data = document.getElementById('body_invoice');
+
+    if (data) {
+      html2canvas(data).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+
+        // Tính toán kích thước PDF dựa trên kích thước hình ảnh
+        const imgWidth = 200;
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Thêm trang mới nếu cần thiết
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // Lưu PDF và mở hộp thoại in
+        const pdfBlob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        // Mở PDF trong tab mới
+        const pdfWindow = window.open(pdfUrl);
+        if (pdfWindow) {
+          pdfWindow.onload = function () {
+            pdfWindow.print();
+          };
+        }
+
+      });
+    } else {
+      console.error("Không tìm thấy div với ID 'body_invoice'");
+    }
+  }
+
 }
+
