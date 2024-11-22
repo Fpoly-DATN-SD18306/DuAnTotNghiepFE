@@ -17,8 +17,9 @@ import { IpServiceService } from './ipService/ip-service.service';
 export class RequestOrder {
   currentIpCustomer : string = ''
   url = ApiConfigService.apiUrl+"/api/order";
+  urlSeparateAndMergeOrder=ApiConfigService.apiUrl+"/api/v1/separateandmergeorder"
   urlOrder = ApiConfigService.apiUrl+"/api/v1/order";
-  urlDeleteOrder = ApiConfigService.apiUrl+"/api/v1/order/delete";
+  urlDeleteOrder = ApiConfigService.apiUrl+"/api/v1/separateandmergeorder/delete";
   constructor(private http: HttpClient,
     private cartService : CartService,
     private  verifyTable : verifyTable, 
@@ -62,7 +63,7 @@ export class RequestOrder {
   postNewOrder(itemsOrder: OrderRequest[], idTable: number): Observable<ApiRespone> {
     let ipCustomer = this.currentIpCustomer
     if(idTable){  
-      return this.http.post<ApiRespone>(this.url,itemsOrder  ,{params : {"idTable" : idTable, "ipCustomer" : ipCustomer} })
+      return this.http.post<ApiRespone>(this.urlOrder+"/create",itemsOrder  ,{params : {"idTable" : idTable, "ipCustomer" : ipCustomer} })
       .pipe(tap(response => {
         this.websocketService.sendOrderUpdate(response.result); 
       }),
@@ -79,7 +80,7 @@ export class RequestOrder {
    updateOrderAll(idOrder: number, itemsOrder: OrderRequest[]): Observable<ApiRespone> {
     if (idOrder ) {
      
-      return this.http.put<ApiRespone>(`${this.urlOrder}/update/${idOrder}`, itemsOrder)
+      return this.http.put<ApiRespone>(`${this.urlSeparateAndMergeOrder}/update/${idOrder}`, itemsOrder)
         .pipe(
           tap(response => {
             this.websocketService.sendOrderUpdate(response.result); 
