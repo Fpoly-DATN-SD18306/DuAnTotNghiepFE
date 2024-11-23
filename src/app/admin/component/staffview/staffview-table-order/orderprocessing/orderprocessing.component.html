@@ -88,7 +88,7 @@
               </div>
               <div class="col-4 ms-1">
                 <div class="row">
-                  <span class="fw-bold">{{item.namefood}}</span>
+                  <span class="fw-bold">{{item.nameFood}}</span>
                 </div>
                 <span>{{formatPrice(item.price)}}</span>
               </div>
@@ -192,11 +192,45 @@
               <div class="row align-items-center">
                 <div class="col-2">
                   <nav class="navbar navbar-dark">
-                    <button class="navbar-toggler border" style="box-shadow: 0px 0px 5px 1px #d9d9d9;" type="button"
-                      data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent"
-                      aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <i class="bi bi-list fw-bold fs-2" style="color: #d9d9d9;"></i>
+                    <div class="dropup-center dropup">
+                      <button class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i
+                        class="bi bi-list fw-bold"
+                        style="color: #d9d9d9"
+                      ></i>
+                      </button>
+                      <ul class="dropdown-menu p-1">
+                        <button 
+                      class="navbar-toggler btn btn-outline-secondary border w-100 "
+                      style="box-shadow: 0px 0px 5px 1px #d9d9d9"
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#staticBackdrop"
+                      aria-controls="staticBackdropLabel"
+                      aria-expanded="false"
+                      aria-label="Toggle navigation"
+                      (click)="getAllArea()"
+                    >
+                      <p class="text-dark mt-2">Tách bàn</p>
                     </button>
+                    <button
+                    class="navbar-toggler btn btn-outline-secondary border w-100 mt-1"
+                    style="box-shadow: 0px 0px 5px 1px #d9d9d9"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#mergeTables"
+                    aria-controls="staticBackdropLabel"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                    (click)="getAllArea()"
+                  >
+                    <p class="text-dark  mt-2">Gộp bàn</p>
+                  </button>
+                       
+                      </ul>
+                    </div>
+                    
+
                   </nav>
                 </div>
                 <div class="col-10" *ngIf="!order">
@@ -259,7 +293,6 @@
     </div>
   </div>
 
-  
 <!-- Modal -->
 <div class="modal modal-xl fade" id="invoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -348,4 +381,254 @@
       </div>
     </div>
   </div>
+
 </div>
+
+ <!-- ManagerOrder Tách Bàn -->
+ <div 
+ class="modal fade bd-example-modal-xxl"
+ id="staticBackdrop"
+ data-bs-backdrop="static"
+ data-bs-keyboard="false"
+ tabindex="-1"
+ aria-labelledby="staticBackdropLabel"
+ aria-hidden="true"
+ >
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h6 class="modal-title fs-5" id="staticBackdropLabel">
+         Tách bàn/Chuyển bàn:
+       </h6>
+       <button
+         type="button"
+         class="btn-close"
+         data-bs-dismiss="modal"
+         aria-label="Close"
+         (click)="reloadData()"
+       ></button>
+     </div>
+     <div class="modal-body row">
+       <div class="col-12">
+         <p class="text-danger">
+           Bạn chọn bàn đã có order, món sẽ tách bàn này và chuyển qua bàn mới
+         </p>
+       
+       </div>
+       <div class="col-sm-6">
+         <p>Bàn cũ</p>
+         <input
+           class="col-sm-12 mb-1"
+           type="text"
+           value="{{ order?.nameTable }}"
+           readonly
+         />
+         <div class="mx-auto" style="overflow-y: scroll; height: 350px;">
+           <div
+           class="item-product  d-flex justify-content-around border-secondary p-3"
+           style="
+             font-size: 0.9em;
+             background-color: #f1f1f1;
+             border-bottom: 1px dotted; "
+           *ngFor="let newitem of listOrderDetails; let i = index">
+           
+               <span class="me-1 fw-bold col-5  mt-1"
+               >{{ newitem.nameFood }} </span>
+               <div class="col-1 me-1 mt-1">
+                 <p class="fw-bold border rounded-circle bg-primary text-center text-light"
+                 >{{ newitem.quantity }}</p>
+               </div>  
+             <input class="form-control"(change)="updateQuantityOrder(i, $event,newitem.idFood)"  min="0" type="number" />
+ 
+ 
+         </div>
+         </div>
+         
+       </div>
+       <div class="col-sm-6">
+         <div class="d-flex justify-content-between">
+           <p class="col-sm-6">Bàn mới - Khu</p>
+ 
+           <select
+               class="col-sm-5 mb-1"
+               [(ngModel)]="selectedAreaId"
+               (change)="getTable()"
+             >
+               <option
+                 class="text-center"
+                 *ngFor="let areaItem of listArea"
+                 [value]="areaItem.idArea"
+               >
+                 {{ areaItem.nameArea }}
+               </option>
+             </select>
+             
+         </div>
+         
+           <select
+             class="col-sm-12 "
+             style="height: 27px"
+             [(ngModel)]="selectedTableId"
+           >
+             <option
+               *ngFor="let tableItem of listTable"
+               [value]="tableItem.idTable"
+             >
+             
+               {{ tableItem.nameTable }}
+             </option>
+           </select>
+           
+           <div class="mx-auto mt-1" style="overflow-y: scroll; height: 350px;">
+             <div
+             class="item-product  d-flex justify-content-around border-secondary p-3"
+             style="
+               font-size: 0.9em;
+               background-color: #f1f1f1;
+               border-bottom: 1px dotted; "
+                 *ngFor="let newItem of seletedListFood; let i = index">
+                 <span class=" fw-bold mt-1 col-7">{{ newItem.nameFood }}</span>
+                 
+                 <div class="col-1 me-1 mt-1">
+                     <p class="fw-bold border rounded-circle bg-primary text-center text-light">{{ newItem.quantity }}</p>
+                 </div>
+         
+                 <button class="btn btn-outline-danger col-md-2" (click)="removeFromNewTable(i)">
+                     Xóa
+                 </button>
+             </div>
+         </div>
+         
+       </div>
+       
+     </div>
+     <div class="modal-footer">
+       <button type="button" (click)="reloadData()" class="btn btn-secondary" data-bs-dismiss="modal">
+         Close
+       </button>
+       <button type="button"  class="btn btn-primary" (click)="createNewOrder()">
+         Tách bàn mới
+       </button>
+     </div>
+   </div>
+ </div>
+ </div>
+ <!-- ManagerOrder Gộp Bàn -->
+ <div
+ class="modal fade bd-example-modal-xxl"
+ id="mergeTables"
+ data-bs-backdrop="static"
+ data-bs-keyboard="false"
+ tabindex="-1"
+ aria-labelledby="staticBackdropLabel"
+ aria-hidden="true"
+ >
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h6 class="modal-title fs-5" id="staticBackdropLabel">
+         Gộp bàn:
+       </h6>
+       <button
+         type="button"
+         class="btn-close"
+         data-bs-dismiss="modal"
+         aria-label="Close" (click)="reloadData()"
+       ></button>
+     </div>
+     <div class="modal-body row">
+       <div class="col-12">
+         <p class="text-danger">
+           Bạn chọn bàn đã có order và chọn bàn để gộp, sau đó tiến hành gộp 2 bàn lại với nhau.
+         </p>
+       </div>
+       <div class="col-sm-6">
+         <p>Bàn cũ</p>
+         <input
+           class="col-sm-12 mb-1"
+           type="text"
+           value="{{ order?.nameTable }}"
+           readonly
+         />
+         <div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+           <div
+           class="item-product  d-flex justify-content-around border-secondary p-3"
+           style="
+             font-size: 0.9em;
+             background-color: #f1f1f1;
+             border-bottom: 1px dotted; "
+           *ngFor="let newitem of listOrderDetails; let i = index">
+           
+               <span class="me-1 fw-bold col-5  mt-1"
+               >{{ newitem.nameFood }} </span>
+               <div class="col-1 me-1 mt-1">
+                 <p class="fw-bold border rounded-circle bg-primary text-center text-light"
+                 >{{ newitem.quantity }}</p>
+               </div>  
+       
+           
+         </div>
+         </div>
+         
+       </div>
+       <div class="col-sm-6">
+         <div class="d-flex justify-content-between">
+           <p class="col-sm-6">Bàn gộp - Khu</p>
+           <select
+             class="col-sm-5 mb-1"
+             [(ngModel)]="selectedAreaId"
+             (change)="getTableOpen()"
+           >
+             <option
+               class="text-center"
+               *ngFor="let areaItem of listArea"
+               [value]="areaItem.idArea"
+             >
+               {{ areaItem.nameArea }}
+             </option>
+           </select>
+         </div>
+           
+           <select
+             class="col-sm-12 mb-2"
+             style="height: 27px"
+             [(ngModel)]="selectedTable"
+             (change)="onTableSelectChange(selectedTable)"
+           >
+             <option
+               *ngFor="let tableItem of listTable"
+               [ngValue]="tableItem"
+               
+             >
+ 
+               {{ tableItem.nameTable }}
+             </option>
+           </select>
+           
+           <div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+             <div
+                 class="item-product border-secondary d-flex justify-content-around p-3"
+                 style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;"
+                 *ngFor="let newItem of listOrderDetailsTableMerge; let i = index">
+                 <span class="ms-3 fw-bold mt-1 col-7">{{ newItem.nameFood }}</span>
+                 
+                 <div class="col-1 me-1 mt-1">
+                     <p class="fw-bold border rounded-circle bg-primary text-center text-light">{{ newItem.quantity }}</p>
+                 </div>
+         
+             </div>
+         </div>
+         
+        
+       </div>
+     </div>
+     <div class="modal-footer">
+       <button type="button" (click)="reloadData()" class="btn btn-secondary" data-bs-dismiss="modal">
+         Close
+       </button>
+       <button type="button" class="btn btn-primary" (click)="mergeOrder()" >
+         Gộp bàn
+       </button>
+     </div>
+   </div>
+ </div>

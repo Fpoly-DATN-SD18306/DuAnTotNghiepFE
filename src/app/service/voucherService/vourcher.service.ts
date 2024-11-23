@@ -20,6 +20,7 @@ export class VourcherService {
     data.append('endDate',voucherRequest.endDate.toString())
     data.append('description',voucherRequest.description)
     data.append('discount',voucherRequest.discount.toString())
+    data.append('isIncreasePrice', voucherRequest.isIncreasePrice.toString());
     console.log(voucherRequest.endDate);
     console.log(voucherRequest.startDate);
     
@@ -34,6 +35,7 @@ export class VourcherService {
     data.append('endDate',voucherRequest.endDate.toString())
     data.append('description',voucherRequest.description)
     data.append('discount',voucherRequest.discount.toString())
+     data.append('isIncreasePrice', voucherRequest.isIncreasePrice.toString());
     console.log(voucherRequest.namePromotion);
     // const putUrl = `${this.url}+ '/api/v1/promotions'`;
     console.log(idVoucher);
@@ -47,12 +49,13 @@ export class VourcherService {
     return this.http.delete<ApiRespone>(this.url +'/' +idVoucher);
   }
 
-  filterVoucher(theKeyword: string,theStatus: string,theSortField:string,theSortDirection:string, thePage: number, thePageSize: number): Observable<ApiRespone> {
+  filterVoucher(theKeyword: string,theStatus: string,theIsIncreasePrice:string,theSortField:string,theSortDirection:string, thePage: number, thePageSize: number): Observable<ApiRespone> {
     let nameVoucher = theKeyword ? `&namePromotion=${theKeyword}` : '';
     let status = theStatus ? `&status=${theStatus}` : '';
+    let isIncreasePrice = theIsIncreasePrice === '123' ?'':  '&isIncreasePrice=' + theIsIncreasePrice;
     let sortField = `&sortBy=${theSortField}`;
     let sortDirection =`&orderBy=${theSortDirection}`;
-    const searchUrl = `${this.url}/filter?${nameVoucher}${status}${sortField}${sortDirection}&page=${thePage}&size=${thePageSize}`;
+    const searchUrl = `${this.url}/filter?${nameVoucher}${status}${isIncreasePrice}${sortField}${sortDirection}&page=${thePage}&size=${thePageSize}`;
     console.log(searchUrl);
     return this.http.get<ApiRespone>(searchUrl);
   }

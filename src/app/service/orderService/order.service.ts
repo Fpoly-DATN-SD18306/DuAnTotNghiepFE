@@ -51,7 +51,7 @@ export class OrderService {
     updateOrder(idOrder: number, itemOrderrequest: OrderRequest): Observable<ApiRespone> {
       return this.http.put<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`, itemOrderrequest);
     }
-
+  
     updateOrderDetailQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
       const url = `${this.url}/api/v1/order/${idOrder}/orderdetails/${idOrderDetail}`;
       return this.http.put(url, newQuantity); // Gửi newQuantity trực tiếp
