@@ -21,7 +21,6 @@ import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    
     MatSnackBarModule,
     ManagerviewFoodRoutingModule
   ]

@@ -9,7 +9,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManagerviewTableComponent } from './managerview-table/managerview-table.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ManagerviewUserComponent } from './managerview-user/managerview-user.component';
 import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-voucher.component';
+import { ManagerviewReportComponent } from './managerview-report/managerview-report.component';
 
 
 
@@ -18,7 +20,9 @@ import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-v
     ManagerviewparentComponent,
     ManagerviewFoodComponent,
     ManagerviewTableComponent,
+    ManagerviewUserComponent,
     ManagerviewVoucherComponent,
+    ManagerviewReportComponent,
 
   ],
   imports: [
@@ -28,7 +32,7 @@ import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-v
     ReactiveFormsModule,
     ManagerviewRoutingModule,
     FormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ]
 })
 export class ManagerviewModule { }

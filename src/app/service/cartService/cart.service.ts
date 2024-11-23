@@ -11,7 +11,7 @@ export class CartService {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,private foodService : FoodService) {
     if (isPlatformBrowser(this.platformId)) {
-      const storedCart = sessionStorage.getItem(this.cartKey);
+      const storedCart = localStorage.getItem(this.cartKey);
       if (storedCart) {
         CartService.items = JSON.parse(storedCart);
       }

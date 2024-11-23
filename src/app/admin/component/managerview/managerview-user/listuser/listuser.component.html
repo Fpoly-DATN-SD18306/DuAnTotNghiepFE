@@ -1,0 +1,93 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link " aria-current="page" routerLink="/admin/manager/managerUser/managerUser">Quản lý nhân viên</a>
+  
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" routerLink="/admin/manager/managerUser/users">Danh sách nhân viên</a>
+    </li>
+  </ul>
+
+  <form class="row g-3 mt-1">
+    <div class="col-md-4">
+      <input type="text" class="form-control" placeholder="Tìm kiếm theo tên tài khoản" [(ngModel)]="usernameFilter" name="usernameFilter" (ngModelChange)="getAllUsers()">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" placeholder="Tìm kiếm theo họ tên" [(ngModel)]="fullnameFilter" name="fullnameFilter" (ngModelChange)="getAllUsers()">
+    </div>
+    <div class="col-md-2">
+      <select id="inputState" class="form-select" [(ngModel)]="isAdminFilter" name="isAdminFilter" (ngModelChange)="getAllUsers()">
+        <option [value]="123" selected >Chức năng</option>
+        <option [value]='true'>Admin</option>
+        <option [value]='false'>User</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select id="inputState" class="form-select" [(ngModel)]="isChangedPassFilter" name="isChangedPassFilter" (ngModelChange)="getAllUsers()">
+        <option [value]="123" selected >Đổi mật khẩu</option>
+        <option [value]='true'>Đã đổi</option>
+        <option [value]='false'>Chưa đổi</option>
+      </select>
+    </div>
+  </form>
+  
+  <div class="mt-2">
+    <button type="button" class="btn btn-primary w-100" (click)="getAllUsers()">Tìm kiếm</button>
+  </div>
+  
+  <div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+    <table class="border rounded my-2 table table-striped">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Ảnh nhân viên</th>
+          <th scope="col-1">Mã nhân viên</th>
+          <th scope="col">Tên tài khoản</th>
+          <th scope="col">Họ tên</th>
+          <th scope="col">Chức năng</th>
+          <th scope="col">Đổi mật khẩu</th>
+          <th scope="col">Trạng thái</th>
+          <th scope="col">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let users of filteredUsers">
+          <td style="width: 140px;">
+            <img *ngIf="users?.imgUser" alt="" src="http://localhost:8080/images/{{users.imgUser}}"
+              style="height: 100px; width: 120px">
+            <img *ngIf="!users?.imgUser" alt="" src="./img/noImage.jpg" style="height: 100px; width: 120px">
+          </td>
+          <td style="width: 180px;">{{users.idUser}}</td>
+          <td>{{users.username}}</td>
+          <td>{{users.fullname}}</td>
+          <td>{{users.isAdmin?"Admin":"User"}}</td>
+          <td>{{users.isChangedPass?"Đã Cập nhật":"Chưa cập nhật"}}</td>
+
+          <td>{{users.isDeleted?"Đã xóa":"Chưa xóa"}}</td>
+          <td>
+            <button type="button" (click)="editUser(users.idUser)" class="btn mx-1 btn-outline-secondary">Sửa</button>
+          </td>
+          
+        </tr>
+      </tbody>
+    </table>
+  
+  </div>
+  <div class="w-100 my-3 d-flex justify-content-center ">
+    <nav class="mx-auto text-center " aria-label="...">
+      <ul class="pagination">
+        <li class="page-item "  [class.disabled]="number==0" >
+          <button (click)="paging(number-1)"  class="page-link">Previous</button>
+        </li>
+        <li *ngIf="number>0" class="page-item ">
+          <button (click)="paging(number-1)" class="page-link" >{{number}} </button></li>
+        <li  class="page-item active">
+           <button class="page-link" >{{number+1}}  </button></li>
+           <li *ngIf="totalPages-1>number" class="page-item ">
+            <button (click)="paging(number+1)" class="page-link" >{{number+2}} </button></li>
+  
+        <li class="page-item" [class.disabled]="number==totalPages-1">
+          <button  (click)="paging(number+1)" class="page-link" >Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>

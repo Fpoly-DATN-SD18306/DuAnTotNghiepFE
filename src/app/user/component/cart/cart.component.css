@@ -1,0 +1,16 @@
+
+.box-btn button {
+    flex: 1; /* Để mỗi button chiếm đều khoảng trống trong box-btn */
+    width: 100%; /* Đảm bảo button chiếm hết chiều rộng cột của mình */
+    margin: 0 5px; /* Khoảng cách giữa các button */
+  }
+
+  #id01 {
+    position: fixed;
+
+  }
+
+  .tittle-confilm{
+    font-style: ' Cambria, Cochin, Georgia, Times, 'Times New Roman', serif';
+  }
+  
