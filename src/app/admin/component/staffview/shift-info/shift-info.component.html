@@ -1,0 +1,237 @@
+<!-- <div *ngIf="idShift == null" class="d-flex justify-content-center pt-5 align-items-center">
+    <div class="row text-center">
+        
+        <i class="col-12">Chưa có thông tin ca, Vui lòng tạo</i>
+
+        <button (click)="getShiftName()" type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Tạo ca
+        </button>
+
+      
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Thông tin ca</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <form action="">
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-around">
+                                <h6>Ngày: {{currentDate | date: 'dd/MM/yyyy'}}</h6> 
+
+                                <h6>
+                                    Ca:  {{shiftName}}
+                                </h6>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label">Tiền đầu ca</label>
+                                <input type="Text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div>
+
+    <nav class="navbar  navbar-expand-lg border-black border-bottom py-3">
+        <div class="container-fluid">
+            <ul class="nav d-flex flex-nowrap align-items-center gap-2">
+                <div class="d-flex gap-2">
+                    <li class="nav-item">
+                        <a type="button"
+                            class=" btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7"
+                            routerLink="/admin/staff/tableorder_staff/tableorder">Tất
+                            cả</a>
+                        <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+                    </li>
+
+                    <li class="nav-item">
+                        <a type="button"
+                            class="btn btn-outline-secondary rounded-1 px-lg-5 px-md-4 px-2 fs-lg-6 fs-md-6 fs-7">Bàn
+                            đang
+                            mở</a>
+                        <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+                    </li>
+                    <li class="nav-item">
+                        <a type="button"
+                            class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Đặt
+                            bàn</a>
+                        <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+                    </li>
+                </div>
+                <div class="d-flex gap-2">
+                    <li class="nav-item">
+                        <a type="button"
+                            class="btn btn-active btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7"
+                            routerLink="/admin/staff/ShiftInfo"> Thông tin ca</a>
+                        <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+                    </li>
+                </div>
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- body -->
+    <div>
+        <!-- info day -->
+        <div class="d-flex justify-content-between mt-4">
+            <h6 class="me-5 ms-5" style="color: red;">Trạng thái: {{status}}</h6>
+            <div class="d-flex me-5">
+                <h6 class="me-5" style="color: red;">Ngày: {{currentDate | date: 'dd/MM/yyyy'}}</h6>
+                <h6 class="me-3" style="color: red;">
+                    Ca: {{shiftName}}
+                </h6>
+            </div>
+
+        </div>
+
+        <div>
+
+        </div>
+        <!-- form -->
+        <div class="row rounded-1 mt-5">
+            <div class="col-3"></div>
+            <div class="col-6 shadow p-3 mb-5 bg-body-tertiary rounded rounded-2">
+                <form id="form1" (ngSubmit)="onSubmit()">
+                    <div class="d-flex justify-content-center">
+                        <h4>Thông tin ca</h4>
+                    </div>
+
+                    <div class="mx-2">
+                        <label for="Tiền đầu ca">Tiền đầu ca: </label>
+                        <input [(ngModel)]="cashStart" type="number" id="cashStart1" class="form-control mt-3"
+                            value="{{cashStart}}" name="cartStart" size="1" placeholder="Nhập Tiền đầu ca"
+                            [ngClass]="{ 'is-invalid': cashStartError }" (input)="validateForm()">
+
+                        <div *ngIf="cashStartError" class="text-danger">
+                            Vui lòng chỉ nhập số và không được để trống!
+                        </div>
+
+                    </div>
+
+                    <div class="mx-2">
+                        <label class="mt-3" for="">Chi phí phát sinh: </label>
+                        <input [(ngModel)]="addtionalCost" class="form-control mt-3" name="addtionalCost" type="number"
+                            value="{{addtionalCost}}" size="1">
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-end mx-2">
+                        <input id="cashStart" class="btn btn-primary  mt-4" type="button" value="Lưu thông tin" (click)="updateShift()">
+
+                        <input id="" type="submit" class="btn btn-primary ms-3 mt-4" value="Vào ca">
+
+                        <input type="button" class="btn btn-danger ms-3 mt-4" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal" value="Kết ca" (click)="checkCreate()">
+                    </div>
+                </form>
+                <!-- Modal -->
+                <div *ngIf="! isEnding" >
+                    <div  class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"  
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Báo cáo kết ca</h1>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form2" class="row" action="">
+
+                                    <div class="row">
+
+                                        <div class="col-6"><label for="Tiền đầu ca">Tiền đầu ca: </label>
+                                            <input class="form-control mt-3" name="cartStart" type="text" size="1"
+                                                value="{{cashStart2}}">
+                                        </div>
+                                        <div class="col-6"></div>
+                                    </div>
+                                    <div class="row mt-3">
+
+                                        <div class="col-6"><label for="Tiền đầu ca">Tổng tiền hiện tại: </label>
+                                            <input class="form-control mt-3" name="cartStart" type="text" size="1">
+                                        </div>
+                                        <div class="col-6"><label for="Tiền đầu ca">Doanh thu ca: </label>
+                                            <input class="form-control mt-3" name="cartStart" type="text" size="1">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mt-3">
+
+                                        <div class="col-6 d-flex justify-content-between"><label class="mt-4"
+                                                for="Tiền đầu ca ">Tiền mặt: </label>
+                                            <input class="form-control w-75 mt-3" value="{{CashAmountAll}}" type="text" size="1">
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-between "><label class="mt-4"
+                                                for="Tiền đầu ca"> Tiền mặt: </label>
+                                            <input class="form-control w-75 mt-3" value="{{CashAmountShift}}" name="cartStart" type="text" size="1">
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-between"><label class="mt-4"
+                                                for="Tiền đầu ca">Khác:</label>
+                                            <input class="form-control w-75 mt-3"value="{{bankAmountAll}}" type="text" size="1">
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-between"><label class="mt-4"
+                                                for="Tiền đầu ca">Khác: </label>
+                                            <input class="form-control w-75 mt-3" value="{{bankAmountShift}}" type="text" size="1">
+                                        </div>
+                                        <div class="row mt-5">
+
+                                            <div class="col-6"><label for="Tiền đầu ca">Doanh thu: </label>
+                                                <input class="form-control mt-3" name="cartStart" type="text" size="1">
+                                            </div>
+                                            <div class="col-6"><label for="Tiền đầu ca">Đang phục vụ: </label>
+                                                <input class="form-control mt-3" name="cartStart" type="text" size="1">
+                                            </div>
+
+                                        </div>
+                                        <div class="row mt-3">
+
+                                            <div class="col-6"><label for="Tiền đầu ca">Tổng chi phí phát sinh:
+                                                </label>
+                                                <input class="form-control mt-3" value="{{addtionalCost2}}" name="cartStart" type="text" size="1">
+                                            </div>
+                                            <div class="col-6"><label for="Tiền đầu ca">Chi phí phát sinh:
+                                                </label>
+                                                <input class="form-control mt-3" value="{{addtionalCost1}}" type="text" size="1">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                <button type="submt" class="btn btn-danger" (click)="endShift()"  data-bs-dismiss="modal">Kết ca</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div> 
+                
+            </div>
+            <div class="col-3"></div>
+        </div>
+
+        <!-- Thông báo -->
+        <div *ngIf="submitMessage" class="alert mt-3" [ngClass]="submitSuccess ? 'alert-success' : 'alert-danger'">
+            {{ submitMessage }}
+        </div>
+    </div>

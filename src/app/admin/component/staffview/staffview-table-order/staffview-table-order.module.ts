@@ -5,11 +5,13 @@ import { TableorderStaffComponent } from './tableorder-staff/tableorder-staff.co
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { StaffviewTableOrderRoutingModule } from './staffview-table-order-routing.module';
+import { ShiftInfoComponent } from '../shift-info/shift-info.component';
 
 @NgModule({
     declarations: [
       OrderprocessingComponent,
       TableorderStaffComponent
+      
     ],
     imports: [
       CommonModule,

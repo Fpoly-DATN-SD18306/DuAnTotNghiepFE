@@ -4,6 +4,9 @@ import { AdminviewComponent } from './component/adminview/adminview.component';
 
 
 
+
+
+
 const routes: Routes = [{
   path: '', component: AdminviewComponent,
   children: [

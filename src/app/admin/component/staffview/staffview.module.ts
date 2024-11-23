@@ -6,12 +6,18 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { StaffviewTableOrderComponent } from './staffview-table-order/staffview-table-order.component';
 import { StaffviewParentComponent } from './staffview-parent/staffview-parent.component';
+import { ShiftInfoComponent } from './shift-info/shift-info.component';
+
+
 
 
 @NgModule({
   declarations: [
     StaffviewParentComponent,
-    StaffviewTableOrderComponent
+    StaffviewTableOrderComponent,
+    ShiftInfoComponent
+
+
   ],
   imports: [
     CommonModule,
