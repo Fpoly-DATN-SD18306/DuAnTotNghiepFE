@@ -14,7 +14,7 @@
       <div class="my-2"></div>
       <div class=" pt-4 mt-5 ">
           <button type="button" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Tổng quan</button>
-          <button type="button" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Thống kê</button>
+          <button type="button" routerLink="/admin/manager/managerReport" [class.active]="currentView=='managerReport'" (click)="activeButton('managerReport','')" class="btn btn-lg text-start shadow border  btn-light my-2 w-100">Thống kê</button>
         
       </div>
   </div>
