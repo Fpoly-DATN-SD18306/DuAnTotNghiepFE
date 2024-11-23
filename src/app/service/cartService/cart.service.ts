@@ -11,7 +11,7 @@ export class CartService {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,private foodService : FoodService) {
     if (isPlatformBrowser(this.platformId)) {
-      const storedCart = sessionStorage.getItem(this.cartKey);
+      const storedCart = localStorage.getItem(this.cartKey);
       if (storedCart) {
         CartService.items = JSON.parse(storedCart);
       }
@@ -59,7 +59,6 @@ export class CartService {
       const cartItemsString =  sessionStorage.getItem('cart');
       if (cartItemsString) {
         try {
-          console.log('dataSessioncart: '+cartItemsString)
           return JSON.parse(cartItemsString);
         } catch (error) {
           console.error('Error parsing cart items:', error);

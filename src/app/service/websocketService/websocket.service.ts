@@ -13,6 +13,7 @@ import { Icart } from '../../interface/cart/iCart';
 })
 export class WebsocketService {
   private messageSubject = new Subject<string>(); 
+  private PaymentMessageSubject = new Subject<string>();
   private confirmOrderSubject = new Subject<any>();
   constructor() { }
   
@@ -26,8 +27,19 @@ export class WebsocketService {
     this.stompClient.connect({}, (frame:any) => {
       this.subscribeToPostOrder()
      this.subscribeToConfirmOrder()
+     this.subcribeTolistenPayment()
     })
     
+  }
+  // cacth payment
+  private subcribeTolistenPayment(){
+    this.stompClient.subscribe('/topic/paymentVNPay',(message:any) =>{
+      if (message.body) {
+        console.log('Payment VNPay:', JSON.parse(message.body));
+        this.PaymentMessageSubject.next(message.body);
+      }
+
+    })
   }
 
   // Phương thức để lắng nghe và xử lý thông báo từ topic/postorder
@@ -76,6 +88,9 @@ export class WebsocketService {
     return this.messageSubject.asObservable(); // Trả về Observable để lắng nghe
   }
 
+  onPaymentMessage(){
+    return this.PaymentMessageSubject.asObservable();
+  }
   onConfirmOrderMessage() {
     return this.confirmOrderSubject.asObservable(); // Trả về Observable để lắng nghe
   }
