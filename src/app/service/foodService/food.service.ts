@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiConfigService } from '../ApiConfigService';
@@ -12,14 +12,21 @@ export class FoodService {
   url = ApiConfigService.apiUrl;
   constructor(private http : HttpClient) { }
 
+  header = new HttpHeaders(
+    {"Authorization":"Bearer " +  localStorage.getItem("jwt")}
+  )
 
   getAllList():Observable<ApiRespone>{
-    return this.http.get<ApiRespone>(this.url+"/api/v1/foods");
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods",{headers:this.header});
+  }
+
+  getByIdCategory(idCategory : number):Observable<ApiRespone>{
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/category/"+idCategory,{headers:this.header});
   }
   
   getById(idFood : number):Observable<ApiRespone>{
     
-    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/"+idFood);
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/"+idFood,{headers:this.header});
   }
 
   postFood(foodRequest : foodRequest, file : File):Observable<ApiRespone>{
@@ -35,7 +42,7 @@ export class FoodService {
     
     console.log(foodRequest.isSelling)
 
-    return this.http.post<ApiRespone>(this.url+"/api/v1/foods",data)
+    return this.http.post<ApiRespone>(this.url+"/api/v1/foods",data,{headers:this.header})
 
   }
   putFood(foodRequest : foodRequest, file : File,idFood :Number):Observable<ApiRespone>{
@@ -52,7 +59,7 @@ export class FoodService {
 
     console.log(foodRequest.isSelling)
  
-    return this.http.put<ApiRespone>(this.url+"/api/v1/foods/"+idFood,data)
+    return this.http.put<ApiRespone>(this.url+"/api/v1/foods/"+idFood,data,{headers:this.header})
 
   }
   

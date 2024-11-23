@@ -18,12 +18,14 @@ import { ToastModule } from 'primeng/toast';
 import { StaffviewParentComponent } from './admin/component/staffview/staffview-parent/staffview-parent.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoginComponent } from './login/login.component';
+import { VnPayComponent } from './vn-pay/vn-pay.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    VnPayComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +37,7 @@ import { LoginComponent } from './login/login.component';
     MatSnackBarModule,
     ToastModule,
     ReactiveFormsModule
+
     // ToastModule
   ],
   providers: [
