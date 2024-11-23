@@ -7,6 +7,11 @@ import { AdminviewComponent } from './component/adminview/adminview.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { Router, RouterModule } from '@angular/router';
+
+
+
+
 
 
 @NgModule({
@@ -14,12 +19,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
     AdminviewComponent,
 
+    
+
+
   ],
   imports: [
     NgbModule,
     CommonModule,
     ReactiveFormsModule,
-    AdminRoutingModule
-  ]
+    AdminRoutingModule,
+    RouterModule  ]
 })
 export class AdminModule { }

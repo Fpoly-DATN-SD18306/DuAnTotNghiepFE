@@ -2,3 +2,49 @@
     background-color: #FFAB2C !important;
     color: white !important;
 }
+
+
+
+.popup {
+    display: none; /* Ẩn popup theo mặc định */
+    position: fixed; /* Vị trí cố định */
+    left: 0;
+    top: 0;
+    width: 100%; /* Đầy đủ chiều rộng */
+    height: 100%; /* Đầy đủ chiều cao */
+    background-color: rgba(0, 0, 0, 0.7); /* Lớp phủ tối */
+    z-index: 1001; /* Đặt lên trên cùng */
+    justify-content: center; /* Căn giữa nội dung */
+    align-items: center; /* Căn giữa nội dung */
+}
+
+.popup-content {
+    background-color: white; /* Nền trắng */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center; /* Căn giữa văn bản */
+}
+
+.close {
+    cursor: pointer; /* Con trỏ chuột dạng tay khi hover */
+    float: right; /* Đẩy nút đóng sang bên phải */
+    font-size: 20px;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 1040; 
+}
+
+
+.toast-container {
+    z-index: 1050;
+}
+
+.toast-container1 {
+    z-index: 2050;
+}

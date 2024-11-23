@@ -11,11 +11,13 @@ import { ManagerviewTableComponent } from './managerview-table/managerview-table
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
+
 @NgModule({
   declarations: [
     ManagerviewparentComponent,
     ManagerviewFoodComponent,
     ManagerviewTableComponent
+
   ],
   imports: [
  
