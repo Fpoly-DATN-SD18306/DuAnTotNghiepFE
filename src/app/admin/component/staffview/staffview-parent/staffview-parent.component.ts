@@ -42,9 +42,6 @@ export class StaffviewParentComponent implements OnInit {
         this.orderMessages.push({ id: this.orderIdCounter, message: `[${orderData.nameTable}] có đơn hàng mới #${orderData.idOrder}`, visible: true });
         this.orderIdCounter++
         this.itemsorder = orderData
-        // if(orderData.statusOrder == 'Waiting'){
-        //   this.audioService.playSound()
-        // }
       }
       console.log('ordermess:' + message)
     });
@@ -110,32 +107,31 @@ export class StaffviewParentComponent implements OnInit {
   }
 
 
-  confirmOrder(idOrder: number , idTable : number) {
-    if (idOrder === null || idTable === null) { 
-      console.log('Lỗi: idOrder hoặc idTable không hợp lệ!');
-      return; 
-    }
-     const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
-     console.log('oldIdOrdersession', oldIdOrder);
-    this.audioService.pauseSound()
-    if (oldIdOrder) {
-      this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
-        (data) => {
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    } else {
-      this.orderService.confirmOrder(idOrder, null).subscribe(
-        (data) => {
-          sessionStorage.setItem(`order-${idTable}`, idOrder!.toString());
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    }
+  confirmOrder(idOrder: number) {
+    // if (idOrder === null || idTable === null) { 
+    //   console.log('Lỗi: idOrder hoặc idTable không hợp lệ!');
+    //   return; 
+    // }
+    //  const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
+    // this.audioService.pauseSound()
+    // if (oldIdOrder) {
+    //   this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
+    //     (data) => {
+    //     },
+    //     (error) => {
+    //       console.log('Error', error);
+    //     }
+    //   );
+    // } else {
+    //   this.orderService.confirmOrder(idOrder, null).subscribe(
+    //     (data) => {
+    //       sessionStorage.setItem(`order-${idTable}`, idOrder!.toString());
+    //     },
+    //     (error) => {
+    //       console.log('Error', error);
+    //     }
+    //   );
+    // }
 
   }
 

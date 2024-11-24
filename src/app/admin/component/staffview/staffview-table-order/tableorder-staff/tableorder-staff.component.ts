@@ -113,9 +113,9 @@ export class TableorderStaffComponent implements OnInit {
     this.tableservice.updateTableStatus(id, status).subscribe(data => {
       console.log("Updated Table:", data);
       this.getAllTables()
-      this.openTotast('Đã cập nhật trạng thái!')
+      this.openTotast('✅ Đã cập nhật trạng thái!')
     }, error => {
-      this.openTotast('Đã cập nhật trạng thái!')
+      this.openTotast('✅ Đã cập nhật trạng thái!')
       console.log("Error", error);
     })
   }

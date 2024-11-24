@@ -120,34 +120,20 @@ export class OrderprocessingComponent implements OnInit {
     });
   }
 
-  confirmOrder(idOrder: number | null, idTable: number | null) {
-    if (idOrder === null || idTable === null) {
-      return;
-    }
-    const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
 
-    if (oldIdOrder) {
-      this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
-        (data) => {
-          ;
-          this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', oldIdOrder, idTable]);
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    } else {
-      this.orderService.confirmOrder(idOrder, null).subscribe(
-        (data) => {
-          sessionStorage.setItem(`order-${idTable}`, idOrder!.toString());
-          this.getDataOrderdetail()
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    }
+  confirmOrder(idOrder: number | null) {
+    this.orderService.confirmOrder(idOrder).subscribe(
+      (data) => {
+        console.log('data',data)
+        this.openTotast('✅ Đã xác nhận | ' + this.order?.nameTable);
+          this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    );
   }
+  
 
 
   //Save Order
@@ -451,26 +437,22 @@ export class OrderprocessingComponent implements OnInit {
       if (this.itemOrderDetailToCancel) {
         this.executeRemove(this.itemOrderDetailToCancel);
       } else {
-        const oldIdOrder = sessionStorage.getItem(`order-${this.order?.idTable}`);
-        if (Number(oldIdOrder) != 0) {
-          this.orderService.cancelOrder(Number(oldIdOrder), this.order!.idOrder, this.cancelReason).subscribe(
+          this.orderService.cancelOrder( this.order!.idOrder, this.cancelReason).subscribe(
             (res) => {
-              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', Number(oldIdOrder), this.order!.idTable]);
+              console.log(res);
+              if(res.result.idOrderMain === null){
+                this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
+                this.openTotast('⚠️ Đã hủy đơn #'+this.order?.idOrder+' | '+this.order?.nameTable)
+              }else{
+                this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
+                this.openTotast('⚠️ Đã hủy gộp đơn')
+              }
             },
             (error) => {
               console.log('Error', error);
             }
           );
-        } else {
-          this.orderService.cancelOrder(0, this.order!.idOrder, this.cancelReason).subscribe(
-            (res) => {
-              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order!.idTable]);
-            },
-            (error) => {
-              console.log('Error', error);
-            }
-          );
-        }
+        
       }
 
     }
@@ -515,6 +497,7 @@ export class OrderprocessingComponent implements OnInit {
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
+            this.openTotast('✅ '+this.order?.nameTable+' | Thanh toán thành công!')
             this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
           }, error => {
             alert(this.errorCode[error.error.code])
@@ -584,6 +567,17 @@ export class OrderprocessingComponent implements OnInit {
     } else {
       console.error("Không tìm thấy div với ID 'body_invoice'");
     }
+  }
+
+
+  
+  openTotast(status: string) {
+    this.snackBar.open
+      (status, "Đóng", {
+        duration: 4000,
+        horizontalPosition: 'center', //  'start', 'end'
+        verticalPosition: 'top', //  'bottom'
+      })
   }
 
 }
