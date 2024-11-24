@@ -47,6 +47,9 @@ export class OrderprocessingComponent implements OnInit {
   oldIdOrders: Map<number, number | null> = new Map();
   cancelReason: string = '';
   itemOrderDetailToCancel: number | null = null;
+  
+  //lưu trữ item orderdetail
+  selectedOrderDetail?: OrderDetailResponse;
 
    //lưu trữ item orderdetail
    selectedOrderDetail?: OrderDetailResponse;
@@ -360,6 +363,23 @@ export class OrderprocessingComponent implements OnInit {
       );
   }
 
+  onQuantityChange(idOrder: number, idOrderDetail: number, event: any) {
+    const newQuantity = parseInt(event.target.value, 10)
+    const orderDetail = this.listOrderDetails.find(
+      (item) => item.idOrderDetail === idOrderDetail
+    );
+    if (!orderDetail) {
+      return;
+    }
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      event.target.value = orderDetail.quantity;
+      return;
+    }
+    this.updateQuantity(idOrder, idOrderDetail, newQuantity);
+  }
+  
+  
+
   removeOrderDetails(idOrderDetail: number) {
     if (this.order) {
       if (this.listOrderDetails.length === 1) {
@@ -380,12 +400,20 @@ export class OrderprocessingComponent implements OnInit {
     }
   }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/22-test
   selectOrderDetail(item: OrderDetailResponse) {
     this.selectedOrderDetail = item; // Lưu sản phẩm chi tiết được chọn
   }
 
 
+<<<<<<< HEAD
+=======
+  
+
+>>>>>>> feature/22-test
   showCancelModal(idOrderDetail: number) {
     const modalElement = document.getElementById('cancelModal');
     if (modalElement) {
@@ -447,6 +475,7 @@ export class OrderprocessingComponent implements OnInit {
       } else {
           this.orderService.cancelOrder( this.order!.idOrder, this.cancelReason).subscribe(
             (res) => {
+<<<<<<< HEAD
               console.log(res);
               if(res.result.idOrderMain === null){
                 this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
@@ -455,18 +484,39 @@ export class OrderprocessingComponent implements OnInit {
                 this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
                 this.openTotast('⚠️ Đã hủy gộp đơn')
               }
+=======
+              sessionStorage.removeItem(`order-${this.order?.idTable}`)
+              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', Number(oldIdOrder), this.order!.idTable]);
+>>>>>>> feature/22-test
             },
             (error) => {
               console.log('Error', error);
             }
           );
+<<<<<<< HEAD
         
+=======
+        } else {
+          this.orderService.cancelOrder(0, this.order!.idOrder, this.cancelReason).subscribe(
+            (res) => {
+              sessionStorage.removeItem(`order-${this.order?.idTable}`)
+              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order!.idTable]);
+            },
+            (error) => {
+              console.log('Error', error);
+            }
+          );
+        }
+>>>>>>> feature/22-test
       }
 
     }
+    
     this.cancelReason = ''; 
     this.cancelModalClose();
   }
+
+
 
 
 

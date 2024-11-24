@@ -123,12 +123,8 @@
                 <span class="fw-bold">{{formatPrice(item.totalPrice)}}</span>
               </div>
             </div>
-<<<<<<< HEAD
             
 <!-- Modal -->
-=======
-             <!-- Modal -->
->>>>>>> feature/22-test
 <div class="modal fade" id="modalRemoveOrderdetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content px-3">
@@ -216,7 +212,6 @@
                 <div class="col-2">
                   <nav class="navbar navbar-dark">
                     <div class="btn-group dropup">
-<<<<<<< HEAD
                       <button class="navbar-toggler border dropdown-toggle" style="box-shadow: 0px 0px 5px 1px #d9d9d9;" type="button"
                       data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-list fw-bold fs-2" style="color: #d9d9d9;"></i>
@@ -228,20 +223,6 @@
                           <li><a class="dropdown-item btn" (click)="openModalCancel()">Hủy đơn</a></li>
                         </ul>
                       </div>                  </nav>
-=======
-                    <button class="navbar-toggler border dropdown-toggle" style="box-shadow: 0px 0px 5px 1px #d9d9d9;" type="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-list fw-bold fs-2" style="color: #d9d9d9;"></i>
-                    </button>
-            
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Gộp bàn</a></li>
-                        <li><a class="dropdown-item" href="#">Tách bàn</a></li>
-                        <li><a class="dropdown-item btn" (click)="openModalCancel()">Hủy đơn</a></li>
-                      </ul>
-                    </div>
-                  </nav>
->>>>>>> feature/22-test
                 </div>
                 <div class="col-10" *ngIf="!order">
                   <button (click)="saveOrder(itemTable!.idTable)"
