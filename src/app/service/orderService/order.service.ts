@@ -27,7 +27,6 @@ export class OrderService {
     }
 
     const urlWithParams = `${this.url}/api/v1/order?${params.toString()}`;
-    // return this.http.post<ApiRespone>(urlWithParams, { })
     return this.http.post<ApiRespone>(urlWithParams, { }).pipe(tap(res => {
       this.websocketService.sendConfirmOrder(res.result)
     }), catchError(error => {

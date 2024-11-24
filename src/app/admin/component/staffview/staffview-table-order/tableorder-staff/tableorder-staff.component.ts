@@ -55,6 +55,14 @@ export class TableorderStaffComponent implements OnInit {
         }
     });
   }
+
+  notifiConfirmOrder(){
+    this.websocketservice.onConfirmMessage().subscribe(message => {
+        if(message){
+          this.getAllTables()
+        }
+    });
+  }
   
     selectTable(item: tableResponse) {
     if (item.currentOrderId !== null) {
@@ -136,6 +144,7 @@ export class TableorderStaffComponent implements OnInit {
     this.getAllTables()
     this.getAllStatuses()
     this.notificationOrder()
+    this.notifiConfirmOrder()
   }
 
 }

@@ -50,10 +50,6 @@ export class OrderprocessingComponent implements OnInit {
   
   //lưu trữ item orderdetail
   selectedOrderDetail?: OrderDetailResponse;
-
-   //lưu trữ item orderdetail
-   selectedOrderDetail?: OrderDetailResponse;
-
   constructor(
     private tableservice: TableService,
     private snackBar: MatSnackBar,
@@ -74,6 +70,7 @@ export class OrderprocessingComponent implements OnInit {
     this.getAllProducts();
     this.getAllCategories();
     this.notificationOrder();
+    this.notifiConfirmOrder()
   }
 
   getOrder(idOrder: number) {
@@ -113,9 +110,6 @@ export class OrderprocessingComponent implements OnInit {
           .getOrderDetail(idOrder, idTable)
           .subscribe((data) => {
             this.listOrderDetails = data.result;
-            if (this.order == null) {
-              sessionStorage.removeItem(`order-${idTable}`)
-            }
           });
       } else {
         this.tableservice.getTable(idTable).subscribe((data) => {
@@ -126,12 +120,15 @@ export class OrderprocessingComponent implements OnInit {
   }
 
 
+ 
+
   confirmOrder(idOrder: number | null) {
     this.orderService.confirmOrder(idOrder).subscribe(
       (data) => {
         console.log('data',data)
         this.openTotast('✅ Đã xác nhận | ' + this.order?.nameTable);
-          this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
+        console.log('confirm')
+        this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
       },
       (error) => {
         console.log('Error', error);
@@ -164,6 +161,15 @@ export class OrderprocessingComponent implements OnInit {
 
   notificationOrder() {
     this.webSocketService.onMessage().subscribe((message) => {
+      if (message) {
+        this.getDataOrderdetail();
+        console.log('ordermess:' + message);
+      }
+    });
+  }
+
+  notifiConfirmOrder() {
+    this.webSocketService.onConfirmMessage().subscribe((message) => {
       if (message) {
         this.getDataOrderdetail();
         console.log('ordermess:' + message);
@@ -400,20 +406,11 @@ export class OrderprocessingComponent implements OnInit {
     }
   }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> feature/22-test
   selectOrderDetail(item: OrderDetailResponse) {
     this.selectedOrderDetail = item; // Lưu sản phẩm chi tiết được chọn
   }
 
 
-<<<<<<< HEAD
-=======
-  
-
->>>>>>> feature/22-test
   showCancelModal(idOrderDetail: number) {
     const modalElement = document.getElementById('cancelModal');
     if (modalElement) {
@@ -443,7 +440,6 @@ export class OrderprocessingComponent implements OnInit {
         this.getDataOrderdetail();
           setTimeout(() => {
             if (this.listOrderDetails.length === 0) {
-              sessionStorage.removeItem(`order-${this.order?.idTable}`);
               this.routerActive.params.subscribe((param) => {
                 let idTable = param['idTable'];
                 this.router.navigate([
@@ -475,7 +471,6 @@ export class OrderprocessingComponent implements OnInit {
       } else {
           this.orderService.cancelOrder( this.order!.idOrder, this.cancelReason).subscribe(
             (res) => {
-<<<<<<< HEAD
               console.log(res);
               if(res.result.idOrderMain === null){
                 this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
@@ -484,34 +479,15 @@ export class OrderprocessingComponent implements OnInit {
                 this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
                 this.openTotast('⚠️ Đã hủy gộp đơn')
               }
-=======
-              sessionStorage.removeItem(`order-${this.order?.idTable}`)
-              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', Number(oldIdOrder), this.order!.idTable]);
->>>>>>> feature/22-test
             },
             (error) => {
               console.log('Error', error);
             }
           );
-<<<<<<< HEAD
         
-=======
-        } else {
-          this.orderService.cancelOrder(0, this.order!.idOrder, this.cancelReason).subscribe(
-            (res) => {
-              sessionStorage.removeItem(`order-${this.order?.idTable}`)
-              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order!.idTable]);
-            },
-            (error) => {
-              console.log('Error', error);
-            }
-          );
-        }
->>>>>>> feature/22-test
       }
 
     }
-    
     this.cancelReason = ''; 
     this.cancelModalClose();
   }

@@ -58,7 +58,7 @@
 
     <div style="font-size: 22px; " class="py-2  container  d-flex justify-content-center">
       <button type="button" class="btn w-100 btn-warning text-white w3-button w3-large"
-        style="background-color: orange;" onclick="document.getElementById('id01').style.display='block'">Đặt đơn -
+        style="background-color: orange;" (click)="checkOrder()">Đặt đơn -
         {{formatPrice(total)}}</button>
     </div>
 
@@ -70,10 +70,10 @@
 <div id="id01" class="w3-modal">
   <!-- Modal Xác nhận đặt hàng -->
   <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" 
-       [ngClass]="{'d-none': isConfirmed || iserror}" 
+      [ngClass]="{'d-none': !isOrderConfirm}"
        style="max-width:600px">
     <div class="tittle-confilm text-center">
-      <img src="./img/chamthan.png" width="65px" alt="">
+      <img src="./img/chamthan.png" width="100px" alt="">
       <h6 class="fw-bold">Xác nhận đặt hàng?</h6>
       <span style="font-size: 0.8em; line-height: 10px;">
         Đơn hàng của bạn sẽ được gửi thông báo đến nhân viên sau khi bạn xác nhận!
@@ -90,9 +90,31 @@
     </div>
   </div>
 
+  <!-- Modal Xác nhận gộp hàng -->
+  <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" 
+  [ngClass]="{'d-none': !isMerge}"
+       style="max-width:600px">
+    <div class="tittle-confilm text-center">
+      <img src="./img/questionmark.png" width="100px" alt="">
+      <h6 class="fw-bold">Đã có đơn hàng trước đó?</h6>
+      <span style="font-size: 0.8em; line-height: 10px;">
+        Bàn của bạn trước đó đã có đơn hàng khác. Bạn chắc chắn muốn gộp vào đơn trước đó?
+      </span>
+    </div>
+    <div class="box-btn d-flex justify-content-end pt-2">
+      <button class="w3-button text-white rounded-2 py-3" 
+              style="background-color: rgba(133, 193, 225, 0.987);" 
+              (click)="callOrder()">Xác nhận</button>
+      <button class="w3-button rounded-2 text-white py-3" 
+              onclick="document.getElementById('id01').style.display='none'" 
+              type="button" 
+              style="background-color: rgba(239, 25, 54, 0.831);">Hủy</button>
+    </div>
+  </div>
+
   <!-- Modal Đặt hàng thành công -->
   <div class="w3-modal-content w3-card-4 w3-animate-zoom p-3 rounded-2" 
-       [ngClass]="{'d-none': !isConfirmed || iserror}" 
+       [ngClass]="{'d-none': !isConfirmed }" 
        style="max-width:600px">
     <div class="tittle-confilm text-center">
       <img src="./img/successcheft.png" width="170px" alt="">
