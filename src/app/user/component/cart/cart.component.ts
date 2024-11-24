@@ -56,6 +56,11 @@ export class CartComponent implements OnInit {
             console.error(error.error.code === 1005);
             this.iserror = true; 
           }
+          if (error.error.code == 1901) {
+            
+            alert("Nhân viên đang giao ca, vui lòng đợi trong giây lát !")
+          }
+       
       }
     );
   }

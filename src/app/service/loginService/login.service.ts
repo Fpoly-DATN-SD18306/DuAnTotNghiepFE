@@ -28,14 +28,22 @@ export class LoginService{
       const data = await this.httpClient.post<ApiRespone>(this.url + "/api/login", obj).toPromise();
       console.log(data?.result);
       if(data){
-        localStorage.setItem("jwt",data.result.token)
-        
+                
         let decodeToken: any = jwtDecode(data.result.token);
+        localStorage.setItem("jwt",data.result.token)
+        localStorage.setItem("UUID",decodeToken.ID)
+        console.log(decodeToken.ID);
+        console.log(data.result.changedPassword);
+        
+        if(data.result.changedPassword==false){
+          this.router.navigate(["/changepass"])
+          return;
+        }
         let roleToken = decodeToken.scope
         if(roleToken=="MANAGER"){
           this.router.navigate(["/admin/manager/managerFood/manager"])
         } else if(roleToken=="STAFF"){
-          this.router.navigate(["/admin/staff/tableorder_staff/tableorder"])
+          this.router.navigate(["/admin/staff/tableorder_staff/tableorder"])  
         }
 
       }
@@ -59,7 +67,8 @@ export class LoginService{
       return e.error.code;
     } finally  {
       localStorage.removeItem("jwt")
-      this.router.navigate(["/login"])
+      localStorage.removeItem("UUID")
+      window.location.assign("/login")
     }
    
   }

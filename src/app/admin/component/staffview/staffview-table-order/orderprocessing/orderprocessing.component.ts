@@ -186,6 +186,7 @@ refreshListMerge(){
         },
         (error) => {
           console.log('Error', error);
+          alert(this.errorCode[error.error.code])
         }
       );
     }
@@ -209,6 +210,7 @@ refreshListMerge(){
       },
       (error) => {
         console.log('Error', error);
+        alert(this.errorCode[error.error.code])
       }
     );
   }
@@ -842,7 +844,9 @@ openTotast(status: string) {
   paymentPaythod = "cash"
 
   errorCode: Record<number, string> =
-    { 1601: "Đơn hàng đã được hoàn thành trước đó !" }
+    { 1601: "Đơn hàng đã được hoàn thành trước đó !" ,
+      1901: "Không có ca nào đang làm việc !" 
+    }
 
   listDataInvoice  !: invoiceRespone[];
 

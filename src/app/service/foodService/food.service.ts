@@ -12,21 +12,18 @@ export class FoodService {
   url = ApiConfigService.apiUrl;
   constructor(private http : HttpClient) { }
 
-  header = new HttpHeaders(
-    {"Authorization":"Bearer " +  localStorage.getItem("jwt")}
-  )
-
+ 
   getAllList():Observable<ApiRespone>{
-    return this.http.get<ApiRespone>(this.url+"/api/v1/foods",{headers:this.header});
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods");
   }
 
   getByIdCategory(idCategory : number):Observable<ApiRespone>{
-    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/category/"+idCategory,{headers:this.header});
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/category/"+idCategory);
   }
   
   getById(idFood : number):Observable<ApiRespone>{
     
-    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/"+idFood,{headers:this.header});
+    return this.http.get<ApiRespone>(this.url+"/api/v1/foods/"+idFood);
   }
 
   postFood(foodRequest : foodRequest, file : File):Observable<ApiRespone>{
@@ -42,7 +39,7 @@ export class FoodService {
     
     console.log(foodRequest.isSelling)
 
-    return this.http.post<ApiRespone>(this.url+"/api/v1/foods",data,{headers:this.header})
+    return this.http.post<ApiRespone>(this.url+"/api/v1/foods",data)
 
   }
   putFood(foodRequest : foodRequest, file : File,idFood :Number):Observable<ApiRespone>{
@@ -59,7 +56,7 @@ export class FoodService {
 
     console.log(foodRequest.isSelling)
  
-    return this.http.put<ApiRespone>(this.url+"/api/v1/foods/"+idFood,data,{headers:this.header})
+    return this.http.put<ApiRespone>(this.url+"/api/v1/foods/"+idFood,data)
 
   }
   

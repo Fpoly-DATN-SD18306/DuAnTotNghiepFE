@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginComponent {
 
   loginForm: FormGroup;  // Declare loginForm as a FormGroup
+  loading = false;
 
   constructor(private loginService: LoginService, private formBuilder: FormBuilder) {
     // Initialize loginForm with form controls

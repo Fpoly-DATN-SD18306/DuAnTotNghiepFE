@@ -19,13 +19,15 @@ import { StaffviewParentComponent } from './admin/component/staffview/staffview-
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoginComponent } from './login/login.component';
 import { VnPayComponent } from './vn-pay/vn-pay.component';
+import { ChangepassComponent } from './changepass/changepass.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    VnPayComponent
+    VnPayComponent,
+    ChangepassComponent
   ],
   imports: [
     BrowserModule,
