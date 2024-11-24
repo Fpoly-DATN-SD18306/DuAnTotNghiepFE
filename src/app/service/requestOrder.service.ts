@@ -19,7 +19,7 @@ export class RequestOrder {
   url = ApiConfigService.apiUrl+"/api/order";
   constructor(private http: HttpClient,
     private cartService : CartService,
-    private  verifyTable : verifyTable, 
+    private verifyTable : verifyTable, 
     private websocketService: WebsocketService,
     private ipService : IpServiceService
   ) { this.getIp()}

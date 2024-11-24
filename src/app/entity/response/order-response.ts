@@ -8,6 +8,7 @@ export class OrderResponse  {
         public nameArea : String,
         public phoneCustomer : String,
         public total : number,
+        public idOrderMain : number,
         public isPrinted : boolean
     ){
     }

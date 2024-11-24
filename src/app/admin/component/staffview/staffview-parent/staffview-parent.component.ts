@@ -16,7 +16,7 @@ import { OrderService } from '../../../../service/orderService/order.service';
 })
 export class StaffviewParentComponent implements OnInit {
 
-  orderMessages: { id: number; message: string; visible: boolean }[] = []; // Mảng chứa thông báo
+  orderMessages: { id: number; message: string; visible: boolean; order: OrderResponse }[] = [];
   itemsorder!: OrderResponse
   private orderIdCounter = 0; // Đếm số lượng đơn hàng để gán ID cho thông báo
 
@@ -38,18 +38,31 @@ export class StaffviewParentComponent implements OnInit {
   notificationOrder() {
     this.websocketservice.onMessage().subscribe(message => {
       if (message) {
-        const orderData: OrderResponse = JSON.parse(message); // Chuyển đổi message thành OrderResponse
-        this.orderMessages.push({ id: this.orderIdCounter, message: `[${orderData.nameTable}] có đơn hàng mới #${orderData.idOrder}`, visible: true });
-        this.orderIdCounter++
-        this.itemsorder = orderData
-        // if(orderData.statusOrder == 'Waiting'){
-        //   this.audioService.playSound()
-        // }
+        this.itemsorder = JSON.parse(message); // Chuyển đổi message thành OrderResponse
+        if(this.itemsorder.idOrderMain === null){
+          this.orderMessages.push({ 
+            id: this.itemsorder.idOrder, 
+            message: `[${this.itemsorder.nameTable}] có đơn hàng mới #${this.itemsorder.idOrder}`, 
+            visible: true, 
+            order: this.itemsorder // Lưu thông tin đơn hàng vào thông báo
+          });
+          this.orderIdCounter++;
+        }else{
+          this.orderMessages.push({ 
+            id: this.itemsorder.idOrder, 
+            message: `[${this.itemsorder.nameTable}] khách hàng gọi thêm món`, 
+            visible: true, 
+            order: this.itemsorder // Lưu thông tin đơn hàng vào thông báo
+          });
+          this.orderIdCounter++;
+        }
       }
-      console.log('ordermess:' + message)
+      console.log('ordermess:', message);
     });
   }
 
+
+ 
   notificationPayment() {
     this.websocketservice.onPaymentMessage().subscribe(message => {
       if (message) {
@@ -63,6 +76,59 @@ export class StaffviewParentComponent implements OnInit {
 
   
   // Hàm để phát giọng nói
+
+
+    fetchOrderDetails(idOrder: number | null, idTable: number | null) {
+      this.orderMessages.forEach((message) => {
+        console.log('mess',message.id)
+        console.log('idorder',idOrder)
+        if (message.id === idOrder) {
+          message.visible = false; 
+        }
+      });
+        this.orderdetailsService.getOrderDetail(idOrder, idTable).subscribe(
+          (orderDetails) => {
+            this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', idOrder, idTable]);
+          },
+          (error) => {
+            console.error('Lỗi khi lấy chi tiết đơn hàng theo ID Order:', error);
+          }
+        );
+      
+    }
+    
+
+
+
+  confirmOrder(idOrder: number | null) {
+    this.orderMessages.forEach((message) => {
+      console.log('mess',message.id)
+      console.log('idorder',idOrder)
+      if (message.id === idOrder) {
+        message.visible = false; 
+      }
+    })
+    this.orderService.confirmOrder(idOrder).subscribe(
+      (data) => {
+        console.log('data',data)
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    );
+  }
+
+  //Đóng thông báo / Closed notifications
+  closedNotification(id: number) {
+    this.audioService.pauseSound()
+    const notification = this.orderMessages.find(msg => msg.id === id);
+    if (notification) {
+      notification.visible = false; // Đánh dấu thông báo là không hiển thị
+    }
+  }
+
+
+
   speakText(idOrder : any) {
     const textToSpeak = "Đã nhận được thanh toán của đơn hàng số " + idOrder;
     console.log(textToSpeak);
@@ -85,66 +151,4 @@ export class StaffviewParentComponent implements OnInit {
     speechSynthesis.speak(utterance);
     
     } 
-
-  fetchOrderDetails(idOrder: number | null, idTable: number | null) {
-    this.orderdetailsService.getOrderDetail(idOrder, idTable).subscribe(
-      data => {
-        if (idOrder !== null) {
-          // Điều hướng đến đường dẫn chỉ có idOrder
-          this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', idOrder, idTable]);
-        } else {
-          console.error('idOrder is null or undefined');
-          // Thực hiện xử lý khi idOrder không hợp lệ (nếu cần)
-        }
-        console.log('data', data);
-
-        const notification = this.orderMessages.find(msg => msg.message.includes(`#${idOrder}`));
-        if (notification) {
-          notification.visible = false; // Đánh dấu thông báo là không hiển thị
-        }
-      },
-      error => {
-        console.error('Error', error);
-      }
-    );
-  }
-
-
-  confirmOrder(idOrder: number , idTable : number) {
-    if (idOrder === null || idTable === null) { 
-      console.log('Lỗi: idOrder hoặc idTable không hợp lệ!');
-      return; 
-    }
-     const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
-     console.log('oldIdOrdersession', oldIdOrder);
-    this.audioService.pauseSound()
-    if (oldIdOrder) {
-      this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
-        (data) => {
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    } else {
-      this.orderService.confirmOrder(idOrder, null).subscribe(
-        (data) => {
-          sessionStorage.setItem(`order-${idTable}`, idOrder!.toString());
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    }
-
-  }
-
-  //Đóng thông báo / Closed notifications
-  closedNotification(id: number) {
-    this.audioService.pauseSound()
-    const notification = this.orderMessages.find(msg => msg.id === id);
-    if (notification) {
-      notification.visible = false; // Đánh dấu thông báo là không hiển thị
-    }
-  }
 }

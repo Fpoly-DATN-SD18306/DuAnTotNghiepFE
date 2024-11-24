@@ -19,19 +19,14 @@ export class OrderService {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`);
   } 
 
-  confirmOrder(idOrderOld: number | null, idOrderNew: number| null): Observable<ApiRespone> {
+  confirmOrder(idOrder: number | null): Observable<ApiRespone> {
     let params = new HttpParams();
 
-    if (idOrderOld !== null && idOrderOld !== undefined) {
-      params = params.set('idOrderOld', idOrderOld.toString());
-    }
-
-    if (idOrderNew !== null && idOrderNew !== undefined) {
-      params = params.set('idOrderNew', idOrderNew.toString());
+    if (idOrder !== null && idOrder !== undefined) {
+      params = params.set('idOrder', idOrder.toString());
     }
 
     const urlWithParams = `${this.url}/api/v1/order?${params.toString()}`;
-    // return this.http.post<ApiRespone>(urlWithParams, { })
     return this.http.post<ApiRespone>(urlWithParams, { }).pipe(tap(res => {
       this.websocketService.sendConfirmOrder(res.result)
     }), catchError(error => {
@@ -61,14 +56,10 @@ export class OrderService {
       return this.http.delete<ApiRespone>(`${this.url}/api/v1/order/${idOrderDetail}`);
     }
 
-    cancelOrder( idOld:  number| null, idNew: number | null,  cancellationReason: String):Observable<ApiRespone>{
+    cancelOrder( idOrder:  number| null,  cancellationReason: String):Observable<ApiRespone>{
       let params = new HttpParams();
-      if (idOld !== null && idOld !== undefined) {
-        params = params.set('idOld', idOld.toString());
-      }
-      
-      if (idNew !== null && idNew !== undefined) {
-        params = params.set('idNew', idNew.toString());
+      if (idOrder !== null && idOrder !== undefined) {
+        params = params.set('idOrder', idOrder.toString());
       }
     
       return this.http.put<ApiRespone>(`${this.url}/api/v1/order/cancel?${params.toString()}`, cancellationReason);

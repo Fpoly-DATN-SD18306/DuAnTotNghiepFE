@@ -20,7 +20,6 @@ export class PaymentService {
 
 
   public postRequestPaymentManual(idOrder : number):Observable<ApiRespone> {
-    
     return this.http.post<ApiRespone> (this.url+"/manual-Pay", {},{params :{"idOrder":idOrder}})
   }
   
