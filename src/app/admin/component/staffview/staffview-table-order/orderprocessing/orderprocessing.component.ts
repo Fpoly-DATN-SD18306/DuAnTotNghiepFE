@@ -48,6 +48,8 @@ export class OrderprocessingComponent implements OnInit {
   cancelReason: string = '';
   itemOrderDetailToCancel: number | null = null;
 
+   //lưu trữ item orderdetail
+   selectedOrderDetail?: OrderDetailResponse;
 
   constructor(
     private tableservice: TableService,
@@ -377,6 +379,12 @@ export class OrderprocessingComponent implements OnInit {
       this.updateTotal();
     }
   }
+
+
+  selectOrderDetail(item: OrderDetailResponse) {
+    this.selectedOrderDetail = item; // Lưu sản phẩm chi tiết được chọn
+  }
+
 
   showCancelModal(idOrderDetail: number) {
     const modalElement = document.getElementById('cancelModal');

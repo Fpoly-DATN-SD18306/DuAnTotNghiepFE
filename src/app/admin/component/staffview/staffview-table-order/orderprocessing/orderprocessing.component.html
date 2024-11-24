@@ -83,7 +83,7 @@
             *ngFor="let item of listOrderDetails">
             <div class="row d-flex align-items-center">
               <div class="col-1 ms-1" style="width: 12px;">
-                <button class="btn btn-sm text-danger p-0 " (click)="removeOrderDetails(item.idOrderDetail)"><i
+                <button class="btn btn-sm text-danger p-0 " data-bs-toggle="modal" data-bs-target="#modalRemoveOrderdetail" (click)="selectOrderDetail(item)"><i
                     class="bi bi-trash3"></i></button>
               </div>
               <div class="col-4 ms-1">
@@ -120,6 +120,23 @@
                 <span class="fw-bold">{{formatPrice(item.totalPrice)}}</span>
               </div>
             </div>
+            
+<!-- Modal -->
+<div class="modal fade" id="modalRemoveOrderdetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content px-3">
+      <div class="modal-body">
+        <h1 class="modal-title m-0 fw-bold" style="font-size: 2em;" id="exampleModalLabel">Hủy món</h1>
+        <input type="text" class="form-control" style="font-size: 1.2em;" placeholder="Nhập lý do hủy món">
+      </div>
+      <div class="modal-footer border border-0">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="removeOrderDetails(selectedOrderDetail!.idOrderDetail)">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
           </div>
           <!--End Item product -->
         </div>
