@@ -11,17 +11,17 @@ import { ApiRespone } from '../../entity/api-respone';
 export class ReportService {
   url = ApiConfigService.apiUrlReport;
   constructor(private http : HttpClient) { }
-  filterReport(theStartDate:string, theEndDate:string): Observable<ApiRespone> {
+  filterReport(theStartDate:string, theEndDate:string,theGroupBy:string): Observable<ApiRespone> {
     let startDate = theStartDate ? `&startDate=${theStartDate}` : '';
     let endDate = theEndDate ? `&endDate=${theEndDate}` : '';
-
-    const searchUrl = `${this.url}/filter?${startDate}${endDate}`;
-    return this.http.get<ApiRespone>(searchUrl);
-  }
-  filterChart(theGroupBy:string): Observable<ApiRespone>{
     let groupBy = theGroupBy ? `&groupBy=${theGroupBy}` : '';
-    const searchUrl = `${this.url}/filterchart?${groupBy}`;
+    const searchUrl = `${this.url}/filter?${startDate}${endDate}${groupBy}`;
     return this.http.get<ApiRespone>(searchUrl);
-
   }
+  // filterChart(theGroupBy:string): Observable<ApiRespone>{
+  //   let groupBy = theGroupBy ? `&groupBy=${theGroupBy}` : '';
+  //   const searchUrl = `${this.url}/filterchart?${groupBy}`;
+  //   return this.http.get<ApiRespone>(searchUrl);
+
+  // }
 }

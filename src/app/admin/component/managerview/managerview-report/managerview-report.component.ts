@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { error } from 'console';
 import { Chart, ChartType, registerables } from 'chart.js';
 import { ChartData } from '../../../../entity/response/chart-data';
+import { ReportData } from '../../../../entity/response/IReportData';
 Chart.register(...registerables)
 @Component({
   selector: 'app-managerview-report',
@@ -16,6 +17,7 @@ Chart.register(...registerables)
 export class ManagerviewReportComponent implements OnInit{
   endDate!:string
   startDate!:string
+  report!:ReportData;
   reportRespone ?: ReportRespone;
   chartData :ChartData[]=[];
   data:any[]=[];
@@ -37,7 +39,7 @@ export class ManagerviewReportComponent implements OnInit{
   };
   chart:any;
   constructor(private reportService: ReportService, private snackBar: MatSnackBar ){
-
+    this.setMonthRange();
     
   }
   formatPrice(price :number){
@@ -45,7 +47,17 @@ export class ManagerviewReportComponent implements OnInit{
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
   }
 
+  setMonthRange() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
 
+    const firstDayOfMonth = new Date(year, month - 1, 1);
+    this.startDate = firstDayOfMonth.toISOString().slice(0, 10);
+
+    // const lastDayOfMonth = new Date(year, month, 0);
+    this.endDate = today.toISOString().slice(0, 10);
+}
   openTotast(status: string) {
     this.snackBar.open
       (status, "Đóng", {
@@ -54,64 +66,70 @@ export class ManagerviewReportComponent implements OnInit{
         verticalPosition: 'bottom', //  'bottom'
       })
   }
-  changeStartDate(){
-    const startDate = new Date(this.startDate);
-   
-    if (isNaN(startDate.getTime())) {
-      this.openTotast('Vui lòng nhập ngày bắt đầu. ');
-      return;
-    }
-  }
-  changeEndDate(){
+  validateDates() {
     const startDate = new Date(this.startDate);
     const endDate = new Date(this.endDate);
+  
+    if (isNaN(startDate.getTime())) {
+      this.openTotast('Vui lòng nhập ngày bắt đầu.');
+      return false; // Indicate validation failure
+    }
+  
     if (isNaN(endDate.getTime())) {
       this.openTotast('Vui lòng nhập ngày kết thúc.');
-      return;
+      return false; // Indicate validation failure
     }
+  
     if (endDate < startDate) {
       this.openTotast('Ngày kết thúc phải sau ngày bắt đầu.');
-      return;
+      return false;
     }
+  
+    return true;
   }
-  searchReport(){
-    this.changeEndDate();
-    this.changeStartDate();
-    this.getReport(); 
+  searchReport(emitEvent = true) {
+    if (!emitEvent) {
+      return; 
+    }
+  
+    if (!this.validateDates()) {
+      return; 
+    }
+  
+    this.getReport();
   }
+  
+  groupByChange() {
+    this.searchReport(false); // Gọi searchReport với emitEvent là false
+  }
+// getData(){}
 getReport(){
-  this.reportService.filterReport(this.startDate,this.endDate).subscribe(
+  
+  this.reportService.filterReport(this.startDate,this.endDate,this.groupBy).subscribe(
     data =>{
-      this.reportRespone=data.result
-      console.log("bao cao",this.reportRespone)
+      this.report=data.result
+      this.reportRespone=this.report.reportData
+  
+      this.chartData = this.report.chartData;
+   
+      this.getChartData();
     },
     error => {
       console.log('Error fetching data:', error);
     }
   );
 }
-getChartData() {
-  this.reportService.filterChart(this.groupBy).subscribe(
-    data => {
-      this.chartData = data.result;
-      console.log("bao cao", this.chartData);
-      this.label= this.chartData.map(item => [item.labels]); // Chuyển thành mảng một chiều
-      this.data = this.chartData.map(item => item.values);
+getChartData(){
+  this.label= this.chartData.map(item => [item.labels]);
+  this.data = this.chartData.map(item => item.values);
 
-      this.config.data.labels = this.label;
-      this.config.data.datasets[0].data = this.data;
-      this.chart.update();
-    },
-    error => {
-      console.log('Error fetching data:', error);
-    }
-  );
-}
-
+  this.config.data.labels = this.label;
+  this.config.data.datasets[0].data = this.data;
+  this.chart.update();}
 ngOnInit() {
   this.chart= new Chart('myChart',this.config);
   this.getReport()
-  this.getChartData()
+
 
 
   }
