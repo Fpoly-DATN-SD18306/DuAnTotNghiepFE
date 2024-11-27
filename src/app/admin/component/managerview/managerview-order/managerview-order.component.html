@@ -1,0 +1,301 @@
+<div class="container mt-3 rounded-2" style="font-size: 0.8em;">
+    <div class="row">
+        <div class="col-12">
+            <div class="div px-2 rounded-2">
+                <span class="fw-bold" style="font-size: 1.2em;">
+                    Danh sách đơn hàng
+                </span>
+            </div>
+            <div class="container-fluid p-0">
+                <div class="bg-white align-middle pt-2 rounded-2">
+      
+                    <hr class="m-2">
+                    <div class="box-list-products px-2 ">
+                        <div class="box-search d-flex justify-content-between pb-2">
+                            <div class="box-total-product">
+                                <!-- <form class="row g-3 needs-validation" novalidate>
+                                    <div class="col-md-3">
+                        
+                                      <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                                      <div class="valid-feedback">
+                                        Looks good!
+                                      </div>
+                                    </div>
+                                    <div class="col-md-3">
+        
+                                      <input type="text" class="form-control" id="validationCustom02" value="Otto" required>
+                                      <div class="valid-feedback">
+                                        Looks good!
+                                      </div>
+                                    </div>
+                                    <div class="col-md-3">
+                           
+                                      <div class="input-group has-validation">
+                                        <span class="input-group-text" id="inputGroupPrepend"></span>
+                                        <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+                                        <div class="invalid-feedback">
+                                          Please choose a username.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="#" class="btn btn-outline-dark rounded-1"><svg  xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-filter"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z" /></svg> Lọc</a>
+                                    </div>                                 
+                                  </form> -->
+
+                                  <div class="filter-section position-relative">
+                                    <button class="btn btn-outline-dark btn-sm" (click)="toggleFilterForm()">Bộ Lọc <svg  xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-filter"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z" /></svg></button>
+                                    <button class="btn btn-sm" (click)="reload()"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-refresh"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg></button>
+                                    <div [ngClass]="{'d-block': showFilterForm}" class="filter-form mt-3 position-absolute" style="width: 750px; background-color: rgba(69, 69, 79, 0.937); border-radius: 0px;">
+                                      <form>
+                                        <div class="row">
+                                          <!-- Trạng thái Order -->
+                                          <div class="col-md-4">
+                                            <label for="statusOrder" class="form-label">Trạng thái đơn</label>
+                                            <select [(ngModel)]="filter.statusOrder" name="statusOrder" class="form-select" id="statusOrder">
+                                              <option value="">Tất cả</option>
+                                              <option value="Waiting">Chờ xác nhận</option>
+                                              <option value="Merged">Đã gộp</option>
+                                              <option value="Preparing">Đang phục vụ</option>
+                                              <option value="Completed">Hoàn thành</option>
+                                              <option value="Cancelled">Đã hủy</option>
+                                            </select>
+                                          </div>
+                                          <!-- Mã đơn -->
+                                          <div class="col-md-4">
+                                            <label for="orderId" class="form-label">Mã đơn</label>
+                                            <input type="text" [(ngModel)]="filter.idOrder" name="idOrder" id="orderId" class="form-control" placeholder="Nhập mã đơn">
+                                          </div>
+                                          <!-- Ngày tạo đơn -->
+                                          <div class="col-md-4">
+                                            <label for="dateFrom" class="form-label">Ngày tạo đơn</label>
+                                            <div class="input-group">
+                                              <input type="date" [(ngModel)]="filter.dateFrom" name="dateFrom" id="dateFrom" class="form-control">
+                                              <span class="input-group-text">-</span>
+                                              <input type="date" [(ngModel)]="filter.dateTo" name="dateTo" id="dateTo" class="form-control">
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <input [(ngModel)]="filter.searchKeyword" class="form-control me-1" name="searchKeyword"
+                                            style="height: 35px; font-size: 0.9em;" type="search"
+                                            placeholder="Search..." aria-label="Search">
+                                  
+                                            <div class="mt-3">
+                                            <button type="button" class="btn btn-sm me-1" style="background-color: aliceblue; color: black;" (click)="onSubmitFilter()"><svg  xmlns="http://www.w3.org/2000/svg"  width="17"  height="17"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-zoom"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg> Lọc</button>
+                                            <button type="button" class="btn btn-sm" style="background-color: aliceblue; color: black;" (click)="resetFilter()" >Đặt lại</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                            </div>
+   
+                        </div>
+                        <div class="bg-white rounded-2 p-2 pb-4">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col"><input type="checkbox"></th>
+                                        <th scope="col">#Mã đơn</th>
+                                        <th scope="col">Trạng thái</th>
+                                        <th scope="col">Ngày tạo</th>
+                                        <th scope="col">Tổng tiền</th>
+                                        <th scope="col">Quản lý</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="align-middle" *ngFor="let order of listOrders; let i = index">
+                                        <td style="width: 25px">{{i+1}}</td>
+                                        <td><input type="checkbox"></td>
+                                        <td>#{{order.idOrder}}</td>
+                                        <td>
+                                            <div [ngSwitch]="order.statusOrder">
+                                                <div>
+                                                    <span *ngSwitchCase="'Waiting'" class="p-1 rounded-2 text-white"
+                                                        style="font-size: 0.9em; background-color: rgb(71, 158, 202);">
+                                                        Chờ xác nhận
+                                                    </span>
+                                                    <span *ngSwitchCase="'Preparing'" class="p-1 rounded-2 text-white"
+                                                        style="font-size: 0.9em; background-color: rgb(223, 223, 17);">
+                                                        Đang phục vụ
+                                                    </span>
+                                                    <span *ngSwitchCase="'Completed'" ng-if="order.status == 3"
+                                                        class="p-1 rounded-2 text-white"
+                                                        style="font-size: 0.9em; background-color: rgb(132, 223, 118);">
+                                                        Đã hoàn thành
+                                                    </span>
+                                                    <span *ngSwitchCase="'Merged'" ng-if="order.status == 0"
+                                                        class="p-1 rounded-2 text-white"
+                                                        style="font-size: 0.9em; background-color: rgb(0, 255, 255);">
+                                                        Đã gộp đơn
+                                                    </span>
+                                                    <span *ngSwitchCase="'Cancelled'" ng-if="order.status == 0"
+                                                        class="p-1 rounded-2 text-white"
+                                                        style="font-size: 0.9em; background-color: rgb(255, 0, 0);">
+                                                        Đã hủy
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                        <td>{{ order.dateCreate | date:'dd/MM/yyyy HH:mm' }}</td>
+
+                                        <td>{{formatPrice(order.total)}}</td>
+
+                                        <td>
+                                            <a class="btn px-1 text-primary py-1" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                                (click)="openModal(order.idOrder)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                                    viewBox="0 0 24 24" fill="currentColor"
+                                                    class="icon icon-tabler icons-tabler-filled icon-tabler-eye">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path
+                                                        d="M12 4c4.29 0 7.863 2.429 10.665 7.154l.22 .379l.045 .1l.03 .083l.014 .055l.014 .082l.011 .1v.11l-.014 .111a.992 .992 0 0 1 -.026 .11l-.039 .108l-.036 .075l-.016 .03c-2.764 4.836 -6.3 7.38 -10.555 7.499l-.313 .004c-4.396 0 -8.037 -2.549 -10.868 -7.504a1 1 0 0 1 0 -.992c2.831 -4.955 6.472 -7.504 10.868 -7.504zm0 5a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
+                                                </svg>
+                                            </a>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                                data-bs-keyboard="false" tabindex="-1"
+                                                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body">
+                                                            <div class="order-summary p-3">
+                                                                <h4 class="mb-3 fw-bold">Thông tin đơn hàng</h4>
+                                                                <div class="row mb-1">
+                                                                    <div *ngIf="orderSelect?.idOrder" class="col-sm-6 text-start">
+                                                                        <strong>Mã hóa đơn: </strong>
+                                                                        <p>#{{ orderSelect!.idOrder }}</p>
+                                                                    </div>
+                                                                    <div class="col-sm-6 text-start">
+                                                                        <strong>Khách hàng: </strong>
+                                                                        <p *ngIf="orderSelect?.phoneCustomer">{{
+                                                                            orderSelect.phoneCustomer }}</p>
+                                                                        <p *ngIf="!orderSelect?.phoneCustomer">Không xác định
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-1">
+                                                                    <div class="col-sm-6 text-start">
+                                                                        <strong>Ngày tạo đơn: </strong>
+                                                                        <p>{{ order?.dateCreate| date: 'short' }}</p>
+                                                                    </div>
+                                                                    <div *ngIf="orderSelect?.total" class="col-sm-6 text-start">
+                                                                        <strong>Tổng tiền đơn hàng:</strong>
+                                                                        <p>{{formatPrice(orderSelect!.total)}}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <div *ngIf="orderSelect?.namePaymentMethod"
+                                                                        class="col-sm-6 text-start">
+                                                                        <strong>Phương thức thanh toán:</strong>
+                                                                        <p>{{orderSelect.namePaymentMethod}}</p>
+                                                                    </div>
+                                                                    <div *ngIf="orderSelect?.cancellationReason"
+                                                                        class="col-sm-6 text-start">
+                                                                        <strong>Lý do hủy đơn:</strong>
+                                                                        <p>{{orderSelect.cancellationReason}}</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <h4 class="mt-4 mb-3">Sản phẩm đơn hàng</h4>
+                                                                <table class="table table-striped">
+                                                                    <thead class="table-light">
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>Food Item</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Price</th>
+                                                                            <th>Total</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr
+                                                                            *ngFor="let item of listOrderDetails; let i = index">
+                                                                            <td>{{ i + 1 }}</td>
+                                                                            <td>{{ item.namefood }}</td>
+                                                                            <td>{{ item.quantity }}</td>
+                                                                            <td>{{ formatPrice(item.price) }}</td>
+                                                                            <td>{{ formatPrice(item.totalPrice)}}</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn text-danger p-0 btn-sm"
+                                                                data-bs-dismiss="modal"><svg
+                                                                    xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="currentColor"
+                                                                    class="icon icon-tabler icons-tabler-filled icon-tabler-square-x">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                    <path
+                                                                        d="M19 2h-14a3 3 0 0 0 -3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3 -3v-14a3 3 0 0 0 -3 -3zm-9.387 6.21l.094 .083l2.293 2.292l2.293 -2.292a1 1 0 0 1 1.497 1.32l-.083 .094l-2.292 2.293l2.292 2.293a1 1 0 0 1 -1.32 1.497l-.094 -.083l-2.293 -2.292l-2.293 2.292a1 1 0 0 1 -1.497 -1.32l.083 -.094l2.292 -2.293l-2.292 -2.293a1 1 0 0 1 1.32 -1.497z" />
+                                                                </svg></button>
+                                                            <button type="button"
+                                                                class="btn text-primary p-0 btn-sm"><svg
+                                                                    xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-printer">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                    <path
+                                                                        d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
+                                                                    <path
+                                                                        d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                                                                    <path
+                                                                        d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" />
+                                                                </svg></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a class="btn py-1 px-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-printer">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path
+                                                        d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
+                                                    <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                                                    <path
+                                                        d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" />
+                                                </svg>
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <nav aria-label="Page navigation example" *ngIf="totalPages > 1">
+                        <ul class="pagination justify-content-center p-0 m-0">
+                            <li class="page-item" [class.disabled]="currentPage === 0">
+                                <a class="page-link" (click)="changePage(currentPage - 1)" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li *ngFor="let page of pages" class="page-item" [class.active]="currentPage === page">
+                                <a class="page-link" (click)="changePage(page)">{{ page + 1 }}</a>
+                            </li>
+                            <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                                <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
