@@ -23,7 +23,7 @@ import { VnPayComponent } from './vn-pay/vn-pay.component';
 @NgModule({
   declarations: [
     AppComponent,
-    VnPayComponent
+    VnPayComponent,
   ],
   imports: [
     BrowserModule,

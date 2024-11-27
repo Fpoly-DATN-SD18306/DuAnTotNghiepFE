@@ -19,6 +19,31 @@ export class OrderService {
     return this.http.get<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`);
   } 
 
+
+
+  getFilteredOrders(
+    statusOrder: string|null, 
+    idOrder: number|null, 
+    dateFrom: string|null, 
+    dateTo: string|null, 
+    searchKeyword : string | null,
+    page: number, 
+    size: number): Observable<any> {
+    let params = new HttpParams()
+      .set('statusOrder', statusOrder || '')
+      .set('idOrder', idOrder ? idOrder.toString() : '')
+      .set('dateFrom', dateFrom || '')
+      .set('dateTo', dateTo || '')
+      .set('searchKeyword', searchKeyword || '')
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<any>(`${this.url}/api/v1/order/filter`, { params });
+  }
+
+
+  // *********
+
   confirmOrder(idOrder: number | null): Observable<ApiRespone> {
     let params = new HttpParams();
 
