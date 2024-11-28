@@ -11,6 +11,9 @@ import { Router } from '@angular/router';
 import { OrderResponse } from '../../../../../entity/response/order-response';
 import { OrderDetailResponse } from '../../../../../entity/response/orderdetail-response';
 import { ChangeDetectionStrategy } from '@angular/compiler';
+import { jwtDecode } from 'jwt-decode';
+import { LoginService } from '../../../../../service/loginService/login.service';
+import { shiftService } from '../../../../../service/shift/Shift.service';
 
 
 @Component({
@@ -23,7 +26,8 @@ export class TableorderStaffComponent implements OnInit {
   constructor(private tableservice: TableService, private snackBar: MatSnackBar,
     private websocketservice: WebsocketService,
     private orderdetailsService: OrderdetailService,
-    private router: Router
+    private router: Router, private loginService : LoginService,
+    private shiftService : shiftService
     ) { }
 
    
@@ -139,12 +143,87 @@ export class TableorderStaffComponent implements OnInit {
       })
   }
 
+// =================đầu ca ================
 
+currentDate = new Date().toLocaleString(); // Hiển thị ngày giờ hiện tại
+totalAmount = 0;
+
+// Danh sách mệnh giá và số lượng tờ (ban đầu)
+denominations = [
+  { value: 1000, quantity: 0 },
+  { value: 2000, quantity: 0 },
+  { value: 5000, quantity: 0 },
+  { value: 10000, quantity: 0 },
+  { value: 50000, quantity: 0 },
+  { value: 100000, quantity: 0 },
+  { value: 200000, quantity: 0 },
+  { value: 500000, quantity: 0 }
+];
+
+absNum(num :number){
+  return Math.abs(num)
+}
+
+// Hàm tính tổng tiền
+calculateTotal() {
+
+  this.totalAmount = this.denominations.reduce(
+    (total, denom) => total + denom.value * Math.abs(denom.quantity),
+    0
+  );
+}
+
+// Hàm lưu thông tin (mô phỏng)
+save() {
+  console.log(this.totalAmount);
+  this.shiftService.shiftCreate(this.totalAmount).subscribe(
+    data =>{
+      console.log(data);
+      window.location.reload()
+    },
+    error =>{
+      console.log(error);
+  
+       confirm("Có ca khác đang làm việc !")
+       this.loginService.logout()
+    }
+  );
+}
+
+cancel(){
+this.loginService.logout()
+}
+
+openModalDauCa(){
+  var btnOpen = document.getElementById("btnModalDauCa")
+  let jwt = localStorage.getItem("jwt")
+  let resultValidShift = false;
+  if(jwt){
+  let decodeToken: any = jwtDecode(jwt);
+  let roleToken = decodeToken.scope
+  this.shiftService.shiftValid().subscribe(
+    data =>{
+      console.log(data);
+      
+    },
+    error=>{
+      console.log(error);
+      if(roleToken!="MANAGER"){
+        btnOpen?.click();
+      }
+      
+    }
+  )
+ 
+}
+
+}
   ngOnInit(): void {
     this.getAllTables()
     this.getAllStatuses()
     this.notificationOrder()
     this.notifiConfirmOrder()
+    this.openModalDauCa()
   }
 
 }

@@ -11,6 +11,7 @@ import { WebsocketService } from '../../../service/websocketService/websocket.se
 import { IpServiceService } from '../../../service/ipService/ip-service.service';
 import { TableService } from '../../../service/tableService/table.service';
 import { tableResponse } from '../../../entity/response/table-response';
+import { LocalStorageService } from '../../../service/localStoredService/localStored.service';
 
 
 @Component({
@@ -37,7 +38,8 @@ export class CartComponent implements OnInit {
     private router: Router,
     private tableService : TableService,
     private requestOrderService: RequestOrder,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private localStoredService : LocalStorageService 
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +67,10 @@ export class CartComponent implements OnInit {
         console.error('Lỗi đặt hàng:', error.error.code);
         this.iserror = true;
 
+      }
+      if (error.error.code == 1901) {
+            
+        alert("Nhân viên đang giao ca, vui lòng đợi trong giây lát !")
       }
     }
   )

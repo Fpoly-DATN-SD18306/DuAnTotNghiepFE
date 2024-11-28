@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiConfigService } from '../ApiConfigService';
@@ -12,7 +12,7 @@ export class FoodService {
   url = ApiConfigService.apiUrl;
   constructor(private http : HttpClient) { }
 
-
+ 
   getAllList():Observable<ApiRespone>{
     return this.http.get<ApiRespone>(this.url+"/api/v1/foods");
   }

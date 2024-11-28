@@ -1,0 +1,63 @@
+<!-- <p>cart works!</p> -->
+<div class="listcart-header border-bottom ">
+    <div class="mx-3  d-flex">
+      <a [routerLink]="['/Other']" class="mt-2">
+        <svg xmlns="http://www.w3.org/2000/svg" style="color: darkorange;" width="25" height="25" fill="currentColor"
+          class="bi bi-arrow-left" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+        </svg>
+      </a>
+      <strong class="mt-2 mx-2">
+        <p>Đơn hàng</p>
+      </strong>
+    </div>
+  
+  </div>
+  
+  <div style="overflow: scroll; scrollbar-width: none; overflow-y: scroll; height:430px;">
+    <div class="mt-2 ms-2 w-100 text-center">
+        
+    </div>
+    <div *ngFor="let item of items" class=" rounded w-100 shadow border  my-2">
+      <div class="">
+        <app-product-in-oder-detail [product]="item"></app-product-in-oder-detail>
+      </div>
+    </div>
+    <div *ngIf="items.length == 0" class="d-flex justify-content-center align-items-center"
+      style="height: 430px; width: 100%;">
+  
+    
+    </div>
+  </div>
+  
+  <section class="shopping-cart dark mt-2" *ngIf="items && items.length > 0">
+    <!-- 
+        <div class="summary-item"><span class="text">Tạm tính</span><span class="price">₫{{total}}</span></div>
+                <div class="summary-item"><span class="text">Giảm giá</span><span class="price">{{discount}}</span></div>
+                <div class="summary-item"><span class="text">Tổng tiền</span><span class="price">₫{{total}}</span></div>
+          -->
+  
+    <div class="content-fluid  w-100 h-100 shadow">
+  
+      <div style="font-size: 14px; color: rgb(107, 107, 107)"
+        class="py-1 px-2 border-bottom  d-flex justify-content-between">
+        <span class="text">Giảm giá</span><span class="price">{{formatPrice(discount)}}</span>
+  
+      </div>
+      <div style="font-size: 18px; " class="py-3 px-2   d-flex justify-content-between">
+  
+        <span class="text">Tổng tiền</span><span class="price" style="color: darkorange;">{{formatPrice(total)}}</span>
+  
+      </div>
+  
+  
+    </div>
+  
+    <div class="content-fluid  w-100 h-100 shadow">
+    </div>
+  </section>
+  <div id="id01" class="w3-modal">
+   
+  </div>
+  

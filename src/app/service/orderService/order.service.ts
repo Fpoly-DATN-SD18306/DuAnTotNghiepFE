@@ -90,4 +90,8 @@ export class OrderService {
       return this.http.put<ApiRespone>(`${this.url}/api/v1/order/cancel?${params.toString()}`, cancellationReason);
     }
 
+    getAllOrderByListId(listIdOrder: number[]):Observable<ApiRespone>{
+      return this.http.post<ApiRespone>(`${this.url}/api/orderCustomer/listIdOrder`,listIdOrder);
+    }
+
   }

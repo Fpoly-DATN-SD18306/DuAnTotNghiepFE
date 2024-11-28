@@ -6,6 +6,7 @@ import { OrderRequest } from '../../entity/request/order-request';
 import { Subject } from 'rxjs';
 import { Cartitem } from '../../interface/cart/cartitem';
 import { Icart } from '../../interface/cart/iCart';
+import { HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
@@ -19,7 +20,9 @@ export class WebsocketService {
   
   private stompClient: any
   private readonly endpoint = ApiConfigService.apiUrl + "/ws/my-websocket-endpoint"
-
+  header = new HttpHeaders(
+    {"Authorization":"Bearer " +  localStorage.getItem("jwt")}
+  )
   connect(){
     const socket = new SockJS(this.endpoint);
     console.log('endpoint:', this.endpoint)
@@ -28,7 +31,7 @@ export class WebsocketService {
       this.subscribeToPostOrder()
      this.subscribeToConfirmOrder()
      this.subcribeTolistenPayment()
-    })
+    },{headers:this.header})
     
   }
   // cacth payment
@@ -39,7 +42,7 @@ export class WebsocketService {
         this.PaymentMessageSubject.next(message.body);
       }
 
-    })
+    },{headers:this.header})
   }
 
   // Phương thức để lắng nghe và xử lý thông báo từ topic/postorder
@@ -49,7 +52,7 @@ export class WebsocketService {
         console.log('Order update:', JSON.parse(message.body));
         this.messageSubject.next(message.body);
       }
-    });
+    },{headers:this.header});
   }
 
   // Phương thức để lắng nghe và xử lý thông báo từ topic/confirmorder
@@ -68,7 +71,7 @@ export class WebsocketService {
         console.log('Order confirmation:', JSON.parse(message.body));
         this.confirmOrderSubject.next(JSON.parse(message.body));
       }
-    });
+    },{headers:this.header});
   }
 
   sendOrderUpdate(order: OrderRequest) {
