@@ -1,0 +1,44 @@
+
+<div *ngIf="product"  class="row w-100  container-fluid">
+    <div class="col-5">
+        <img [src]="srcImage" style="min-height: 143px; min-width: 137px;" class="card-img-top w-100 h-100"  alt="...">
+    </div>
+    <div class="col-7 ">
+      <div class="w-100 ">
+        <div class=" p-2 ư" style="height: 65%;" >
+          <span class=" fw-medium " style="font-size: 16;">{{product.nameFood}}</span>  <br>
+         
+           <span  style="font-size: 12px; height: 100%;">
+             Ghi chú : <span *ngIf="product.note.length>0" >  {{product.note}}   </span> 
+            </span> 
+         
+     
+      </div>  
+        <div class=" pb-1" style="height:35%;" >
+          <div class="d-flex  justify-content-between">
+            <span class="ms-2 fw-medium" >
+              <span style="font-size: 12px; text-decoration: line-through; color: rgb(131, 131, 131)">
+                {{ formatPrice(product.price)}} 
+              </span >
+              <br>
+             <span style="font-size: 16px; color: darkorange">
+              {{ formatPrice(product.price)}} 
+             </span>
+            </span>
+
+            <span class="me-1">
+              <br>
+              SL : {{product.quantity}}
+
+            </span>
+          </div>
+      
+        </div>
+      </div>
+       
+
+    </div>
+ 
+
+
+</div>

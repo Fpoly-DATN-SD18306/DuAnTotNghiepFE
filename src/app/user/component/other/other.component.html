@@ -1,1 +1,24 @@
-<p>other works!</p>
+<div class="order-info">
+    <h5>Thông tin đơn hàng</h5>
+    <div *ngFor="let order of orders" class="order-card">
+      <div class="order-icon">
+        <img src="./img/order.png" alt="Order Icon" />
+      </div>
+      <a style="text-decoration: initial;" href="" routerLink='/order-detail' [queryParams]="{ id: order.idOrder }">
+      <div class="order-details">
+        <p>Trạng thái đơn : 
+          <span *ngIf="order.statusOrder=='Completed'" style="color: green;" class="status">{{ order.statusOrder }}</span>
+          <span *ngIf="order.statusOrder=='Waiting'" style="color: darkorange;" class="status">{{ order.statusOrder }}</span>
+          <span *ngIf="order.statusOrder=='Preparing'" class="status">{{ order.statusOrder }}</span>
+          <span *ngIf="order.statusOrder=='Cancelled'" style="color: red;" class="status">{{ order.statusOrder }}</span>
+      
+        </p>
+        <p>Mã đơn hàng : <strong>#{{ order.idOrder }}</strong></p>
+        <p>Thời gian đặt đơn : <strong>#{{ order.dateCreate }}</strong></p>
+        <p>Tổng tiền : <strong>{{ order.total | currency:'VND':'symbol':'1.0-0' }}</strong></p>
+      </div>
+    </a>
+    </div>
+    
+  </div>
+  

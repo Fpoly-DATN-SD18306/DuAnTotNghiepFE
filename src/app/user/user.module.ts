@@ -13,6 +13,9 @@ import { ProductNgangComponent } from './component/product-ngang/product-ngang.c
 import { CartComponent } from './component/cart/cart.component';
 import { ProductInCartComponent } from './component/product-in-cart/product-in-cart.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OrderDetailComponent } from './component/order-detail/order-detail.component';
+import { ProductInOderDetailComponent } from './component/product-in-oder-detail/product-in-oder-detail.component';
+
 
 
 
@@ -31,6 +34,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ProductNgangComponent,
     CartComponent,
     ProductInCartComponent,
+    OrderDetailComponent,
+    ProductInOderDetailComponent,
+
     
 
 

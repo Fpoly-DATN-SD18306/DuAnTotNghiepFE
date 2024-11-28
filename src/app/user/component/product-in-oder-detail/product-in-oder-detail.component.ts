@@ -1,28 +1,31 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Foods } from '../../../entity/food/foods';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiConfigService } from '../../../service/ApiConfigService';
 import { CartService } from '../../../service/cartService/cart.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Icart } from '../../../interface/cart/iCart';
 
 @Component({
-  selector: 'app-product-ngang',
-  templateUrl: './product-ngang.component.html',
-  styleUrl: './product-ngang.component.css'
+  selector: 'app-product-in-oder-detail',
+  templateUrl: './product-in-oder-detail.component.html',
+  styleUrl: './product-in-oder-detail.component.css'
 })
-export class ProductNgangComponent  implements OnInit{
-  @Input() product !: Foods;
+export class ProductInOderDetailComponent {
+  @Input() product!: Icart; 
+  @Output() notify: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor(private cdr: ChangeDetectorRef,private cartService: CartService, private snackBar: MatSnackBar){}
+ 
+  constructor(private cdr: ChangeDetectorRef, private cartService: CartService) {}
 
   
   srcImage = "./img/noImage.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 
   quantity =0;
-  noteOrder="";
+  nodeFood="";
 
-
+  changeProduct(){
+    //  1 has changed 
+    this.notify.emit(1);
+  }
   limitedStringShow(text : string){
     let maxStringShow = 30;
     return text.substring(0,maxStringShow)
@@ -51,43 +54,36 @@ export class ProductNgangComponent  implements OnInit{
     }
   }
 
+  updateQuantity(idFood:number){
+    console.log(this.quantity)
+    console.log(idFood);
+    this.cartService.updateQuantity(idFood,this.quantity,this.nodeFood)
+    this.changeProduct()
+  }
+
   formatPrice(price :number){
 
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
   }
 
   show() {
-    try {
-     if(this.quantity>0){
-     let cartItem : Icart={
-       idFood : this.product.idFood,
-       nameFood: this.product.nameFood,
-       price: this.product.priceFood,
-       quantity: this.quantity,
-       thumbnail:this.product.imgFood, 
-       note:this.noteOrder,
- 
-     }
-     this.cartService.addToCart(cartItem);
-     console.log("đơn hàng  đã thêm: ", this.cartService.getCart());
-     this.quantity=0;
-   } 
-   } catch (error) {
-     
-     console.log(error)
-    }
-   }
+    console.log(this.product)
+  }
   ngOnInit(): void {
 
     console.log();
 
     if(this.product){
-      if (this.product.imgFood.trim() !== "") {
-        this.srcImage = this.hostingImg + this.product.imgFood;
+      this.quantity=this.product.quantity
+      this.nodeFood=this.product.note
+
+      if(this.product.thumbnail){
+      if (this.product.thumbnail.trim() !== "") {
+        this.srcImage = this.hostingImg + this.product.thumbnail;
         // this.cdr.detectChanges();
       }
     }
+    }
     
   }
-
 }

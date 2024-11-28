@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 import { WebsocketService } from '../../../service/websocketService/websocket.service';
 import { IpServiceService } from '../../../service/ipService/ip-service.service';
+import { LocalStorageService } from '../../../service/localStoredService/localStored.service';
 
 
 @Component({
@@ -30,7 +31,8 @@ export class CartComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef, 
     private router: Router,
     private requestOrderService: RequestOrder,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private localStoredService : LocalStorageService 
   ) { }
 
   ngOnInit(): void {
@@ -50,6 +52,8 @@ export class CartComponent implements OnInit {
         sessionStorage.removeItem('cart');
         this.getAllCart();
         CartService.items = [];
+        console.log(data);
+        this.localStoredService.saveOrderId(data.result.idOrder)
       },
       error => {
           if (error.error.code === 1005) {
