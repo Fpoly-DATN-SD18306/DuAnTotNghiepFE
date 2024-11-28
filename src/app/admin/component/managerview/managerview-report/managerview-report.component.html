@@ -6,18 +6,18 @@
   
   </div>
   <div class="row mb-3">
-    <select [(ngModel)]="groupBy" (ngModelChange)="getChartData()" class="sort-select" style="width: 170px; height: 55px;" aria-label="Sort vouchers">
+    <select [(ngModel)]="groupBy" (ngModelChange)="groupByChange()" class="sort-select" style="width: 170px; height: 55px;" aria-label="Sort vouchers">
       <option  selected value="day">Ngày</option>
       <option value="month">Tháng</option>
       <option value="year">Năm</option>
     </select>
 
     <div class="form-floating  col-sm-4 mb-3">
-      <input type="date" class="form-control" [(ngModel)]="startDate" (change)=" changeStartDate()" >
+      <input type="date" class="form-control" [(ngModel)]="startDate"  >
       <label for="email">Ngày bắt đầu</label>
     </div>
         <div class="form-floating col-sm-4 mb-3 ">
-          <input type="date" class="form-control"  [(ngModel)]="endDate" (change)=" changeEndDate()" >
+          <input type="date" class="form-control"  [(ngModel)]="endDate" >
           <label for="email">Ngày kết thúc</label>
         </div>
       <button class="create-btn col-sm-1" style="padding: 0; height: auto;" (click)="searchReport()">Tìm kiếm</button>
