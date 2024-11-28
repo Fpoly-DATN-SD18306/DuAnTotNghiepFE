@@ -1,3 +1,5 @@
+import { OrderDetailResponse } from "./orderdetail-response";
+
 export class OrderResponse  {
 
     constructor(
@@ -8,7 +10,11 @@ export class OrderResponse  {
         public nameArea : String,
         public phoneCustomer : String,
         public total : number,
-        public isPrinted : boolean
+        public idOrderMain : number,
+        public isPrinted : boolean,
+        public dateCreate: string,
+        public namePaymentMethod: string,
+        public cancellationReason: string,
     ){
     }
 

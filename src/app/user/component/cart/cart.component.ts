@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs';
 
 import { WebsocketService } from '../../../service/websocketService/websocket.service';
 import { IpServiceService } from '../../../service/ipService/ip-service.service';
+import { TableService } from '../../../service/tableService/table.service';
+import { tableResponse } from '../../../entity/response/table-response';
 
 
 @Component({
@@ -19,16 +21,21 @@ import { IpServiceService } from '../../../service/ipService/ip-service.service'
 export class CartComponent implements OnInit {
   isConfirmed: boolean = false; 
   iserror : boolean = false; 
+  isSuccess : boolean = false;
 
+  itemTable! : tableResponse
   items: Icart[] = [];
   total: number = 0;
   discount: number = 0;
   message: string = '';
+  isMerge : boolean = false;
+  isOrderConfirm: boolean = false;
   private notificationSubscription: Subscription | undefined;
 
   constructor(private cartService: CartService,
     private changeDetectorRef: ChangeDetectorRef, 
     private router: Router,
+    private tableService : TableService,
     private requestOrderService: RequestOrder,
     private websocketService: WebsocketService
   ) { }
@@ -37,28 +44,34 @@ export class CartComponent implements OnInit {
     this.getAllCart();
     this.calculateTotal();
     this.websocketService.connect()
+
   }
 
 
 
   // ******End Notification*****
 
-  callOrder() {
-    this.requestOrderService.postRequestOrder()?.subscribe(
-      data => {
-        this.isConfirmed = true;
-        sessionStorage.removeItem('cart');
-        this.getAllCart();
-        CartService.items = [];
-      },
-      error => {
-          if (error.error.code === 1005) {
-            console.error(error.error.code === 1005);
-            this.iserror = true; 
-          }
+ // Xử lý đặt hàng hoặc gộp đơn
+ callOrder() {
+  this.requestOrderService.postRequestOrder()?.subscribe(
+    data => {
+      this.isConfirmed = true;
+      sessionStorage.removeItem('cart');
+      this.getAllCart();
+      CartService.items = [];
+    },
+    error => {
+      if (error.error.code === 1005) {
+        console.error('Lỗi đặt hàng:', error.error.code);
+        this.iserror = true;
+
       }
-    );
-  }
+    }
+  )
+  this.isOrderConfirm = false
+  this.isMerge = false
+}
+  
 
   getAllCart() {
     this.items = this.cartService.getCart();
@@ -84,4 +97,31 @@ export class CartComponent implements OnInit {
     this.items = CartService.items
     this.calculateTotal()
   }
+
+ // Kiểm tra trạng thái bàn và hiển thị modal thích hợp
+ checkOrder() {
+  this.iserror = false
+  const idTable = sessionStorage.getItem("itb");
+  if (idTable) {
+    this.tableService.getTable(Number(idTable)).subscribe(data => {
+      console.log('d',data)
+      this.itemTable = data.result;
+      console.log('Thông tin bàn:', this.itemTable);
+      // Kiểm tra trạng thái idOrderMain
+      if (this.itemTable.idOrderMain !== null) {
+        this.isMerge = true; // Hiển thị modal xác nhận gộp hàng
+        this.isOrderConfirm = false;
+      } else {
+        this.isOrderConfirm = true; // Hiển thị modal xác nhận đặt hàng
+        this.isMerge = false;
+      }
+
+      // Hiển thị modal
+      const modal = document.getElementById('id01');
+      if (modal) {
+        modal.style.display = 'block';
+      }
+    });
+  }
+}
 }

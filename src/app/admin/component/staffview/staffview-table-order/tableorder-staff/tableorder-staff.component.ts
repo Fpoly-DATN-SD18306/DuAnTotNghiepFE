@@ -55,6 +55,14 @@ export class TableorderStaffComponent implements OnInit {
         }
     });
   }
+
+  notifiConfirmOrder(){
+    this.websocketservice.onConfirmMessage().subscribe(message => {
+        if(message){
+          this.getAllTables()
+        }
+    });
+  }
   
     selectTable(item: tableResponse) {
     if (item.currentOrderId !== null) {
@@ -113,9 +121,9 @@ export class TableorderStaffComponent implements OnInit {
     this.tableservice.updateTableStatus(id, status).subscribe(data => {
       console.log("Updated Table:", data);
       this.getAllTables()
-      this.openTotast('Đã cập nhật trạng thái!')
+      this.openTotast('✅ Đã cập nhật trạng thái!')
     }, error => {
-      this.openTotast('Đã cập nhật trạng thái!')
+      this.openTotast('✅ Đã cập nhật trạng thái!')
       console.log("Error", error);
     })
   }
@@ -136,6 +144,7 @@ export class TableorderStaffComponent implements OnInit {
     this.getAllTables()
     this.getAllStatuses()
     this.notificationOrder()
+    this.notifiConfirmOrder()
   }
 
 }

@@ -22,7 +22,7 @@ export class RequestOrder {
   urlDeleteOrder = ApiConfigService.apiUrl+"/api/v1/separateandmergeorder/delete";
   constructor(private http: HttpClient,
     private cartService : CartService,
-    private  verifyTable : verifyTable, 
+    private verifyTable : verifyTable, 
     private websocketService: WebsocketService,
     private ipService : IpServiceService
   ) { this.getIp()}

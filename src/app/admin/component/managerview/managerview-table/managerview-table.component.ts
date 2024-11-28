@@ -68,11 +68,11 @@ export class ManagerviewTableComponent implements OnInit {
     this.areaService.createArea(this.areaData).subscribe(data => {
       console.log(data);
       this.getAllAreas()
-      this.openTotast('Tạo mới khu vực thành công!')
+      this.openTotast('✅ Tạo mới khu vực thành công!')
       this.areaData.nameArea = ''
     },error => {
       console.log('Error',error);
-      this.openTotast('Tạo mới thất bại!')
+      this.openTotast('❌ Tạo mới thất bại!')
     })
    }
 
@@ -90,11 +90,11 @@ export class ManagerviewTableComponent implements OnInit {
     this.areaService.updateArea(this.areaData, keyArea).subscribe(
       data => {
         this.ngOnInit()
-        this.openTotast('Cập nhật khu vực thành công!');
+        this.openTotast('✅ Cập nhật khu vực thành công!');
       }, 
       error => {
         console.log("Error update table: ", error);
-        this.openTotast('Lỗi cập nhật! ');
+        this.openTotast('❌ Lỗi cập nhật! ');
       }
     );
 }
@@ -103,10 +103,10 @@ export class ManagerviewTableComponent implements OnInit {
     this.areaService.deleteArea(this.keyArea).subscribe(data => {
       console.log('data'+data);
       this.getAllAreas()
-      this.openTotast('Xóa khu vực thành công!')
+      this.openTotast('✅ Xóa khu vực thành công!')
     },err =>{
       console.log('Error', err)
-      this.openTotast('Xóa thất bại!')
+      this.openTotast('❌ Xóa thất bại!')
     })
   }
   
@@ -180,10 +180,10 @@ export class ManagerviewTableComponent implements OnInit {
   createNewTable() {
     this.tableserive.createTable(this.tableData).subscribe(data => {
       this.ngOnInit()
-      this.openTotast('Tạo mới bàn thành công!')
+      this.openTotast('✅ Tạo mới bàn thành công!')
     }, error => {
       console.log(error)
-      this.openTotast('Lỗi tạo bàn ! ')
+      this.openTotast('❌ Lỗi tạo bàn ! ')
     })
   }
 
@@ -193,11 +193,11 @@ export class ManagerviewTableComponent implements OnInit {
       this.tableserive.updateTable(this.tableData, keyTable).subscribe(
         data => {
           this.ngOnInit()
-            this.openTotast('Cập nhật bàn thành công!');
+            this.openTotast('✅ Cập nhật bàn thành công!');
         }, 
         error => {
           console.log("Error update table: ", error);
-          this.openTotast('Lỗi cập nhật bàn! ');
+          this.openTotast('❌ Lỗi cập nhật bàn! ');
         }
       );
   }
@@ -207,21 +207,21 @@ export class ManagerviewTableComponent implements OnInit {
     this.tableserive.deleteTable(keyTable).subscribe(data => {
       this.ngOnInit()
       console.log("Delete success!", data);
-      this.openTotast('Đã xóa bàn thành công!')
+      this.openTotast('✅ Đã xóa bàn thành công!')
       this.keyTable = 0
     }, err => {
       console.log("Delete fail!");
-      this.openTotast('Xóa bàn thất bại!')
+      this.openTotast('❌ Xóa bàn thất bại!')
     })
   }
 
   lockedTable(idTable: number){
     this.tableserive.lockedTable(idTable).subscribe(data => {
       this.ngOnInit()
-      this.openTotast('Đã khóa bàn '+data.result.nameTable)
+      this.openTotast('⚠️ Đã khóa bàn '+data.result.nameTable)
     }, err => {
       console.log(err)
-      this.openTotast('Khóa bàn thất bại!')
+      this.openTotast('❌ Khóa bàn thất bại!')
     })
   }
 
@@ -266,14 +266,14 @@ export class ManagerviewTableComponent implements OnInit {
     this.qrcodeservice.updateQrCode(idtable).subscribe(
       data => {
         console.log('QR Code updated:', data);
-        this.openTotast('Cập nhật QRCode thành công!')
+        this.openTotast('✅ Cập nhật QRCode thành công!')
         setTimeout(()=>{
           this.timestamp = new Date().getTime().toString();
         },3000)
         
       }, error => {
         console.error('Error creating QR Code:', error);
-        this.openTotast('Cập nhật QRCode thất bại!')
+        this.openTotast('❌ Cập nhật QRCode thất bại!')
       }
     );
   }
@@ -282,11 +282,11 @@ export class ManagerviewTableComponent implements OnInit {
     this.qrcodeservice.createQrCode(idTable).subscribe(
       data => {
         console.log('QR Code created:', data);
-        this.openTotast('Tạo mới QRCode thành công!')
+        this.openTotast('✅ Tạo mới QRCode thành công!')
       }, error => {
         if(error.status === 400) {
           console.error('Error creating QR Code:', error);
-          this.openTotast('Tạo mới QRCode thất bại!')
+          this.openTotast('❌ Tạo mới QRCode thất bại!')
         }
       }
     );
@@ -294,7 +294,7 @@ export class ManagerviewTableComponent implements OnInit {
 
   
   printQrcode(){
-    this.openTotast('Tiến hành in...');
+    this.openTotast('ℹ️ Tiến hành in...');
   }
 
 

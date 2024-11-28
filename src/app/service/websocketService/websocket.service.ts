@@ -67,7 +67,6 @@ export class WebsocketService {
       if (message.body) {
         console.log('Order confirmation:', JSON.parse(message.body));
         this.confirmOrderSubject.next(JSON.parse(message.body));
-        this.messageSubject.next(message.body);
       }
     });
   }
@@ -83,7 +82,11 @@ export class WebsocketService {
   sendConfirmOrder(order: OrderRequest) {
     this.stompClient.send('/app/api/v1/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
   }
-  
+
+  onConfirmMessage() {
+    return this.confirmOrderSubject.asObservable(); // Trả về Observable để lắng nghe
+  }
+
   onMessage() {
     return this.messageSubject.asObservable(); // Trả về Observable để lắng nghe
   }

@@ -77,6 +77,9 @@ refreshListMerge(){
   this.listFoodRequest=[];
 }
 
+  
+  //lưu trữ item orderdetail
+  selectedOrderDetail?: OrderDetailResponse;
   constructor(
     private tableservice: TableService,
     private snackBar: MatSnackBar,
@@ -111,6 +114,7 @@ refreshListMerge(){
     this.refreshListMerge();
       }
     });
+    this.notifiConfirmOrder()
   }
 
   getOrder(idOrder: number) {
@@ -150,9 +154,6 @@ refreshListMerge(){
           .getOrderDetail(idOrder, idTable)
           .subscribe((data) => {
             this.listOrderDetails = data.result;
-            if (this.order == null) {
-              sessionStorage.removeItem(`order-${idTable}`)
-            }
           });
       } else {
         this.tableservice.getTable(idTable).subscribe((data) => {
@@ -162,34 +163,23 @@ refreshListMerge(){
     });
   }
 
-  confirmOrder(idOrder: number | null, idTable: number | null) {
-    if (idOrder === null || idTable === null) {
-      return;
-    }
-    const oldIdOrder = sessionStorage.getItem(`order-${idTable}`);
 
-    if (oldIdOrder) {
-      this.orderService.confirmOrder(Number.parseInt(oldIdOrder), idOrder).subscribe(
-        (data) => {
-          ;
-          this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', oldIdOrder, idTable]);
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    } else {
-      this.orderService.confirmOrder(idOrder, null).subscribe(
-        (data) => {
-          sessionStorage.setItem(`order-${idTable}`, idOrder!.toString());
-          this.getDataOrderdetail()
-        },
-        (error) => {
-          console.log('Error', error);
-        }
-      );
-    }
+ 
+
+  confirmOrder(idOrder: number | null) {
+    this.orderService.confirmOrder(idOrder).subscribe(
+      (data) => {
+        console.log('data',data)
+        this.openTotast('✅ Đã xác nhận | ' + this.order?.nameTable);
+        console.log('confirm')
+        this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    );
   }
+  
 
 
   //Save Order
@@ -215,6 +205,15 @@ refreshListMerge(){
 
   notificationOrder() {
     this.webSocketService.onMessage().subscribe((message) => {
+      if (message) {
+        this.getDataOrderdetail();
+        console.log('ordermess:' + message);
+      }
+    });
+  }
+
+  notifiConfirmOrder() {
+    this.webSocketService.onConfirmMessage().subscribe((message) => {
       if (message) {
         this.getDataOrderdetail();
         console.log('ordermess:' + message);
@@ -417,6 +416,23 @@ refreshListMerge(){
       );
   }
 
+  onQuantityChange(idOrder: number, idOrderDetail: number, event: any) {
+    const newQuantity = parseInt(event.target.value, 10)
+    const orderDetail = this.listOrderDetails.find(
+      (item) => item.idOrderDetail === idOrderDetail
+    );
+    if (!orderDetail) {
+      return;
+    }
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      event.target.value = orderDetail.quantity;
+      return;
+    }
+    this.updateQuantity(idOrder, idOrderDetail, newQuantity);
+  }
+  
+  
+
   removeOrderDetails(idOrderDetail: number) {
     if (this.order) {
       if (this.listOrderDetails.length === 1) {
@@ -436,6 +452,11 @@ refreshListMerge(){
       this.updateTotal();
     }
   }
+
+  selectOrderDetail(item: OrderDetailResponse) {
+    this.selectedOrderDetail = item; // Lưu sản phẩm chi tiết được chọn
+  }
+
 
   showCancelModal(idOrderDetail: number) {
     const modalElement = document.getElementById('cancelModal');
@@ -466,7 +487,6 @@ refreshListMerge(){
         this.getDataOrderdetail();
           setTimeout(() => {
             if (this.listOrderDetails.length === 0) {
-              sessionStorage.removeItem(`order-${this.order?.idTable}`);
               this.routerActive.params.subscribe((param) => {
                 let idTable = param['idTable'];
                 this.router.navigate([
@@ -496,26 +516,22 @@ refreshListMerge(){
       if (this.itemOrderDetailToCancel) {
         this.executeRemove(this.itemOrderDetailToCancel);
       } else {
-        const oldIdOrder = sessionStorage.getItem(`order-${this.order?.idTable}`);
-        if (Number(oldIdOrder) != 0) {
-          this.orderService.cancelOrder(Number(oldIdOrder), this.order!.idOrder, this.cancelReason).subscribe(
+          this.orderService.cancelOrder( this.order!.idOrder, this.cancelReason).subscribe(
             (res) => {
-              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', Number(oldIdOrder), this.order!.idTable]);
+              console.log(res);
+              if(res.result.idOrderMain === null){
+                this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
+                this.openTotast('⚠️ Đã hủy đơn #'+this.order?.idOrder+' | '+this.order?.nameTable)
+              }else{
+                this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
+                this.openTotast('⚠️ Đã hủy gộp đơn')
+              }
             },
             (error) => {
               console.log('Error', error);
             }
           );
-        } else {
-          this.orderService.cancelOrder(0, this.order!.idOrder, this.cancelReason).subscribe(
-            (res) => {
-              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order!.idTable]);
-            },
-            (error) => {
-              console.log('Error', error);
-            }
-          );
-        }
+        
       }
 
     }
@@ -833,6 +849,8 @@ openTotast(status: string) {
     })
 }
 
+
+
   formatPrice(price: number) {
     return new Intl.NumberFormat('vi-VN').format(price)
   }
@@ -869,6 +887,7 @@ openTotast(status: string) {
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
+            this.openTotast('✅ '+this.order?.nameTable+' | Thanh toán thành công!')
             this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
           }, error => {
             alert(this.errorCode[error.error.code])
@@ -943,6 +962,9 @@ openTotast(status: string) {
   reloadData() {
     console.log(this.router.url); 
     this.router.navigateByUrl(this.router.url+'&reload=1')
+
+  
+
   }
 
 }
