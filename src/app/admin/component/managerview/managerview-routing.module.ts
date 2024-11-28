@@ -5,6 +5,7 @@ import { ManagerviewTableComponent } from './managerview-table/managerview-table
 import { ManagerviewFoodModule } from './managerview-food/managerview-food.module';
 import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-voucher.component';
 import { ManagerviewOrderComponent } from './managerview-order/managerview-order.component';
+import { ManagerviewReportComponent } from './managerview-report/managerview-report.component';
 
 const routes: Routes = [{
   path: '', component: ManagerviewparentComponent,
@@ -13,6 +14,7 @@ const routes: Routes = [{
    { path: 'managerTable', component: ManagerviewTableComponent},
    {path: 'managerVoucher', component: ManagerviewVoucherComponent},
    {path: 'managerOrder', component: ManagerviewOrderComponent},
+   {path: 'managerReport', component: ManagerviewReportComponent},
    { path: 'managerUser', loadChildren: () => import('./managerview-user/managerview-user.module').then(m => m.ManagerviewUserModule) }
   ]
 }
