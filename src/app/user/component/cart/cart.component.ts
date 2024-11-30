@@ -22,7 +22,9 @@ import { LocalStorageService } from '../../../service/localStoredService/localSt
 export class CartComponent implements OnInit {
   isConfirmed: boolean = false; 
   iserror : boolean = false; 
+  errorShift : boolean = false; 
   isSuccess : boolean = false;
+  errorAddFood : boolean = false;
 
   itemTable! : tableResponse
   items: Icart[] = [];
@@ -61,6 +63,7 @@ export class CartComponent implements OnInit {
       sessionStorage.removeItem('cart');
       this.getAllCart();
       CartService.items = [];
+      this.localStoredService.saveOrderId(data.result.idOrder)
     },
     error => {
       if (error.error.code === 1005) {
@@ -70,8 +73,15 @@ export class CartComponent implements OnInit {
       }
       if (error.error.code == 1901) {
             
-        alert("Nhân viên đang giao ca, vui lòng đợi trong giây lát !")
+        this.errorShift = true;
       }
+
+      if (error.error.code == 1405) {
+            
+        this.errorAddFood = true;
+      }
+
+
     }
   )
   this.isOrderConfirm = false

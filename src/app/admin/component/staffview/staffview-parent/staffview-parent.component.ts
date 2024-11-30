@@ -64,6 +64,9 @@ export class StaffviewParentComponent implements OnInit {
           });
           this.orderIdCounter++;
         }
+          if(this.itemsorder.statusOrder == 'Waiting'){
+          this.audioService.playSound()
+        }
       }
       console.log('ordermess:', message);
     });
@@ -86,10 +89,10 @@ export class StaffviewParentComponent implements OnInit {
   }
 
   
-  // Hàm để phát giọng nói
 
 
     fetchOrderDetails(idOrder: number | null, idTable: number | null) {
+      this.pauseSound()
       this.orderMessages.forEach((message) => {
         console.log('mess',message.id)
         console.log('idorder',idOrder)
@@ -109,12 +112,15 @@ export class StaffviewParentComponent implements OnInit {
     }
     
 
-
+    pauseSound(){
+      this.audioService.pauseSound()
+    }
 
   confirmOrder(idOrder: number | null) {
     this.orderMessages.forEach((message) => {
       console.log('mess',message.id)
       console.log('idorder',idOrder)
+      this.pauseSound()
       if (message.id === idOrder) {
         message.visible = false; 
       }

@@ -26,9 +26,12 @@
             <div
               class="item-product col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2 position-relative d-flex align-items-center"
               *ngFor="let product of listProducts">
-              <div class="box-item-product">
-                <div class="img-product p-3 border border-secondary rounded-3">
-                  <img src="http://localhost:8080/images/{{product.imgFood}}" alt="" class="w-100">
+              <div  class="box-item-product">
+                <div  class="img-product p-3 border border-secondary rounded-3">
+                  <div *ngIf="product.imgFood">
+                    <img  src="{{hostingImg}}{{product.imgFood}}" alt="" class="w-100">
+                  </div>
+                  <img *ngIf="product.imgFood==null " src="./img/noImage.jpg"  class="card-img-top w-100 h-100"  alt="...">
                   <div class="position-absolute" *ngIf="product.discount" [ngClass]="{'box-sale': product.discount}">
                     <span class="tittle-discount">-{{product.discount}}%</span>
                   </div>
@@ -146,7 +149,9 @@
                 <div class="col-3 text-end justify-content-end d-flex align-items-center pe-0">
                   <button class="rounded-5 p-1 py-0 btn-success btn"
                     (click)="updateQuantityTemp(item, item.quantity+1)"><i class="bi bi-plus-circle-fill"></i></button>
-                  <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span>
+                  <!-- <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span> -->
+                  <input type="number" class=" form-control text-center mx-1 px-1" style="font-size: 0.9em;"
+                    [value]="item.quantity"  [(ngModel)]="item.quantity" (change)="updateQuantityTemp(item, item.quantity)" />
                   <button class="rounded-5 p-1 py-0 btn-danger btn"
                     (click)="updateQuantityTemp(item, item.quantity-1)"><i class="bi bi-dash-circle-fill"></i></button>
                 </div>

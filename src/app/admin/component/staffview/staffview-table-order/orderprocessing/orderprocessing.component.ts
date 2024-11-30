@@ -25,6 +25,7 @@ import { IpServiceService } from '../../../../../service/ipService/ip-service.se
 import { AreaService } from '../../../../../service/areaService/area.service';
 import { AreaResponse } from '../../../../../entity/response/area-response';
 import { RequestOrder } from '../../../../../service/requestOrder.service';
+import { ApiConfigService } from '../../../../../service/ApiConfigService';
 
 @Component({
   selector: 'app-orderprocessing',
@@ -32,7 +33,7 @@ import { RequestOrder } from '../../../../../service/requestOrder.service';
   styleUrl: './orderprocessing.component.css',
 })
 export class OrderprocessingComponent implements OnInit {
-  
+
   listOrderDetails: OrderDetailResponse[] = [];
   listProducts: foodResponse[] = [];
   listCategories: CategoryResponse[] = [];
@@ -46,38 +47,40 @@ export class OrderprocessingComponent implements OnInit {
   iOrder!: OrderRequest;
   activeCategoryId: number | null = null;
   tempTotal!: number
-//Gộp/Tách bàn
+  //Gộp/Tách bàn
 
-selectedTable: tableResponse | null = null;
-listOrderDetailsTableMerge: OrderDetailResponse[] = []
-selectedTableId: number | null = null;
-mergerOrderId: number | null = null;
-listArea : AreaResponse[]=[];
-listTable :tableResponse[]=[];
-tableMergerId !:number;
-indexOrder !:number;
-selectedAreaId: number=0;
-seletedListFood:OrderRequest[]=[];
-seletedListUpdateFood:OrderRequest[]=[];
-seletedListMergerFood:OrderRequest[]=[];
-listFoodRequest:foodRequest[]=[];
-quantity:number=0;
-test!: any;
+  selectedTable: tableResponse | null = null;
+  listOrderDetailsTableMerge: OrderDetailResponse[] = []
+  selectedTableId: number | null = null;
+  mergerOrderId: number | null = null;
+  listArea: AreaResponse[] = [];
+  listTable: tableResponse[] = [];
+  tableMergerId !: number;
+  indexOrder !: number;
+  selectedAreaId: number = 0;
+  seletedListFood: OrderRequest[] = [];
+  seletedListUpdateFood: OrderRequest[] = [];
+  seletedListMergerFood: OrderRequest[] = [];
+  listFoodRequest: foodRequest[] = [];
+  quantity: number = 0;
+  test!: any;
   //lưu trữ idOrder cũ
   oldIdOrders: Map<number, number | null> = new Map();
   cancelReason: string = '';
   itemOrderDetailToCancel: number | null = null;
 
+  srcImage = "./img/noImage.jpg";
+  hostingImg = ApiConfigService.apiUrlimg;
 
-refreshListMerge(){
-  this.seletedListMergerFood=[];
-  this.listOrderDetailsTableMerge=[];
-  this.seletedListFood=[];
-  this.seletedListUpdateFood=[];
-  this.listFoodRequest=[];
-}
+  refreshListMerge() {
+    this.seletedListMergerFood = [];
+    this.listOrderDetailsTableMerge = [];
+    this.seletedListFood = [];
+    this.seletedListUpdateFood = [];
+    this.listFoodRequest = [];
+  }
 
-  
+
   //lưu trữ item orderdetail
   selectedOrderDetail?: OrderDetailResponse;
   constructor(
@@ -92,10 +95,11 @@ refreshListMerge(){
     private router: Router,
     private ipService: IpServiceService,
     private areaService: AreaService,
-    private requestOrder: RequestOrder,  
-    private paymentService : PaymentService,
-    private invoiceService : InvoiceService,
-    private route : ActivatedRoute
+    private requestOrder: RequestOrder,
+    private paymentService: PaymentService,
+    private invoiceService: InvoiceService,
+    private route: ActivatedRoute,
+    private apiConfigService: ApiConfigService
   ) { }
 
   ngOnInit(): void {
@@ -106,12 +110,12 @@ refreshListMerge(){
     this.updateTotal();
     this.route.queryParams.subscribe((params) => {
       if (params['reload']) {
-    this.getDataOrderdetail();
-    this.getAllProducts();
-    this.getAllCategories();
-    this.notificationOrder();
-    this.updateTotal();
-    this.refreshListMerge();
+        this.getDataOrderdetail();
+        this.getAllProducts();
+        this.getAllCategories();
+        this.notificationOrder();
+        this.updateTotal();
+        this.refreshListMerge();
       }
     });
     this.notifiConfirmOrder()
@@ -148,6 +152,8 @@ refreshListMerge(){
     this.routerActive.params.subscribe((param) => {
       let idOrder = param['idOrder'];
       let idTable = param['idTable'];
+      console.log(idOrder);
+      console.log(idTable);
       if (idOrder != undefined) {
         this.getOrder(idOrder);
         this.orderdetailsService
@@ -164,12 +170,12 @@ refreshListMerge(){
   }
 
 
- 
+
 
   confirmOrder(idOrder: number | null) {
     this.orderService.confirmOrder(idOrder).subscribe(
       (data) => {
-        console.log('data',data)
+        console.log('data', data)
         this.openTotast('✅ Đã xác nhận | ' + this.order?.nameTable);
         console.log('confirm')
         this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
@@ -179,14 +185,14 @@ refreshListMerge(){
       }
     );
   }
-  
+
 
 
   //Save Order
   saveOrder(idTable: number) {
     this.tempProducts.forEach((product) => {
       this.itemOrder.push(
-        new OrderRequest(product.idOrderDetail, product.quantity,product.nameFood,product.noteFood)
+        new OrderRequest(product.idOrderDetail, product.quantity, product.nameFood, product.noteFood)
       );
     });
     this.orderService.createNewOrder(this.itemOrder, idTable)?.subscribe(
@@ -265,7 +271,7 @@ refreshListMerge(){
         let newOrderDetail: OrderDetailResponse = {
           idOrderDetail: product.idFood,
           nameFood: product.nameFood,
-          idFood:product.idFood,
+          idFood: product.idFood,
           quantity: 1,
           price: product.priceFood,
           totalPrice: product.priceFood,
@@ -274,7 +280,7 @@ refreshListMerge(){
         };
         this.listOrderDetails.push(newOrderDetail);
       }
-      this.iOrder = new OrderRequest(product.idFood, 1, product.note,product.nameFood);
+      this.iOrder = new OrderRequest(product.idFood, 1, product.note, product.nameFood);
       console.log('update', this.listOrderDetails);
       this.updateOrder(this.order.idOrder, this.iOrder);
     } else {
@@ -299,7 +305,7 @@ refreshListMerge(){
       let orderDetail: OrderDetailResponse = {
         idOrderDetail: product.idFood,
         nameFood: product.nameFood,
-        idFood:product.idFood,
+        idFood: product.idFood,
         quantity: 1,
         price: product.priceFood,
         totalPrice: product.priceFood * ((100 - product.discount) / 100),
@@ -325,7 +331,7 @@ refreshListMerge(){
       let newOrderDetail: OrderDetailResponse = {
         idOrderDetail: product.idFood,
         nameFood: product.nameFood,
-        idFood:product.idFood,
+        idFood: product.idFood,
         quantity: 1,
         price: product.priceFood,
         totalPrice: product.priceFood * ((100 - product.discount) / 100),
@@ -345,7 +351,7 @@ refreshListMerge(){
     this.orderService.updateOrder(idOrder, itemOrder).subscribe(
       (data) => {
         console.log('Order updated successfully', data);
-        this.getDataOrderdetail(); 
+        this.getDataOrderdetail();
       },
       (error) => {
         console.log('Error', error);
@@ -370,8 +376,9 @@ refreshListMerge(){
 
   updateQuantityTemp(item: OrderDetailResponse, newQuantity: number) {
     if (newQuantity < 1) {
-      return;
+      newQuantity = Math.abs(newQuantity)
     }
+    console.log("alo", newQuantity);
 
     let existingProductInTemp = this.tempProducts.find(
       (itemor) => itemor.nameFood === item.nameFood
@@ -431,8 +438,8 @@ refreshListMerge(){
     }
     this.updateQuantity(idOrder, idOrderDetail, newQuantity);
   }
-  
-  
+
+
 
   removeOrderDetails(idOrderDetail: number) {
     if (this.order) {
@@ -476,8 +483,8 @@ refreshListMerge(){
 
   confirmCancel() {
     if (this.itemOrderDetailToCancel) {
-          this.executeRemove(this.itemOrderDetailToCancel!);
-        }
+      this.executeRemove(this.itemOrderDetailToCancel!);
+    }
     this.cancelModalClose();
   }
 
@@ -486,16 +493,16 @@ refreshListMerge(){
     this.orderService.removeOrderDetail(idOrderDetail).subscribe(
       (data) => {
         this.getDataOrderdetail();
-          setTimeout(() => {
-            if (this.listOrderDetails.length === 0) {
-              this.routerActive.params.subscribe((param) => {
-                let idTable = param['idTable'];
-                this.router.navigate([
-                  `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
-                ]);
-              });
-            }
-          }, 100);
+        setTimeout(() => {
+          if (this.listOrderDetails.length === 0) {
+            this.routerActive.params.subscribe((param) => {
+              let idTable = param['idTable'];
+              this.router.navigate([
+                `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
+              ]);
+            });
+          }
+        }, 100);
       },
       (err) => {
         console.log('Delete fail!', err);
@@ -517,277 +524,288 @@ refreshListMerge(){
       if (this.itemOrderDetailToCancel) {
         this.executeRemove(this.itemOrderDetailToCancel);
       } else {
-          this.orderService.cancelOrder( this.order!.idOrder, this.cancelReason).subscribe(
-            (res) => {
-              console.log(res);
-              if(res.result.idOrderMain === null){
-                this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
-                this.openTotast('⚠️ Đã hủy đơn #'+this.order?.idOrder+' | '+this.order?.nameTable)
-              }else{
-                this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
-                this.openTotast('⚠️ Đã hủy gộp đơn')
-              }
-            },
-            (error) => {
-              console.log('Error', error);
+        this.orderService.cancelOrder(this.order!.idOrder, this.cancelReason).subscribe(
+          (res) => {
+            console.log(res);
+            if (res.result.idOrderMain === null) {
+              this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
+              this.openTotast('⚠️ Đã hủy đơn #' + this.order?.idOrder + ' | ' + this.order?.nameTable)
+            } else {
+              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
+              this.openTotast('⚠️ Đã hủy gộp đơn')
             }
-          );
-        
+          },
+          (error) => {
+            console.log('Error', error);
+          }
+        );
+
       }
 
     }
-    this.cancelReason = ''; 
+    this.cancelReason = '';
     this.cancelModalClose();
   }
   // Lấy danh sách khu vực cho bàn mới
-  getAllArea(){
-    this.areaService.getAllAreas().subscribe(data =>{
-     this.listArea=data.result
+  getAllArea() {
+    this.areaService.getAllAreas().subscribe(data => {
+      this.listArea = data.result
     }, error => {
-     console.log('Error', error)
-   }
+      console.log('Error', error)
+    }
     )
-   }
- 
-   updateQuantityOrder(index: number,event:Event,id: number, ) {
+  }
+
+  updateQuantityOrder(index: number, event: Event, id: number,) {
     let target = event.currentTarget as HTMLInputElement
-    if(target.valueAsNumber){
-      this.quantity = target.valueAsNumber ;
-    }else{
+    if (target.valueAsNumber) {
+      this.quantity = target.valueAsNumber;
+    } else {
       this.quantity = 0
     }
-    
-    this.moveToNewTable(id,index)
-    
+
+    this.moveToNewTable(id, index)
+
   }
-  
+
   moveToNewTable(id: number, index: number): void {
-    
-  
-      const food = this.listOrderDetails.find(item => item.idFood === id);
-    if (food) {
-
-        if (this.quantity <= 0) {
-            this.openTotast("Số lượng phải là số dương.");
-            return;
-        }
-
-        if ( this.quantity>food.quantity ) {
-            this.openTotast("Số lượng chuyển không được lớn hơn số lượng hiện có ở bàn cũ.");
-            return;
-        }
-   
-        const existingItem = this.seletedListFood.find(item => item.idFood === id);
-
-       
-        if (existingItem) {
-          
-            existingItem.quantity += this.quantity;
-        } else {
-           
-              const orderRequest: OrderRequest = {
-              idFood: food.idFood,
-              quantity: this.quantity,
-              noteFood: food.noteFood,
-              nameFood: food.nameFood,
-              
-            };    
-           
-
-          
-            this.seletedListFood.push(orderRequest);
-        }
-
-        const currentFood = this.listOrderDetails.find(item => item.idFood === id);
-        if (currentFood) {
-            currentFood.quantity -= this.quantity;
-
-            if (currentFood.quantity < 0) {
-                currentFood.quantity = 0;
-                this.openTotast("Số lượng bàn cũ không đủ");
-            }
-          if (this.listOrderDetails[index].quantity === 0) {
-         
-          this.listOrderDetails.splice(index, 1);
-          this.updateTotal();
-        }
-            
-            const orderRequestOld: OrderRequest = {
-              idFood: food.idFood,
-              quantity: food.quantity,
-              noteFood: food.noteFood,
-              nameFood: food.nameFood,
-              
-            };
-            console.log(orderRequestOld.quantity)
-            this.seletedListUpdateFood.push(orderRequestOld);
-            console.log( this.seletedListUpdateFood)
-        }
+    if (this.seletedListUpdateFood.length === 0) {
+      this.seletedListUpdateFood = this.listOrderDetails.map(item => ({
+        idFood: item.idFood,
+        quantity: item.quantity,
+        noteFood: item.noteFood,
+        nameFood: item.nameFood,
+      }));
     }
-    
-    
-   
-}
-removeFromNewTable(index: number): void {
-  const removedItem = this.seletedListFood[index];
-  this.seletedListFood.splice(index, 1);
-  const existingItem = this.listOrderDetails.find(item => item.idFood === removedItem.idFood);
+    const currentFood = this.listOrderDetails.find(item => item.idFood === id);
 
-  if (existingItem) {
-      existingItem.quantity += removedItem.quantity;
-      
-  } else {
+    if (!currentFood) {
+      this.openTotast("Không tìm thấy món ăn.");
+      return;
+    }
+
+    if (this.quantity <= 0) {
+      this.openTotast("Số lượng phải là số dương.");
+      return;
+    }
+
+    if (this.quantity > currentFood.quantity) {
+      this.openTotast("Số lượng chuyển không được lớn hơn số lượng hiện có ở bàn cũ.");
+      return;
+    }
+    const existingItem = this.seletedListFood.find(item => item.idFood === id);
+
+    if (existingItem) {
+      existingItem.quantity += this.quantity;
+    } else {
+      const orderRequest: OrderRequest = {
+        idFood: currentFood.idFood,
+        quantity: this.quantity,
+        noteFood: currentFood.noteFood,
+        nameFood: currentFood.nameFood,
+      };
+      this.seletedListFood.push(orderRequest);
+    }
+
+    currentFood.quantity -= this.quantity;
+
+    if (currentFood.quantity < 0) {
+      currentFood.quantity = 0;
+      this.openTotast("Số lượng bàn cũ không đủ.");
+    }
+
+    const existingFoodIndex = this.seletedListUpdateFood.findIndex(item => item.idFood === id);
+    if (existingFoodIndex !== -1) {
+
+      this.seletedListUpdateFood[existingFoodIndex].quantity = currentFood.quantity;
+    } else {
+
+      const orderRequestOld: OrderRequest = {
+        idFood: currentFood.idFood,
+        quantity: currentFood.quantity,
+        noteFood: currentFood.noteFood,
+        nameFood: currentFood.nameFood,
+      };
+      this.seletedListUpdateFood.push(orderRequestOld);
+    }
+
+    if (currentFood.quantity === 0) {
+      this.listOrderDetails.splice(index, 1);
+    }
+
+    this.updateTotal();
+
+    console.log(this.seletedListFood);
+    console.log(this.seletedListUpdateFood);
+  }
+
+
+  removeFromNewTable(index: number): void {
+    const removedItem = this.seletedListFood[index];
+    const currentFood = this.listOrderDetails.find(item => item.idFood === removedItem.idFood);
+    if (currentFood) {
+      currentFood.quantity += removedItem.quantity;
+    } else {
       this.listOrderDetails.push({
-          idOrderDetail: 0, 
-          idFood: removedItem.idFood,
-          quantity: removedItem.quantity,
-          price: 0, 
-          totalPrice: 0, 
-          noteFood: removedItem.noteFood || "",
-          nameFood: removedItem.nameFood,
-          discount: 0, 
+        idOrderDetail: 0,
+        idFood: removedItem.idFood,
+        quantity: removedItem.quantity,
+        price: 0,
+        totalPrice: 0,
+        noteFood: removedItem.noteFood || "",
+        nameFood: removedItem.nameFood,
+        discount: 0,
       });
+    }
+
+    this.seletedListFood.splice(index, 1);
+    const existingFoodIndex = this.seletedListUpdateFood.findIndex(item => item.idFood === removedItem.idFood);
+    if (existingFoodIndex !== -1) {
+      this.seletedListUpdateFood[existingFoodIndex].quantity -= removedItem.quantity;
+      if (this.seletedListUpdateFood[existingFoodIndex].quantity <= 0) {
+        this.seletedListUpdateFood.splice(existingFoodIndex, 1);
+      }
+    }
+    this.updateTotal();
   }
-}
 
-createNewOrder(): void {
-  if (this.selectedTableId) {
-    this.requestOrder.postNewOrder(this.seletedListFood, this.selectedTableId)
-      .subscribe(
-        response => {
-          console.log('New order created:', response);
-          this.openTotast('Đã tách bàn thành công!');
-          this.seletedListFood = [];
-          this.selectedTableId = null;
+  createNewOrder(): void {
+    if (this.selectedTableId && this.seletedListFood.length > 0) {
+      this.requestOrder.postNewOrder(this.seletedListFood, this.selectedTableId)
+        .subscribe(
+          response => {
+            console.log('New order created:', response);
+            this.openTotast('Đã tách bàn thành công!');
+            this.seletedListFood = [];
+            this.selectedTableId = null;
 
-          this.routerActive.params.subscribe(param => {
-            let idOrder = param['idOrder'];
-            let idTable = param['idTable']
-            if (idOrder) {
-              if (this.listOrderDetails.length === 0) {
-                // Xóa đơn hàng cũ nếu danh sách món ăn rỗng
-                this.requestOrder.deleteOrder(idOrder)
-                  .subscribe(
-                    () => {
-                   
-                      console.log('Order deleted successfully');
-                    },
-                    (error) => {
-                      console.error('Error deleting order:', error);
-                    }
-                  );
-                
-              } else {
-                if (idOrder) {
-
-                  this.requestOrder.updateOrderAll(idOrder, this.seletedListUpdateFood)
+            this.routerActive.params.subscribe(param => {
+              let idOrder = param['idOrder'];
+              let idTable = param['idTable']
+              if (idOrder) {
+                if (this.listOrderDetails.length === 0) {
+                  // Xóa đơn hàng cũ nếu danh sách món ăn rỗng
+                  this.requestOrder.deleteOrder(idOrder)
                     .subscribe(
-                      response => {
-                     this.ngOnInit();
-                        console.log('Order updated successfully:', response);
-                        console.log('Đơn hàng cũ đã được cập nhật thành công!');
-                        console.log(this.seletedListUpdateFood)
-                      },
-                
-                      error => {
-                        
-                        console.error('Error updating order:', error);
-                        }
-                        
-                    );
-                 
-              }
-              }
-            }
-      
-          });
-        },
-        error => {
-          console.error('Error creating new order:', error);
-          this.openTotast('Lỗi khi tạo đơn hàng.');
-        }
-      );
-     
-  } else {
-    this.openTotast('Vui lòng chọn bàn mới.');
-  }
-}
-onTableSelectChange(mergerOrder: tableResponse | null): void  {
- 
-  if (mergerOrder) {
-    
-    const currentOrderId = mergerOrder.currentOrderId;
-    const  idTable = mergerOrder.idTable;
-    this.tableMergerId = idTable;
-    this.mergerOrderId = currentOrderId;
-     alert(mergerOrder)
-    
-    console.log('Selected currentOrderId:', currentOrderId);
-    console.log('Selected idTable:', idTable);
-    
-    
-    this.orderdetailsService.getOrderDetail(currentOrderId, idTable).subscribe(data => {
-      console.log('DataOrderget: ', data.result)
-      this.listOrderDetailsTableMerge = data.result
-    })
+                      () => {
 
-  } else {
- 
-  } 
-}
-mergeOrder() {
-  this.routerActive.params.subscribe(param => {
-    let idTable = param['idTable'];
-    let idOrder = param['idOrder'];
-    if(idTable == this.tableMergerId ){
-      this.openTotast('Không thể gộp cùng 1 bàn lại với nhau.')
-    }else{
-      for (const element of this.listOrderDetailsTableMerge) {
-        const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
-        let orderRequestOld: OrderRequest;
-    
-        if (existingItem) {
-          orderRequestOld = {
-            idFood: element.idFood,
-            quantity: element.quantity + existingItem.quantity,
-            noteFood: element.noteFood,
-            nameFood: element.nameFood,
-          };
-        } else {
-    
-          orderRequestOld = {
-            idFood: element.idFood,
-            quantity: element.quantity,
-            noteFood: element.noteFood,
-            nameFood: element.nameFood,
-          };
+                        console.log('Order deleted successfully');
+                      },
+                      (error) => {
+                        console.error('Error deleting order:', error);
+                      }
+                    );
+
+                } else {
+                  if (idOrder) {
+
+                    this.requestOrder.updateOrderAll(idOrder, this.seletedListUpdateFood)
+                      .subscribe(
+                        response => {
+                          this.ngOnInit();
+                          console.log('Order updated successfully:', response);
+                          console.log('Đơn hàng cũ đã được cập nhật thành công!');
+                          console.log(this.seletedListUpdateFood)
+                        },
+
+                        error => {
+
+                          console.error('Error updating order:', error);
+                        }
+
+                      );
+
+                  }
+                }
+              }
+
+            });
+          },
+          error => {
+            console.error('Error creating new order:', error);
+            this.openTotast('Lỗi khi tạo đơn hàng.');
+          }
+        );
+
+    } else {
+      this.openTotast('Vui lòng chọn bàn mới và bàn mới không được trống.');
+    }
+  }
+  onTableSelectChange(mergerOrder: tableResponse | null): void {
+
+    if (mergerOrder) {
+
+      const currentOrderId = mergerOrder.currentOrderId;
+      const idTable = mergerOrder.idTable;
+      this.tableMergerId = idTable;
+      this.mergerOrderId = currentOrderId;
+
+      console.log('Selected currentOrderId:', currentOrderId);
+      console.log('Selected idTable:', idTable);
+
+
+      this.orderdetailsService.getOrderDetail(currentOrderId, idTable).subscribe(data => {
+        console.log('DataOrderget: ', data.result)
+        this.listOrderDetailsTableMerge = data.result
+      })
+
+    } else {
+
+    }
+  }
+  mergeOrder() {
+    this.routerActive.params.subscribe(param => {
+      let idTable = param['idTable'];
+      let idOrder = param['idOrder'];
+      if (idTable == this.tableMergerId) {
+        this.openTotast('Không thể gộp cùng 1 bàn lại với nhau.')
+      } else {
+        for (const element of this.listOrderDetailsTableMerge) {
+          const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
+          let orderRequestOld: OrderRequest;
+
+          if (existingItem) {
+            orderRequestOld = {
+              idFood: element.idFood,
+              quantity: element.quantity + existingItem.quantity,
+              noteFood: element.noteFood,
+              nameFood: element.nameFood,
+            };
+          } else {
+
+            orderRequestOld = {
+              idFood: element.idFood,
+              quantity: element.quantity,
+              noteFood: element.noteFood,
+              nameFood: element.nameFood,
+            };
+          }
+          this.seletedListMergerFood.push(orderRequestOld);
         }
-        this.seletedListMergerFood.push(orderRequestOld);
-      }
-      
-      
-      for (const element of this.listOrderDetailsTableMerge) {
-        const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
-    
-        if (existingItem) {
-    
-          existingItem.quantity += element.quantity;
-          
-        } else {
-          this.listOrderDetails.push({
-            idOrderDetail: 0, 
-            idFood: element.idFood,
-            quantity: element.quantity,
-            price: element.price, 
-            totalPrice: element.price*element.quantity * (100 - element.discount) / 100, 
-            noteFood: element.noteFood || "",
-            nameFood: element.nameFood,
-            discount: element.discount, 
-        });
+
+
+        for (const element of this.listOrderDetailsTableMerge) {
+          const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
+
+          if (existingItem) {
+
+            existingItem.quantity += element.quantity;
+
+          } else {
+            this.listOrderDetails.push({
+              idOrderDetail: 0,
+              idFood: element.idFood,
+              quantity: element.quantity,
+              price: element.price,
+              totalPrice: element.price * element.quantity * (100 - element.discount) / 100,
+              noteFood: element.noteFood || "",
+              nameFood: element.nameFood,
+              discount: element.discount,
+            });
+          }
         }
-      }
-      
-    
+
+
         if (idOrder) {
           this.requestOrder.updateOrderAll(idOrder, this.seletedListMergerFood)
             .subscribe(
@@ -795,9 +813,9 @@ mergeOrder() {
                 this.ngOnInit();
                 console.log('Order updated successfully:', response)
                 const orderId = Number(this.mergerOrderId);
-               console.log("idOrder",orderId)
-               this.getOrder(idOrder)
-               this.updateTotal()
+                console.log("idOrder", orderId)
+                this.getOrder(idOrder)
+                this.updateTotal()
                 this.requestOrder.deleteOrder(orderId).subscribe(
                   () => {
 
@@ -807,9 +825,9 @@ mergeOrder() {
                     console.error('Error deleting order:', error);
                   }
                 );
-                
+
                 this.openTotast('Gộp bàn thành công!');
-               
+
               },
               error => {
                 console.error('Error updating order:', error);
@@ -817,38 +835,38 @@ mergeOrder() {
               }
             );
         }
-      
-    
-      this.listOrderDetailsTableMerge = [];
-    }
 
-  });
-}
-getTable() {
-  console.log("areaid",this.selectedAreaId)
-  this.tableservice.getTablesByArea("", this.selectedAreaId, "AVAILABLE", 0, 1000)
-    .subscribe(data => {
-      this.listTable = data.result.content;
-      console.log("Table", this.listTable);
-    });
-}
-getTableOpen() {
-  console.log("areaid",this.selectedAreaId)
-  this.tableservice.getTablesByArea("", this.selectedAreaId, "OCCUPIED", 0, 1000)
-    .subscribe(data => {
-      this.listTable = data.result.content;
-      console.log("Table", this.listTable);
-    });
-}
 
-openTotast(status: string) {
-  this.snackBar.open
-    (status, "Đóng", {
-      duration: 4000,
-      horizontalPosition: 'end', //  'start', 'end'
-      verticalPosition: 'bottom', //  'bottom'
-    })
-}
+        this.listOrderDetailsTableMerge = [];
+      }
+
+    });
+  }
+  getTable() {
+    console.log("areaid", this.selectedAreaId)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "AVAILABLE", 0, 1000)
+      .subscribe(data => {
+        this.listTable = data.result.content;
+        console.log("Table", this.listTable);
+      });
+  }
+  getTableOpen() {
+    console.log("areaid", this.selectedAreaId)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "OCCUPIED", 0, 1000)
+      .subscribe(data => {
+        this.listTable = data.result.content;
+        console.log("Table", this.listTable);
+      });
+  }
+
+  openTotast(status: string) {
+    this.snackBar.open
+      (status, "Đóng", {
+        duration: 4000,
+        horizontalPosition: 'end', //  'start', 'end'
+        verticalPosition: 'bottom', //  'bottom'
+      })
+  }
 
 
 
@@ -861,8 +879,9 @@ openTotast(status: string) {
   paymentPaythod = "cash"
 
   errorCode: Record<number, string> =
-    { 1601: "Đơn hàng đã được hoàn thành trước đó !" ,
-      1901: "Không có ca nào đang làm việc !" 
+    {
+      1601: "Đơn hàng đã được hoàn thành trước đó !",
+      1901: "Không có ca nào đang làm việc !"
     }
 
   listDataInvoice  !: invoiceRespone[];
@@ -890,7 +909,7 @@ openTotast(status: string) {
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
-            this.openTotast('✅ '+this.order?.nameTable+' | Thanh toán thành công!')
+            this.openTotast('✅ ' + this.order?.nameTable + ' | Thanh toán thành công!')
             this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
           }, error => {
             alert(this.errorCode[error.error.code])
@@ -963,10 +982,10 @@ openTotast(status: string) {
   }
 
   reloadData() {
-    console.log(this.router.url); 
-    this.router.navigateByUrl(this.router.url+'&reload=1')
+    console.log(this.router.url);
+    this.router.navigateByUrl(this.router.url + '/reload=1')
 
-  
+
 
   }
 
