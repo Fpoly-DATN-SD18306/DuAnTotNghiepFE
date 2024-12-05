@@ -1,3 +1,4 @@
+import { VourcherService } from './../../../../../service/voucherService/vourcher.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableService } from '../../../../../service/tableService/table.service';
@@ -26,6 +27,9 @@ import { AreaService } from '../../../../../service/areaService/area.service';
 import { AreaResponse } from '../../../../../entity/response/area-response';
 import { RequestOrder } from '../../../../../service/requestOrder.service';
 import { ApiConfigService } from '../../../../../service/ApiConfigService';
+import { PromotionReponse } from '../../../../../entity/response/promotion-response';
+import { Promotion } from '../../../../../interface/voucher/promotion';
+import { promotionRequest } from '../../../../../entity/request/promotion-request';
 
 @Component({
   selector: 'app-orderprocessing',
@@ -71,7 +75,20 @@ export class OrderprocessingComponent implements OnInit {
 
   srcImage = "./img/noImage.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
-
+//Promotion
+selectedStatus = '';
+  searchText = "";
+  sortField = "namePromotion";
+  sortDirection= "asc" ;
+  isIncreasePrice:string="123";
+listPromotion:PromotionReponse[]=[];
+selectedPromotion: any;
+newPromotion!:Promotion;
+totalBeforePay:number=0;
+totalTemp=0;
+changeVourcher = false
+discountVourcher ="0"
+tax = "0"
   refreshListMerge() {
     this.seletedListMergerFood = [];
     this.listOrderDetailsTableMerge = [];
@@ -99,7 +116,8 @@ export class OrderprocessingComponent implements OnInit {
     private paymentService: PaymentService,
     private invoiceService: InvoiceService,
     private route: ActivatedRoute,
-    private apiConfigService: ApiConfigService
+    private apiConfigService: ApiConfigService,
+    private promotionService: VourcherService
   ) { }
 
   ngOnInit(): void {
@@ -108,6 +126,7 @@ export class OrderprocessingComponent implements OnInit {
     this.getAllCategories();
     this.notificationOrder();
     this.updateTotal();
+    
     this.route.queryParams.subscribe((params) => {
       if (params['reload']) {
         this.getDataOrderdetail();
@@ -116,9 +135,12 @@ export class OrderprocessingComponent implements OnInit {
         this.notificationOrder();
         this.updateTotal();
         this.refreshListMerge();
+       
       }
     });
-    this.notifiConfirmOrder()
+    this.notifiConfirmOrder();
+    this.getPromotion();
+    
   }
 
   getOrder(idOrder: number) {
@@ -283,6 +305,11 @@ export class OrderprocessingComponent implements OnInit {
       this.iOrder = new OrderRequest(product.idFood, 1, product.note, product.nameFood);
       console.log('update', this.listOrderDetails);
       this.updateOrder(this.order.idOrder, this.iOrder);
+      if (this.order) {
+        this.totalTemp=this.order.total
+        console.log( "total1:",this.order.total);
+      }
+     
     } else {
       this.addToTemp(product);
     }
@@ -367,10 +394,11 @@ export class OrderprocessingComponent implements OnInit {
     );
 
     if (this.order) {
-      this.order.total = total;
+      this.order.total = total
+     
     } else {
-      this.tempTotal = total
-      console.log()
+      this.tempTotal = total;
+     
     }
   }
 
@@ -408,6 +436,9 @@ export class OrderprocessingComponent implements OnInit {
 
   //cập nhật số lượng orderdetail
   updateQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
+    this.changeVourcher = false;
+     this.selectedPromotion ="0";
+     this.onPromotionChange(this.selectedPromotion)
     if (newQuantity < 1) {
       return;
     }
@@ -415,16 +446,34 @@ export class OrderprocessingComponent implements OnInit {
       .updateOrderDetailQuantity(idOrder, idOrderDetail, newQuantity)
       .subscribe(
         (data) => {
-          this.getDataOrderdetail();
+          
+          this.getDataOrderdetail(); 
+         
+          if (this.order) {
+            this.totalTemp=this.order.total
+            console.log( "total1:",this.order.total);
+          }
+          
+      
+          
+        
           console.log('Success update quantity', idOrderDetail);
+         
+          
+         
         },
         (err) => {
           console.log('Error', err);
         }
       );
+      
+  
+      
   }
 
   onQuantityChange(idOrder: number, idOrderDetail: number, event: any) {
+    
+    this.changeVourcher = false;
     const newQuantity = parseInt(event.target.value, 10)
     const orderDetail = this.listOrderDetails.find(
       (item) => item.idOrderDetail === idOrderDetail
@@ -442,13 +491,21 @@ export class OrderprocessingComponent implements OnInit {
 
 
   removeOrderDetails(idOrderDetail: number) {
+    
     if (this.order) {
+      this.changeVourcher = false;
+     this.selectedPromotion ="0";
+     this.onPromotionChange(this.selectedPromotion)
       if (this.listOrderDetails.length === 1) {
         // Hiển thị modal yêu cầu nhập lý do hủy
         this.showCancelModal(idOrderDetail);
       } else {
         // Xóa phần tử nếu không phải phần tử cuối
         this.executeRemove(idOrderDetail);
+       
+          this.totalTemp=this.order.total
+          console.log( "total1:",this.order.total);
+       
       }
     } else {
       this.listOrderDetails = this.listOrderDetails.filter(
@@ -457,6 +514,7 @@ export class OrderprocessingComponent implements OnInit {
       this.tempProducts = this.tempProducts.filter(
         (tempProduct) => tempProduct.idOrderDetail !== idOrderDetail
       );
+      
       this.updateTotal();
     }
   }
@@ -493,6 +551,7 @@ export class OrderprocessingComponent implements OnInit {
     this.orderService.removeOrderDetail(idOrderDetail).subscribe(
       (data) => {
         this.getDataOrderdetail();
+     
         setTimeout(() => {
           if (this.listOrderDetails.length === 0) {
             this.routerActive.params.subscribe((param) => {
@@ -503,6 +562,7 @@ export class OrderprocessingComponent implements OnInit {
             });
           }
         }, 100);
+        
       },
       (err) => {
         console.log('Delete fail!', err);
@@ -887,9 +947,11 @@ export class OrderprocessingComponent implements OnInit {
   listDataInvoice  !: invoiceRespone[];
 
   paymentOrder() {
+
     if (this.paymentPaythod == "ewallet") {
       if (this.order) {
-        this.paymentService.postRequestPaymentVNPay(this.order.idOrder).subscribe(
+        this.paymentService.postRequestPaymentVNPay(this.order.idOrder,this.selectedPromotion).subscribe(
+
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
@@ -905,7 +967,7 @@ export class OrderprocessingComponent implements OnInit {
       }
     } else {
       if (this.order) {
-        this.paymentService.postRequestPaymentManual(this.order.idOrder).subscribe(
+        this.paymentService.postRequestPaymentManual(this.order.idOrder,this.selectedPromotion).subscribe(
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
@@ -980,6 +1042,62 @@ export class OrderprocessingComponent implements OnInit {
       console.error("Không tìm thấy div với ID 'body_invoice'");
     }
   }
+  //Promotion 
+ getPromotion(){
+ 
+   this.promotionService.filterVoucher(this.searchText, this.selectedStatus,this.isIncreasePrice
+    , this.sortField, this.sortDirection,0, 10000,).subscribe(
+    data=>(
+      this.listPromotion=data.result.content,
+      console.log("list1", this.listPromotion)
+    )
+    
+    )
+ 
+  
+ 
+}
+
+onPromotionChange(selectedPromotionId: any) {
+ 
+  if (this.order) {
+    this.totalTemp= this.order.total
+   
+  }
+  if (selectedPromotionId == 0) {
+   if (this.order) {
+    this.tax = "0";
+    this.discountVourcher = "0";
+    this.totalTemp = this.order.total;
+   }
+    return; // Dừng hàm tại đây
+  }
+  else {
+    this.promotionService.getById(selectedPromotionId).subscribe(
+
+      (data) => {
+        this.newPromotion = data.result;
+        if(this.newPromotion.increasePrice){
+          if (this.order) {
+            this.changeVourcher = true
+            this.tax = "+ "+this.newPromotion.discount;
+            this.discountVourcher = "0";
+            this.totalTemp  = this.order.total + this.newPromotion.discount / 100 * this.order.total;
+          }
+        }else{
+          if (this.order) {
+            this.changeVourcher = true
+            this.discountVourcher = "- "+this.newPromotion.discount;
+            this.tax = "0";
+            this.totalTemp = this.order.total - this.newPromotion.discount / 100 * this.order.total;
+          }
+        }
+       
+      }
+    );
+  }
+ 
+}
 
   reloadData() {
     console.log(this.router.url);

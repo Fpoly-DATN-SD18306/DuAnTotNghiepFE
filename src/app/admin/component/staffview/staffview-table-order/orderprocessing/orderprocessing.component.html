@@ -231,12 +231,12 @@
 
                 </div>
                 <div class="d-flex justify-content-between fw-bold">
-                  <span>Thuế</span>
-                  <span>0</span>
+                  <span>Phụ thu ngày lễ</span>
+                  <span>{{tax}} %</span>
                 </div>
                 <div class="d-flex justify-content-between fw-bold">
-                  <span>Mã giảm giá</span>
-                  <span>0 %</span>
+                  <span>Giảm giá</span> 
+                  <span>{{discountVourcher}} %</span>
                 </div>
               </div>
             </div>
@@ -257,7 +257,9 @@
               </div>
               <div class="title-pricetotal">
                 <p class="m-0 p-0 text-end fw-bold"><span>Thành tiền</span></p>
-                <h6 *ngIf="order" style="color: #3cd22f;" class="fw-bold ">{{formatPrice(order.total)}}</h6>
+                <h6 *ngIf="order  && changeVourcher " style="color: #3cd22f;" class="fw-bold ">{{formatPrice(totalTemp)}}</h6>
+                <h6 *ngIf="order && !changeVourcher " style="color: #3cd22f;" class="fw-bold ">{{formatPrice(order.total)}}</h6>
+
                 <h6 *ngIf="!order" style="color: #3cd22f;" class="fw-bold ">{{formatPrice(tempTotal)}}</h6>
               </div>
             </div>
@@ -274,6 +276,16 @@
                 <option selected value="cash">Tiền mặt</option>
                 <option value="ewallet">VN Pay</option>
 
+              </select>
+            </div>
+            <div class="col-5">
+              <span style="font-size: 0.9em;">Promtotion :</span>
+            </div>
+            <div class="col-7">
+              <select [(ngModel)]="selectedPromotion" (change)="onPromotionChange(selectedPromotion)" class="form-select form-select-sm bg-secondary-subtle"
+                aria-label="Default select example">
+                <option value="0">Không</option>
+                <option *ngFor="let voucher of listPromotion"[value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
               </select>
             </div>
 
