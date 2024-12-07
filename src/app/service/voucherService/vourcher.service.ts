@@ -52,6 +52,9 @@ export class VourcherService {
 
     return this.http.delete<ApiRespone>(this.url +'/' +idVoucher);
   }
+getById(idVoucher:number):Observable<ApiRespone>{
+  return this.http.get<ApiRespone>(this.url +'/' +idVoucher);
+}
 
   filterVoucher(theKeyword: string,theStatus: string,theIsIncreasePrice:string,theSortField:string,theSortDirection:string, thePage: number, thePageSize: number): Observable<ApiRespone> {
     let nameVoucher = theKeyword ? `&namePromotion=${theKeyword}` : '';
@@ -64,4 +67,5 @@ export class VourcherService {
     return this.http.get<ApiRespone>(searchUrl,{headers:this.header});
   }
 }
+ 
 

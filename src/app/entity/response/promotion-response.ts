@@ -1,7 +1,14 @@
-export class promotionReponse{
+export class PromotionReponse{
 
-    constructor(public idPromotion:number,public namePromotion: string, public discount: number, public startDate: Date, public endDate: Date, public description:string) {
-
+    constructor(
+        public description: string,
+        public discount: number,
+        public endDate: Date,
+        public idPromotion: number,
+        public increasePrice: Boolean,
+        public namePromotion: string,
+        public startDate: Date
+    ) {
     }
 
 }

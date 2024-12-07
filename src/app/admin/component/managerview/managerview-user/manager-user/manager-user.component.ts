@@ -34,6 +34,7 @@ export class ManagerUserComponent implements OnInit {
         this.isEditing = true;
         this.userService.getById(userId).subscribe(
           data => {
+           
             const userResponse = data.result as userResponse;
             this.idUserNeedUpdate = userResponse.idUser;
             this.userForm.patchValue({
@@ -51,6 +52,7 @@ export class ManagerUserComponent implements OnInit {
           error => console.error("Error fetching user data:", error)
         );
       }
+      
     });
   }
 resertPassword(){

@@ -16,15 +16,15 @@ export class PaymentService {
     {"Authorization":"Bearer " +  localStorage.getItem("jwt")}
   )
 
-  public postRequestPaymentVNPay(idOrder : number):Observable<ApiRespone> {
+  public postRequestPaymentVNPay(idOrder : number,idPromotion:number):Observable<ApiRespone> {
     
-    return this.http.post<ApiRespone> (this.url+"/payment-VNPay", {},{params :{"idOrder":idOrder},headers:this.header})
+    return this.http.post<ApiRespone> (this.url+"/payment-VNPay", {},{params :{"idOrder":idOrder,"idPromotion":idPromotion},headers:this.header})
   }
 
 
-  public postRequestPaymentManual(idOrder : number):Observable<ApiRespone> {
+  public postRequestPaymentManual(idOrder : number,idPromotion:number):Observable<ApiRespone> {
     
-    return this.http.post<ApiRespone> (this.url+"/manual-Pay", {},{params :{"idOrder":idOrder},headers:this.header})
+    return this.http.post<ApiRespone> (this.url+"/manual-Pay", {},{params :{"idOrder":idOrder,"idPromotion":idPromotion},headers:this.header})
   }
   
   
