@@ -14,13 +14,13 @@
             <button type="button" class="btn-close" (click)="closedNotification(mess.id)"></button>
         </div>
         <div class="toast-body pt-0 d-flex justify-content-center">
-            <button type="button" class="btn mx-1"
+            <button type="button" class="btn mx-1" [ngClass]="{'d-none': !mess.hidenbutton}"
                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: rgb(125, 205, 5); color: white;"
                     (click)="fetchOrderDetails(mess.order.idOrder, mess.order.idTable)">
                 <i class="bi bi-info-circle-fill"></i> Chi tiết
             </button>
 
-            <button type="button" class="btn btn-primary mx-1" *ngIf="itemsorder.idOrderMain === null"
+            <button type="button" class="btn btn-primary mx-1" *ngIf="itemsorder.idOrderMain === null" [ngClass]="{'d-none': !mess.hidenbutton}"
                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
                     (click)="confirmOrder(mess.order.idOrder)">
                 <i class="bi bi-bag-check-fill"></i> Xác nhận

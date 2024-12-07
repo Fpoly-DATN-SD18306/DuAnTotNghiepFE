@@ -6,6 +6,7 @@ import { OrderRequest } from '../../entity/request/order-request';
 import { Subject } from 'rxjs';
 import { Cartitem } from '../../interface/cart/cartitem';
 import { Icart } from '../../interface/cart/iCart';
+import { tabelRequest } from '../../entity/request/table-request';
 
 
 @Injectable({
@@ -15,6 +16,7 @@ export class WebsocketService {
   private messageSubject = new Subject<string>(); 
   private PaymentMessageSubject = new Subject<string>();
   private confirmOrderSubject = new Subject<any>();
+  private messageCallStaff = new Subject<any>();
   constructor() { }
   
   private stompClient: any
@@ -28,6 +30,7 @@ export class WebsocketService {
       this.subscribeToPostOrder()
      this.subscribeToConfirmOrder()
      this.subcribeTolistenPayment()
+     this.subscribeToCallStaff()
     })
     
   }
@@ -52,6 +55,7 @@ export class WebsocketService {
     });
   }
 
+
   // Phương thức để lắng nghe và xử lý thông báo từ topic/confirmorder
   // private subscribeToConfirmOrder() {
   //   this.stompClient.subscribe('/topic/confirmorder', (message: any) => {
@@ -69,6 +73,15 @@ export class WebsocketService {
         this.confirmOrderSubject.next(JSON.parse(message.body));
       }
     });
+  }
+
+
+  subscribeToCallStaff(){
+    this.stompClient.subscribe('/topic/callStaff', (mess : any) => {
+      if(mess.body){
+        this.messageCallStaff.next(mess.body);
+      }
+    })
   }
 
   sendOrderUpdate(order: OrderRequest) {
@@ -96,5 +109,17 @@ export class WebsocketService {
   }
   onConfirmOrderMessage() {
     return this.confirmOrderSubject.asObservable(); // Trả về Observable để lắng nghe
+  }
+
+  sendCallStaff(idTable: number) {
+    if (this.stompClient) {
+      this.stompClient.send(`/app/api/order/${idTable}`, {});
+    } else {
+      console.error('stompClient is not initialized');
+    }
+  }
+
+  onMessCallStaff(){
+    return this.messageCallStaff.asObservable();
   }
 }
