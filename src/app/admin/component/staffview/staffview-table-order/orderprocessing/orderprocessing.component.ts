@@ -82,7 +82,7 @@ selectedStatus = '';
   sortDirection= "asc" ;
   isIncreasePrice:string="123";
 listPromotion:PromotionReponse[]=[];
-selectedPromotion: any;
+selectedPromotion= 0;
 newPromotion!:Promotion;
 totalBeforePay:number=0;
 totalTemp=0;
@@ -437,7 +437,7 @@ tax = "0"
   //cập nhật số lượng orderdetail
   updateQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
     this.changeVourcher = false;
-     this.selectedPromotion ="0";
+     this.selectedPromotion =0;
      this.onPromotionChange(this.selectedPromotion)
     if (newQuantity < 1) {
       return;
@@ -454,12 +454,7 @@ tax = "0"
             console.log( "total1:",this.order.total);
           }
           
-      
-          
-        
           console.log('Success update quantity', idOrderDetail);
-         
-          
          
         },
         (err) => {
@@ -494,7 +489,7 @@ tax = "0"
     
     if (this.order) {
       this.changeVourcher = false;
-     this.selectedPromotion ="0";
+     this.selectedPromotion =0;
      this.onPromotionChange(this.selectedPromotion)
       if (this.listOrderDetails.length === 1) {
         // Hiển thị modal yêu cầu nhập lý do hủy
