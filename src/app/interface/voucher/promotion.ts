@@ -4,6 +4,6 @@ export class Promotion {
   discount!: number;
   startDate!: Date;
   endDate!: Date;
-  increasePrice!:boolean;
-  description?: string;
+  increasePrice!:Boolean;
+  description!: string;
 }
