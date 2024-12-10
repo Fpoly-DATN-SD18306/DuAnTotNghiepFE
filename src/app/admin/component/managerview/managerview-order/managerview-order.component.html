@@ -181,11 +181,11 @@
                                                                         <strong>Ngày tạo đơn: </strong>
                                                                         <p>{{ order?.dateCreate| date: 'YYYY-MM-dd hh:mm' }}</p>
                                                                     </div>
-                                                                    
-                                                                    <div *ngIf="orderSelect?.total" class="col-sm-6 text-start">
-                                                                        <strong>Tổng tiền đơn hàng:</strong>
-                                                                        <p>{{formatPrice(orderSelect!.total)}}</p>
+                                                                    <div class="col-sm-6 text-start" *ngIf="orderSelect?.paymentDate">
+                                                                        <strong>Ngày thanh toán: </strong>
+                                                                        <p>{{ orderSelect!.paymentDate| date: 'YYYY-MM-dd hh:mm' }}</p>
                                                                     </div>
+                                                                    
                                                                 </div>
                                                                 <div class="row mb-1">
                                                                     <div *ngIf="orderSelect?.namePaymentMethod"
@@ -198,14 +198,15 @@
                                                                         <strong>Lý do hủy đơn:</strong>
                                                                         <p>{{orderSelect.cancellationReason}}</p>
                                                                     </div>
-                                                                    <div class="col-sm-6 text-start" *ngIf="orderSelect?.paymentDate">
-                                                                        <strong>Ngày thanh toán: </strong>
-                                                                        <p>{{ orderSelect?.paymentDate| date: 'YYYY-MM-dd hh:mm' }}</p>
-                                                                    </div>
+                                                                    
 
                                                                     <div class="col-sm-6 text-start" *ngIf="orderSelect?.paymentDate">
                                                                         <strong>Thu ngân: </strong>
-                                                                        <p>{{ orderSelect?.fullname}}</p>
+                                                                        <p>{{ orderSelect!.fullname}}</p>
+                                                                    </div>
+                                                                    <div *ngIf="orderSelect?.total" class="col-sm-6 text-start">
+                                                                        <strong>Tổng tiền đơn hàng:</strong>
+                                                                        <p>{{formatPrice(orderSelect!.total)}}</p>
                                                                     </div>
                                                                 </div>
 

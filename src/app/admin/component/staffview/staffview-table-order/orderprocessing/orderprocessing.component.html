@@ -113,7 +113,7 @@
         </form>
       </div>
       <div class="box-listproducts" *ngIf="listOrderDetails.length > 0">
-        <div class="container-order-product" style="height: calc(60vh - 120px); overflow-y: auto;">
+        <div class="container-order-product" style="height: calc(60vh - 155px); overflow-y: auto;">
           <!--Start Item product -->
           <div class="container item-product border-secondary py-3 px-2"
             style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;"
@@ -267,28 +267,35 @@
           </div>
           <!--  -->
           <!--  -->
-          <div class="col-12 container row text-center align-items-center py-0">
-            <div class="col-5 my-1 text-start">
-              <span style="font-size: 0.9em;">Phương thức thanh toán </span>
+          <div class="col-12">
+            <div class="row container row text-center align-items-center ps-3">
+              <div class="col-6">
+                <div class="col-12 my-1 text-start">
+                  <span style="font-size: 0.9em;">Phương thức thanh toán: </span>
+                </div>
+                <div class="col-12 my-1">
+                  <select [(ngModel)]="paymentPaythod" class="form-select form-select-sm bg-secondary-subtle"
+                    aria-label="Default select example">
+                    <option selected value="cash">Tiền mặt</option>
+                    <option value="ewallet">VN Pay</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="col-12 text-start my-1">
+                  <span style="font-size: 0.9em;">Voucher:</span>
+                </div>
+                <div class="col-12 my-1">
+                  <select [(ngModel)]="selectedPromotion" (change)="onPromotionChange(selectedPromotion)" class="form-select form-select-sm bg-secondary-subtle"
+                    aria-label="Default select example">
+                    <option value="0">Không</option>
+                    <option *ngFor="let voucher of listPromotion"[value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div class="col-7 my-1">
-              <select [(ngModel)]="paymentPaythod" class="form-select form-select-sm bg-secondary-subtle"
-                aria-label="Default select example">
-                <option selected value="cash">Tiền mặt</option>
-                <option value="ewallet">VN Pay</option>
-
-              </select>
-            </div>
-            <div class="col-5 text-start my-1">
-              <span style="font-size: 0.9em;">Voucher :</span>
-            </div>
-            <div class="col-7 my-1">
-              <select [(ngModel)]="selectedPromotion" (change)="onPromotionChange(selectedPromotion)" class="form-select form-select-sm bg-secondary-subtle"
-                aria-label="Default select example">
-                <option value="0">Không</option>
-                <option *ngFor="let voucher of listPromotion"[value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
-              </select>
-            </div>
+            
+            
 
 
             <div class="container px-3 pt-2 box-posvisional-invoice-3" *ngIf="order?.statusOrder != 'Waiting'">
@@ -611,7 +618,7 @@
                 <tr>
                   <th scope="col" style="width: 300px;">Tên món</th>
                   <th scope="col">Số lượng</th>
-                  <th scope="col">đơn giá</th>
+                  <th scope="col">Đơn giá</th>
                   <th scope="col">Giảm</th>
                   <th scope="col">Thành tiền</th>
                 </tr>
@@ -634,6 +641,7 @@
 
               </tbody>
             </table>
+              <p class="text-end fw-bold" *ngIf="order">Tổng: {{formatPrice(order!.total)}}</p>
           </div>
         </div>
         <div class="modal-footer">
