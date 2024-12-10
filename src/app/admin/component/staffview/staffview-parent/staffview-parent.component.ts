@@ -4,7 +4,7 @@ import { WebsocketService } from '../../../../service/websocketService/websocket
 import { OrderResponse } from '../../../../entity/response/order-response';
 import { Subject } from 'rxjs';
 import { OrderdetailService } from '../../../../service/orderdetailService/orderdetail.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AudioService } from '../../../../service/audioService/audio.service';
 import { OrderService } from '../../../../service/orderService/order.service';
 
@@ -27,13 +27,21 @@ export class StaffviewParentComponent implements OnInit {
     private router: Router,
     private orderdetailsService: OrderdetailService,
     private audioService : AudioService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private route : ActivatedRoute
   ) { }
   ngOnInit(): void {
     this.websocketservice.connect()
     this.notificationOrder()
     this.notificationPayment() 
     this.notificationCallStaff()
+    this.route.queryParams.subscribe((params) => {
+      if (params['reload']) {
+        this.websocketservice.connect()
+        this.notificationOrder()
+        this.notificationPayment() 
+      }
+    });
   }
 
   //************Thông báo đơn hàng */
@@ -60,6 +68,9 @@ export class StaffviewParentComponent implements OnInit {
           });
           this.orderIdCounter++;
         }
+          if(this.itemsorder.statusOrder == 'Waiting'){
+          this.audioService.playSound()
+        }
       }
       console.log('ordermess:', message);
     });
@@ -70,7 +81,10 @@ export class StaffviewParentComponent implements OnInit {
     this.websocketservice.onPaymentMessage().subscribe(message => {
       if (message) {
         let obj = JSON.parse(message)
-        this.speakText(obj.idOrder);
+        if(obj.rspCode=='00'){
+          this.speakText(obj.idOrder);
+          window.location.reload();
+        }
         this.ngOnInit()
         console.log('payment:' + message)
       }
@@ -97,7 +111,11 @@ export class StaffviewParentComponent implements OnInit {
   }
 
   // Hàm để phát giọng nói
+  
+
+
     fetchOrderDetails(idOrder: number | null, idTable: number | null) {
+      this.pauseSound()
       this.orderMessages.forEach((message) => {
         console.log('mess',message.id)
         console.log('idorder',idOrder)
@@ -117,12 +135,15 @@ export class StaffviewParentComponent implements OnInit {
     }
     
 
-
+    pauseSound(){
+      this.audioService.pauseSound()
+    }
 
   confirmOrder(idOrder: number | null) {
     this.orderMessages.forEach((message) => {
       console.log('mess',message.id)
       console.log('idorder',idOrder)
+      this.pauseSound()
       if (message.id === idOrder) {
         message.visible = false
       }
@@ -150,7 +171,7 @@ export class StaffviewParentComponent implements OnInit {
 
 
   speakText(idOrder : any) {
-    const textToSpeak = "Đã nhận được thanh toán của đơn hàng số " + idOrder;
+    const textToSpeak = " Đã nhận được thanh toán của đơn hàng số " + idOrder;
     console.log(textToSpeak);
     
     const utterance = new SpeechSynthesisUtterance(textToSpeak);

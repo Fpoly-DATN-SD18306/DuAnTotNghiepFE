@@ -12,6 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ManagerviewUserComponent } from './managerview-user/managerview-user.component';
 import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-voucher.component';
 import { ManagerviewOrderComponent } from './managerview-order/managerview-order.component';
+import { ManagerviewReportComponent } from './managerview-report/managerview-report.component';
 
 
 
@@ -22,7 +23,8 @@ import { ManagerviewOrderComponent } from './managerview-order/managerview-order
     ManagerviewTableComponent,
     ManagerviewUserComponent,
     ManagerviewVoucherComponent,
-    ManagerviewOrderComponent
+    ManagerviewOrderComponent,
+    ManagerviewReportComponent,
 
   ],
   imports: [
@@ -32,7 +34,7 @@ import { ManagerviewOrderComponent } from './managerview-order/managerview-order
     ReactiveFormsModule,
     ManagerviewRoutingModule,
     FormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ]
 })
 export class ManagerviewModule { }

@@ -1,6 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Foods } from '../../../entity/food/foods';
 import { ApiConfigService } from '../../../service/ApiConfigService';
+import { CartService } from '../../../service/cartService/cart.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Icart } from '../../../interface/cart/iCart';
 
 @Component({
   selector: 'app-product-ngang',
@@ -10,13 +13,15 @@ import { ApiConfigService } from '../../../service/ApiConfigService';
 export class ProductNgangComponent  implements OnInit{
   @Input() product !: Foods;
 
-  constructor(private cdr: ChangeDetectorRef){}
+  constructor(private cdr: ChangeDetectorRef,private cartService: CartService, private snackBar: MatSnackBar){}
 
   
   srcImage = "./img/noImage.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 
   quantity =0;
+  noteOrder="";
+
 
   limitedStringShow(text : string){
     let maxStringShow = 30;
@@ -52,8 +57,26 @@ export class ProductNgangComponent  implements OnInit{
   }
 
   show() {
-    console.log(this.product)
-  }
+    try {
+     if(this.quantity>0){
+     let cartItem : Icart={
+       idFood : this.product.idFood,
+       nameFood: this.product.nameFood,
+       price: this.product.priceFood,
+       quantity: this.quantity,
+       thumbnail:this.product.imgFood, 
+       note:this.noteOrder,
+ 
+     }
+     this.cartService.addToCart(cartItem);
+     console.log("đơn hàng  đã thêm: ", this.cartService.getCart());
+     this.quantity=0;
+   } 
+   } catch (error) {
+     
+     console.log(error)
+    }
+   }
   ngOnInit(): void {
 
     console.log();

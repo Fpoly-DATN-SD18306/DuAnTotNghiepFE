@@ -1,3 +1,4 @@
+import { VourcherService } from './../../../../../service/voucherService/vourcher.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableService } from '../../../../../service/tableService/table.service';
@@ -22,6 +23,13 @@ import { invoiceRespone } from '../../../../../interface/invoice/invoice';
 import { foodRequest } from '../../../../../entity/request/food-request';
 import { OrderRequest } from '../../../../../entity/request/order-request';
 import { IpServiceService } from '../../../../../service/ipService/ip-service.service';
+import { AreaService } from '../../../../../service/areaService/area.service';
+import { AreaResponse } from '../../../../../entity/response/area-response';
+import { RequestOrder } from '../../../../../service/requestOrder.service';
+import { ApiConfigService } from '../../../../../service/ApiConfigService';
+import { PromotionReponse } from '../../../../../entity/response/promotion-response';
+import { Promotion } from '../../../../../interface/voucher/promotion';
+import { promotionRequest } from '../../../../../entity/request/promotion-request';
 
 @Component({
   selector: 'app-orderprocessing',
@@ -29,11 +37,12 @@ import { IpServiceService } from '../../../../../service/ipService/ip-service.se
   styleUrl: './orderprocessing.component.css',
 })
 export class OrderprocessingComponent implements OnInit {
-  listOrderDetails: OrderDetailResponse[] = []
-  listProducts: foodResponse[] = []
-  listCategories: CategoryResponse[] = []
-  itemTable?: tableResponse
-  order?: OrderResponse
+
+  listOrderDetails: OrderDetailResponse[] = [];
+  listProducts: foodResponse[] = [];
+  listCategories: CategoryResponse[] = [];
+  itemTable?: tableResponse;
+  order?: OrderResponse;
   itemOrderdetail!: OrderDetailResponse;
 
   //biến lưu trữ các sản phẩm tạm thời
@@ -42,12 +51,53 @@ export class OrderprocessingComponent implements OnInit {
   iOrder!: OrderRequest;
   activeCategoryId: number | null = null;
   tempTotal!: number
+  //Gộp/Tách bàn
 
+  selectedTable: tableResponse | null = null;
+  listOrderDetailsTableMerge: OrderDetailResponse[] = []
+  selectedTableId: number | null = null;
+  mergerOrderId: number | null = null;
+  listArea: AreaResponse[] = [];
+  listTable: tableResponse[] = [];
+  tableMergerId !: number;
+  indexOrder !: number;
+  selectedAreaId: number = 0;
+  seletedListFood: OrderRequest[] = [];
+  seletedListUpdateFood: OrderRequest[] = [];
+  seletedListMergerFood: OrderRequest[] = [];
+  listFoodRequest: foodRequest[] = [];
+  quantity: number = 0;
+  test!: any;
   //lưu trữ idOrder cũ
   oldIdOrders: Map<number, number | null> = new Map();
   cancelReason: string = '';
   itemOrderDetailToCancel: number | null = null;
-  
+
+  srcImage = "./img/noImage.jpg";
+  hostingImg = ApiConfigService.apiUrlimg;
+//Promotion
+  selectedStatus = '';  
+  searchText = "";
+  sortField = "namePromotion";
+  sortDirection= "asc" ;
+  isIncreasePrice:string="123";
+  listPromotion:PromotionReponse[]=[];
+  selectedPromotion= 0;
+  newPromotion!:Promotion;
+  totalBeforePay:number=0;
+  totalTemp=0;
+  changeVourcher = false
+  discountVourcher ="0"
+  tax = "0"
+  refreshListMerge() {
+    this.seletedListMergerFood = [];
+    this.listOrderDetailsTableMerge = [];
+    this.seletedListFood = [];
+    this.seletedListUpdateFood = [];
+    this.listFoodRequest = [];
+  }
+
+
   //lưu trữ item orderdetail
   selectedOrderDetail?: OrderDetailResponse;
   constructor(
@@ -61,8 +111,13 @@ export class OrderprocessingComponent implements OnInit {
     private webSocketService: WebsocketService,
     private router: Router,
     private ipService: IpServiceService,
-    private paymentService : PaymentService,
-    private invoiceService : InvoiceService
+    private areaService: AreaService,
+    private requestOrder: RequestOrder,
+    private paymentService: PaymentService,
+    private invoiceService: InvoiceService,
+    private route: ActivatedRoute,
+    private apiConfigService: ApiConfigService,
+    private promotionService: VourcherService,
   ) { }
 
   ngOnInit(): void {
@@ -70,7 +125,23 @@ export class OrderprocessingComponent implements OnInit {
     this.getAllProducts();
     this.getAllCategories();
     this.notificationOrder();
-    this.notifiConfirmOrder()
+    this.updateTotal();
+    this.getCurrentDateAndTime()
+    
+    this.route.queryParams.subscribe((params) => {
+      if (params['reload']) {
+        this.getDataOrderdetail();
+        this.getAllProducts();
+        this.getAllCategories();
+        this.notificationOrder();
+        this.updateTotal();
+        this.refreshListMerge();
+       
+      }
+    });
+    this.notifiConfirmOrder();
+    this.getPromotion();
+    
   }
 
   getOrder(idOrder: number) {
@@ -104,6 +175,8 @@ export class OrderprocessingComponent implements OnInit {
     this.routerActive.params.subscribe((param) => {
       let idOrder = param['idOrder'];
       let idTable = param['idTable'];
+      console.log(idOrder);
+      console.log(idTable);
       if (idOrder != undefined) {
         this.getOrder(idOrder);
         this.orderdetailsService
@@ -120,12 +193,12 @@ export class OrderprocessingComponent implements OnInit {
   }
 
 
- 
+
 
   confirmOrder(idOrder: number | null) {
     this.orderService.confirmOrder(idOrder).subscribe(
       (data) => {
-        console.log('data',data)
+        console.log('data', data)
         this.openTotast('✅ Đã xác nhận | ' + this.order?.nameTable);
         console.log('confirm')
         this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
@@ -135,14 +208,14 @@ export class OrderprocessingComponent implements OnInit {
       }
     );
   }
-  
+
 
 
   //Save Order
   saveOrder(idTable: number) {
     this.tempProducts.forEach((product) => {
       this.itemOrder.push(
-        new OrderRequest(product.idOrderDetail, product.quantity)
+        new OrderRequest(product.idOrderDetail, product.quantity, product.nameFood, product.noteFood)
       );
     });
     this.orderService.createNewOrder(this.itemOrder, idTable)?.subscribe(
@@ -155,6 +228,7 @@ export class OrderprocessingComponent implements OnInit {
       },
       (error) => {
         console.log('Error', error);
+        alert(this.errorCode[error.error.code])
       }
     );
   }
@@ -198,6 +272,7 @@ export class OrderprocessingComponent implements OnInit {
   }
 
   getByIdCategory(idCategory: number) {
+    this.nameFoodSearch = ''
     this.productService.getByIdCategory(idCategory).subscribe((data) => {
       this.activeCategoryId = idCategory;
       this.listProducts = data.result;
@@ -212,25 +287,31 @@ export class OrderprocessingComponent implements OnInit {
     if (this.order) {
       // Nếu đã có order, cập nhật order hiện tại
       let existingProductInList = this.listOrderDetails.find(
-        (item) => item.namefood === product.nameFood
+        (item) => item.nameFood === product.nameFood
       );
 
       if (!existingProductInList) {
         // Nếu sản phẩm chưa có trong danh sách, tạo đối tượng mới
         let newOrderDetail: OrderDetailResponse = {
           idOrderDetail: product.idFood,
-          namefood: product.nameFood,
+          nameFood: product.nameFood,
+          idFood: product.idFood,
           quantity: 1,
           price: product.priceFood,
           totalPrice: product.priceFood,
-          note: '',
+          noteFood: '',
           discount: product.discount,
         };
         this.listOrderDetails.push(newOrderDetail);
       }
-      this.iOrder = new OrderRequest(product.idFood, 1, product.note);
+      this.iOrder = new OrderRequest(product.idFood, 1, product.note, product.nameFood);
       console.log('update', this.listOrderDetails);
       this.updateOrder(this.order.idOrder, this.iOrder);
+      if (this.order) {
+        this.totalTemp=this.order.total
+        console.log( "total1:",this.order.total);
+      }
+     
     } else {
       this.addToTemp(product);
     }
@@ -239,7 +320,7 @@ export class OrderprocessingComponent implements OnInit {
   // Thêm sản phẩm vào danh sách tạm thời
   addToTemp(product: foodResponse) {
     let existingProductInTemp = this.tempProducts.find(
-      (item) => item.namefood === product.nameFood
+      (item) => item.nameFood === product.nameFood
     );
 
     if (existingProductInTemp) {
@@ -252,11 +333,12 @@ export class OrderprocessingComponent implements OnInit {
       // Nếu sản phẩm chưa tồn tại trong tempProducts, thêm sản phẩm mới vào danh sách tạm thời
       let orderDetail: OrderDetailResponse = {
         idOrderDetail: product.idFood,
-        namefood: product.nameFood,
+        nameFood: product.nameFood,
+        idFood: product.idFood,
         quantity: 1,
         price: product.priceFood,
         totalPrice: product.priceFood * ((100 - product.discount) / 100),
-        note: '',
+        noteFood: '',
         discount: product.discount,
       };
       this.tempProducts.push(orderDetail);
@@ -264,7 +346,7 @@ export class OrderprocessingComponent implements OnInit {
 
     // Cập nhật hoặc thêm sản phẩm vào listOrderDetails
     let existingProductInList = this.listOrderDetails.find(
-      (orderDetail) => orderDetail.namefood === product.nameFood
+      (orderDetail) => orderDetail.nameFood === product.nameFood
     );
 
     if (existingProductInList) {
@@ -277,11 +359,12 @@ export class OrderprocessingComponent implements OnInit {
       // Nếu sản phẩm chưa có trong listOrderDetails, thêm sản phẩm mới
       let newOrderDetail: OrderDetailResponse = {
         idOrderDetail: product.idFood,
-        namefood: product.nameFood,
+        nameFood: product.nameFood,
+        idFood: product.idFood,
         quantity: 1,
         price: product.priceFood,
         totalPrice: product.priceFood * ((100 - product.discount) / 100),
-        note: '',
+        noteFood: '',
         discount: product.discount,
       };
       this.listOrderDetails.push(newOrderDetail);
@@ -297,7 +380,7 @@ export class OrderprocessingComponent implements OnInit {
     this.orderService.updateOrder(idOrder, itemOrder).subscribe(
       (data) => {
         console.log('Order updated successfully', data);
-        this.getDataOrderdetail(); 
+        this.getDataOrderdetail();
       },
       (error) => {
         console.log('Error', error);
@@ -313,20 +396,22 @@ export class OrderprocessingComponent implements OnInit {
     );
 
     if (this.order) {
-      this.order.total = total;
+      this.order.total = total
+     
     } else {
-      this.tempTotal = total
-      console.log()
+      this.tempTotal = total;
+     
     }
   }
 
   updateQuantityTemp(item: OrderDetailResponse, newQuantity: number) {
     if (newQuantity < 1) {
-      return;
+      newQuantity = Math.abs(newQuantity)
     }
+    console.log("alo", newQuantity);
 
     let existingProductInTemp = this.tempProducts.find(
-      (itemor) => itemor.namefood === item.namefood
+      (itemor) => itemor.nameFood === item.nameFood
     );
 
     if (existingProductInTemp) {
@@ -335,7 +420,7 @@ export class OrderprocessingComponent implements OnInit {
     }
 
     let existingProductInList = this.listOrderDetails.find(
-      (orderDetail) => orderDetail.namefood === item.namefood
+      (orderDetail) => orderDetail.nameFood === item.nameFood
     );
 
     if (existingProductInList) {
@@ -353,6 +438,9 @@ export class OrderprocessingComponent implements OnInit {
 
   //cập nhật số lượng orderdetail
   updateQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
+    this.changeVourcher = false;
+     this.selectedPromotion =0;
+     this.onPromotionChange(this.selectedPromotion)
     if (newQuantity < 1) {
       return;
     }
@@ -360,16 +448,29 @@ export class OrderprocessingComponent implements OnInit {
       .updateOrderDetailQuantity(idOrder, idOrderDetail, newQuantity)
       .subscribe(
         (data) => {
-          this.getDataOrderdetail();
+          
+          this.getDataOrderdetail(); 
+         
+          if (this.order) {
+            this.totalTemp=this.order.total
+            console.log( "total1:",this.order.total);
+          }
+          
           console.log('Success update quantity', idOrderDetail);
+         
         },
         (err) => {
           console.log('Error', err);
         }
       );
+      
+  
+      
   }
 
   onQuantityChange(idOrder: number, idOrderDetail: number, event: any) {
+    
+    this.changeVourcher = false;
     const newQuantity = parseInt(event.target.value, 10)
     const orderDetail = this.listOrderDetails.find(
       (item) => item.idOrderDetail === idOrderDetail
@@ -383,17 +484,25 @@ export class OrderprocessingComponent implements OnInit {
     }
     this.updateQuantity(idOrder, idOrderDetail, newQuantity);
   }
-  
-  
+
+
 
   removeOrderDetails(idOrderDetail: number) {
+    
     if (this.order) {
+      this.changeVourcher = false;
+     this.selectedPromotion =0;
+     this.onPromotionChange(this.selectedPromotion)
       if (this.listOrderDetails.length === 1) {
         // Hiển thị modal yêu cầu nhập lý do hủy
         this.showCancelModal(idOrderDetail);
       } else {
         // Xóa phần tử nếu không phải phần tử cuối
         this.executeRemove(idOrderDetail);
+       
+          this.totalTemp=this.order.total
+          console.log( "total1:",this.order.total);
+       
       }
     } else {
       this.listOrderDetails = this.listOrderDetails.filter(
@@ -402,6 +511,7 @@ export class OrderprocessingComponent implements OnInit {
       this.tempProducts = this.tempProducts.filter(
         (tempProduct) => tempProduct.idOrderDetail !== idOrderDetail
       );
+      
       this.updateTotal();
     }
   }
@@ -428,8 +538,8 @@ export class OrderprocessingComponent implements OnInit {
 
   confirmCancel() {
     if (this.itemOrderDetailToCancel) {
-          this.executeRemove(this.itemOrderDetailToCancel!);
-        }
+      this.executeRemove(this.itemOrderDetailToCancel!);
+    }
     this.cancelModalClose();
   }
 
@@ -438,16 +548,18 @@ export class OrderprocessingComponent implements OnInit {
     this.orderService.removeOrderDetail(idOrderDetail).subscribe(
       (data) => {
         this.getDataOrderdetail();
-          setTimeout(() => {
-            if (this.listOrderDetails.length === 0) {
-              this.routerActive.params.subscribe((param) => {
-                let idTable = param['idTable'];
-                this.router.navigate([
-                  `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
-                ]);
-              });
-            }
-          }, 100);
+     
+        setTimeout(() => {
+          if (this.listOrderDetails.length === 0) {
+            this.routerActive.params.subscribe((param) => {
+              let idTable = param['idTable'];
+              this.router.navigate([
+                `/admin/staff/tableorder_staff/orderprocessing/${idTable}`,
+              ]);
+            });
+          }
+        }, 100);
+        
       },
       (err) => {
         console.log('Delete fail!', err);
@@ -469,30 +581,349 @@ export class OrderprocessingComponent implements OnInit {
       if (this.itemOrderDetailToCancel) {
         this.executeRemove(this.itemOrderDetailToCancel);
       } else {
-          this.orderService.cancelOrder( this.order!.idOrder, this.cancelReason).subscribe(
-            (res) => {
-              console.log(res);
-              if(res.result.idOrderMain === null){
-                this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
-                this.openTotast('⚠️ Đã hủy đơn #'+this.order?.idOrder+' | '+this.order?.nameTable)
-              }else{
-                this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
-                this.openTotast('⚠️ Đã hủy gộp đơn')
-              }
-            },
-            (error) => {
-              console.log('Error', error);
+        this.orderService.cancelOrder(this.order!.idOrder, this.cancelReason).subscribe(
+          (res) => {
+            console.log(res);
+            if (res.result.idOrderMain === null) {
+              this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
+              this.openTotast('⚠️ Đã hủy đơn #' + this.order?.idOrder + ' | ' + this.order?.nameTable)
+            } else {
+              this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', this.order?.idOrderMain, this.order!.idTable])
+              this.openTotast('⚠️ Đã hủy gộp đơn')
             }
-          );
-        
+          },
+          (error) => {
+            console.log('Error', error);
+          }
+        );
+
       }
 
     }
-    this.cancelReason = ''; 
+    this.cancelReason = '';
     this.cancelModalClose();
+  }
+  // Lấy danh sách khu vực cho bàn mới
+  getAllArea() {
+    this.areaService.getAllAreas().subscribe(data => {
+      this.listArea = data.result
+    }, error => {
+      console.log('Error', error)
+    }
+    )
+  }
+
+  updateQuantityOrder(index: number, event: Event, id: number,) {
+    let target = event.currentTarget as HTMLInputElement
+    if (target.valueAsNumber) {
+      this.quantity = target.valueAsNumber;
+    } else {
+      this.quantity = 0
+    }
+
+    this.moveToNewTable(id, index)
+
+  }
+
+  moveToNewTable(id: number, index: number): void {
+    if (this.seletedListUpdateFood.length === 0) {
+      this.seletedListUpdateFood = this.listOrderDetails.map(item => ({
+        idFood: item.idFood,
+        quantity: item.quantity,
+        noteFood: item.noteFood,
+        nameFood: item.nameFood,
+      }));
+    }
+    const currentFood = this.listOrderDetails.find(item => item.idFood === id);
+
+    if (!currentFood) {
+      this.openTotast("Không tìm thấy món ăn.");
+      return;
+    }
+
+    if (this.quantity <= 0) {
+      this.openTotast("Số lượng phải là số dương.");
+      return;
+    }
+
+    if (this.quantity > currentFood.quantity) {
+      this.openTotast("Số lượng chuyển không được lớn hơn số lượng hiện có ở bàn cũ.");
+      return;
+    }
+    const existingItem = this.seletedListFood.find(item => item.idFood === id);
+
+    if (existingItem) {
+      existingItem.quantity += this.quantity;
+    } else {
+      const orderRequest: OrderRequest = {
+        idFood: currentFood.idFood,
+        quantity: this.quantity,
+        noteFood: currentFood.noteFood,
+        nameFood: currentFood.nameFood,
+      };
+      this.seletedListFood.push(orderRequest);
+    }
+
+    currentFood.quantity -= this.quantity;
+
+    if (currentFood.quantity < 0) {
+      currentFood.quantity = 0;
+      this.openTotast("Số lượng bàn cũ không đủ.");
+    }
+
+    const existingFoodIndex = this.seletedListUpdateFood.findIndex(item => item.idFood === id);
+    if (existingFoodIndex !== -1) {
+
+      this.seletedListUpdateFood[existingFoodIndex].quantity = currentFood.quantity;
+    } else {
+
+      const orderRequestOld: OrderRequest = {
+        idFood: currentFood.idFood,
+        quantity: currentFood.quantity,
+        noteFood: currentFood.noteFood,
+        nameFood: currentFood.nameFood,
+      };
+      this.seletedListUpdateFood.push(orderRequestOld);
+    }
+
+    if (currentFood.quantity === 0) {
+      this.listOrderDetails.splice(index, 1);
+    }
+
+    this.updateTotal();
+
+    console.log(this.seletedListFood);
+    console.log(this.seletedListUpdateFood);
   }
 
 
+  removeFromNewTable(index: number): void {
+    const removedItem = this.seletedListFood[index];
+    const currentFood = this.listOrderDetails.find(item => item.idFood === removedItem.idFood);
+    if (currentFood) {
+      currentFood.quantity += removedItem.quantity;
+    } else {
+      this.listOrderDetails.push({
+        idOrderDetail: 0,
+        idFood: removedItem.idFood,
+        quantity: removedItem.quantity,
+        price: 0,
+        totalPrice: 0,
+        noteFood: removedItem.noteFood || "",
+        nameFood: removedItem.nameFood,
+        discount: 0,
+      });
+    }
+
+    this.seletedListFood.splice(index, 1);
+    const existingFoodIndex = this.seletedListUpdateFood.findIndex(item => item.idFood === removedItem.idFood);
+    if (existingFoodIndex !== -1) {
+      this.seletedListUpdateFood[existingFoodIndex].quantity -= removedItem.quantity;
+      if (this.seletedListUpdateFood[existingFoodIndex].quantity <= 0) {
+        this.seletedListUpdateFood.splice(existingFoodIndex, 1);
+      }
+    }
+    this.updateTotal();
+  }
+
+  createNewOrder(): void {
+    if (this.selectedTableId && this.seletedListFood.length > 0) {
+      this.requestOrder.postNewOrder(this.seletedListFood, this.selectedTableId)
+        .subscribe(
+          response => {
+            // console.log('New order created:', response.result);
+            this.openTotast('Đã tách bàn thành công!');
+            this.seletedListFood = [];
+            this.selectedTableId = null;
+
+            this.routerActive.params.subscribe(param => {
+              let idOrder = param['idOrder'];
+              let idTable = param['idTable']
+              if (idOrder) {
+                if (this.listOrderDetails.length === 0) {
+                  // Xóa đơn hàng cũ nếu danh sách món ăn rỗng
+                  this.requestOrder.deleteOrder(idOrder)
+                    .subscribe(
+                      () => {
+
+                        console.log('Order deleted successfully');
+                      },
+                      (error) => {
+                        console.error('Error deleting order:', error);
+                      }
+                    );
+
+                } else {
+                  if (idOrder) {
+
+                    this.requestOrder.updateOrderAll(idOrder, this.seletedListUpdateFood)
+                      .subscribe(
+                        response => {
+                          this.ngOnInit();
+                          console.log('Order updated successfully:', response);
+                          console.log('Đơn hàng cũ đã được cập nhật thành công!');
+                          console.log(this.seletedListUpdateFood)
+                        },
+
+                        error => {
+
+                          console.error('Error updating order:', error);
+                        }
+
+                      );
+
+                  }
+                }
+              }
+
+            });
+          },
+          error => {
+            console.error('Error creating new order:', error);
+            this.openTotast('Lỗi khi tạo đơn hàng.');
+          }
+        );
+
+    } else {
+      this.openTotast('Vui lòng chọn bàn mới và bàn mới không được trống.');
+    }
+  }
+  onTableSelectChange(mergerOrder: tableResponse | null): void {
+
+    if (mergerOrder) {
+
+      const currentOrderId = mergerOrder.currentOrderId;
+      const idTable = mergerOrder.idTable;
+      this.tableMergerId = idTable;
+      this.mergerOrderId = currentOrderId;
+
+      console.log('Selected currentOrderId:', currentOrderId);
+      console.log('Selected idTable:', idTable);
+
+
+      this.orderdetailsService.getOrderDetail(currentOrderId, idTable).subscribe(data => {
+        console.log('DataOrderget: ', data.result)
+        this.listOrderDetailsTableMerge = data.result
+      })
+
+    } else {
+
+    }
+  }
+  mergeOrder() {
+    this.routerActive.params.subscribe(param => {
+      let idTable = param['idTable'];
+      let idOrder = param['idOrder'];
+      if (idTable == this.tableMergerId) {
+        this.openTotast('Không thể gộp cùng 1 bàn lại với nhau.')
+      } else {
+        for (const element of this.listOrderDetailsTableMerge) {
+          const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
+          let orderRequestOld: OrderRequest;
+
+          if (existingItem) {
+            orderRequestOld = {
+              idFood: element.idFood,
+              quantity: element.quantity + existingItem.quantity,
+              noteFood: element.noteFood,
+              nameFood: element.nameFood,
+            };
+          } else {
+
+            orderRequestOld = {
+              idFood: element.idFood,
+              quantity: element.quantity,
+              noteFood: element.noteFood,
+              nameFood: element.nameFood,
+            };
+          }
+          this.seletedListMergerFood.push(orderRequestOld);
+        }
+
+
+        for (const element of this.listOrderDetailsTableMerge) {
+          const existingItem = this.listOrderDetails.find(item => item.idFood === element.idFood);
+
+          if (existingItem) {
+
+            existingItem.quantity += element.quantity;
+
+          } else {
+            this.listOrderDetails.push({
+              idOrderDetail: 0,
+              idFood: element.idFood,
+              quantity: element.quantity,
+              price: element.price,
+              totalPrice: element.price * element.quantity * (100 - element.discount) / 100,
+              noteFood: element.noteFood || "",
+              nameFood: element.nameFood,
+              discount: element.discount,
+            });
+          }
+        }
+
+
+        if (idOrder) {
+          this.requestOrder.updateOrderAll(idOrder, this.seletedListMergerFood)
+            .subscribe(
+              response => {
+                this.ngOnInit();
+                console.log('Order updated successfully:', response)
+                const orderId = Number(this.mergerOrderId);
+                console.log("idOrder", orderId)
+                this.getOrder(idOrder)
+                this.updateTotal()
+                this.requestOrder.deleteOrder(orderId).subscribe(
+                  () => {
+
+                    console.log('Order deleted successfully');
+                  },
+                  (error) => {
+                    console.error('Error deleting order:', error);
+                  }
+                );
+
+                this.openTotast('Gộp bàn thành công!');
+
+              },
+              error => {
+                console.error('Error updating order:', error);
+                this.openTotast('Lỗi khi Gộp bàn.');
+              }
+            );
+        }
+
+
+        this.listOrderDetailsTableMerge = [];
+      }
+
+    });
+  }
+  getTable() {
+    console.log("areaid", this.selectedAreaId)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "AVAILABLE", 0, 1000)
+      .subscribe(data => {
+        this.listTable = data.result.content;
+        console.log("Table", this.listTable);
+      });
+  }
+  getTableOpen() {
+    console.log("areaid", this.selectedAreaId)
+    this.tableservice.getTablesByArea("", this.selectedAreaId, "OCCUPIED", 0, 1000)
+      .subscribe(data => {
+        this.listTable = data.result.content;
+        console.log("Table", this.listTable);
+      });
+  }
+
+  openTotast(status: string) {
+    this.snackBar.open
+      (status, "Đóng", {
+        duration: 4000,
+        horizontalPosition: 'end', //  'start', 'end'
+        verticalPosition: 'bottom', //  'bottom'
+      })
+  }
 
 
 
@@ -505,18 +936,24 @@ export class OrderprocessingComponent implements OnInit {
   paymentPaythod = "cash"
 
   errorCode: Record<number, string> =
-    { 1601: "Đơn hàng đã được hoàn thành trước đó !" }
+    {
+      1601: "Đơn hàng đã được hoàn thành trước đó !",
+      1901: "Không có ca nào đang làm việc !"
+    }
 
   listDataInvoice  !: invoiceRespone[];
 
   paymentOrder() {
+
     if (this.paymentPaythod == "ewallet") {
       if (this.order) {
-        this.paymentService.postRequestPaymentVNPay(this.order.idOrder).subscribe(
+        this.paymentService.postRequestPaymentVNPay(this.order.idOrder,this.selectedPromotion).subscribe(
+
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
             window.open(data.result.urlToRedirect)
+            this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
           }, error => {
             alert(this.errorCode[error.error.code])
             console.log(error);
@@ -527,11 +964,11 @@ export class OrderprocessingComponent implements OnInit {
       }
     } else {
       if (this.order) {
-        this.paymentService.postRequestPaymentManual(this.order.idOrder).subscribe(
+        this.paymentService.postRequestPaymentManual(this.order.idOrder,this.selectedPromotion).subscribe(
           data => {
             console.log(data);
             // window.location.assign(data.result.urlToRedirect)
-            this.openTotast('✅ '+this.order?.nameTable+' | Thanh toán thành công!')
+            this.openTotast('✅ ' + this.order?.nameTable + ' | Thanh toán thành công!')
             this.router.navigateByUrl("/admin/staff/tableorder_staff/tableorder")
           }, error => {
             alert(this.errorCode[error.error.code])
@@ -550,7 +987,7 @@ export class OrderprocessingComponent implements OnInit {
         data => {
           this.listDataInvoice = data.result
           console.log(this.listDataInvoice);
-          console.log("alo");
+          console.log("alo", this.order);
 
         }, error => {
           console.log(error)
@@ -602,17 +1039,89 @@ export class OrderprocessingComponent implements OnInit {
       console.error("Không tìm thấy div với ID 'body_invoice'");
     }
   }
-
-
+  //Promotion 
+ getPromotion(){
+ 
+   this.promotionService.filterVoucher(this.searchText, this.selectedStatus,this.isIncreasePrice
+    , this.sortField, this.sortDirection,0, 10000,).subscribe(
+    data=>(
+      this.listPromotion=data.result.content,
+      console.log("list1", this.listPromotion)
+    )
+    
+    )
+ 
   
-  openTotast(status: string) {
-    this.snackBar.open
-      (status, "Đóng", {
-        duration: 4000,
-        horizontalPosition: 'center', //  'start', 'end'
-        verticalPosition: 'top', //  'bottom'
-      })
+ 
+}
+
+onPromotionChange(selectedPromotionId: any) {
+ 
+  if (this.order) {
+    this.totalTemp= this.order.total
+   
+  }
+  if (selectedPromotionId == 0) {
+   if (this.order) {
+    this.tax = "0";
+    this.discountVourcher = "0";
+    this.totalTemp = this.order.total;
+   }
+    return; // Dừng hàm tại đây
+  }
+  else {
+    this.promotionService.getById(selectedPromotionId).subscribe(
+
+      (data) => {
+        this.newPromotion = data.result;
+        if(this.newPromotion.increasePrice){
+          if (this.order) {
+            this.changeVourcher = true
+            this.tax = "+ "+this.newPromotion.discount;
+            this.discountVourcher = "0";
+            this.totalTemp  = this.order.total + this.newPromotion.discount / 100 * this.order.total;
+          }
+        }else{
+          if (this.order) {
+            this.changeVourcher = true
+            this.discountVourcher = "- "+this.newPromotion.discount;
+            this.tax = "0";
+            this.totalTemp = this.order.total - this.newPromotion.discount / 100 * this.order.total;
+          }
+        }
+       
+      }
+    );
+  }
+ 
+}
+
+  reloadData() {
+    console.log(this.router.url);
+    this.router.navigateByUrl(this.router.url + '/reload=1')
   }
 
+  nameFoodSearch : string = ''
+  searchByName(){
+    this.activeCategoryId = null
+    this.productService.searchByName(this.nameFoodSearch).subscribe(data => {
+      this.listProducts = data.result
+      console.log('e',data.result)
+      if(this.nameFoodSearch ===''){
+        this.getAllProducts()
+      }
+    })
+  }
+
+
+
+  onlyDate = ''
+  fullDateTime = ''
+  getCurrentDateAndTime(): void {
+    const currentDate = new Date();
+    this.onlyDate = currentDate.toISOString().split('T')[0]
+    this.fullDateTime = currentDate.toLocaleString()
+  }
+  
 }
 

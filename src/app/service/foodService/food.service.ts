@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiConfigService } from '../ApiConfigService';
@@ -12,7 +12,10 @@ export class FoodService {
   url = ApiConfigService.apiUrl;
   constructor(private http : HttpClient) { }
 
-
+  header = new HttpHeaders(
+    {"Authorization":"Bearer " +  localStorage.getItem("jwt")}
+  )
+ 
   getAllList():Observable<ApiRespone>{
     return this.http.get<ApiRespone>(this.url+"/api/v1/foods");
   }
@@ -60,5 +63,10 @@ export class FoodService {
 
   }
   
+  searchByName(nameFood: string): Observable<ApiRespone>{
+    let params = new HttpParams()
+    .set('nameFood', nameFood.toString())
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/foods/search`, {params, headers:this.header})
+  }
 
 }

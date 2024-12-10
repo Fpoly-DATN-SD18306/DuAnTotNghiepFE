@@ -1,4 +1,6 @@
+import { Promotion } from "../../interface/voucher/promotion";
 import { OrderDetailResponse } from "./orderdetail-response";
+import { PromotionReponse } from "./promotion-response";
 
 export class OrderResponse  {
 
@@ -13,8 +15,10 @@ export class OrderResponse  {
         public idOrderMain : number,
         public isPrinted : boolean,
         public dateCreate: string,
+        public fullname: string,
+        public paymentDate: string,
         public namePaymentMethod: string,
-        public cancellationReason: string,
+        public cancellationReason: string
     ){
     }
 

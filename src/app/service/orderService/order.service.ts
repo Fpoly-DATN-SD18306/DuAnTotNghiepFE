@@ -71,7 +71,8 @@ export class OrderService {
     updateOrder(idOrder: number, itemOrderrequest: OrderRequest): Observable<ApiRespone> {
       return this.http.put<ApiRespone>(`${this.url}/api/v1/order/${idOrder}`, itemOrderrequest);
     }
-
+  
+  
     updateOrderDetailQuantity(idOrder: number, idOrderDetail: number, newQuantity: number) {
       const url = `${this.url}/api/v1/order/${idOrder}/orderdetails/${idOrderDetail}`;
       return this.http.put(url, newQuantity); // Gửi newQuantity trực tiếp
@@ -110,4 +111,8 @@ export class OrderService {
         );
     }
     
+    getAllOrderByListId(listIdOrder: number[]):Observable<ApiRespone>{
+      return this.http.post<ApiRespone>(`${this.url}/api/orderCustomer/listIdOrder`,listIdOrder);
+    }
+
   }

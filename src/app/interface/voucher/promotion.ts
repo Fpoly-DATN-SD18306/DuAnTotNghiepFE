@@ -1,8 +1,9 @@
-export interface Promotion {
-  idPromotion: number;
-  namePromotion: string;
-  discount: number;
-  startDate: Date;
-  endDate: Date;
-  description?: string;
+export class Promotion {
+  idPromotion!: number;
+  namePromotion!: string;
+  discount!: number;
+  startDate!: Date;
+  endDate!: Date;
+  increasePrice!:Boolean;
+  description!: string;
 }

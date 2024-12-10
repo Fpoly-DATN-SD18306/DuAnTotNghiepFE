@@ -26,9 +26,12 @@
             <div
               class="item-product col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2 position-relative d-flex align-items-center"
               *ngFor="let product of listProducts">
-              <div class="box-item-product">
-                <div class="img-product p-3 border border-secondary rounded-3">
-                  <img src="http://localhost:8080/images/{{product.imgFood}}" alt="" class="w-100">
+              <div  class="box-item-product">
+                <div  class="img-product p-3 border border-secondary rounded-3">
+                  <div *ngIf="product.imgFood">
+                    <img  src="{{hostingImg}}{{product.imgFood}}" alt="" class="w-100">
+                  </div>
+                  <img *ngIf="product.imgFood==null " src="./img/noImage.jpg"  class="card-img-top w-100 h-100"  alt="...">
                   <div class="position-absolute" *ngIf="product.discount" [ngClass]="{'box-sale': product.discount}">
                     <span class="tittle-discount">-{{product.discount}}%</span>
                   </div>
@@ -105,7 +108,8 @@
       </div>
       <div class="box-search">
         <form class="d-flex p-3" role="search">
-          <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm" aria-label="Search">
+          <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm" aria-label="Search"
+          [(ngModel)]="nameFoodSearch" name="nameFood" (keydown)="searchByName()">
         </form>
       </div>
       <div class="box-listproducts" *ngIf="listOrderDetails.length > 0">
@@ -122,7 +126,7 @@
               </div>
               <div class="col-4 ms-1">
                 <div class="row">
-                  <span class="fw-bold">{{item.namefood}}</span>
+                  <span class="fw-bold">{{item.nameFood}}</span>
                 </div>
                 <span>{{formatPrice(item.price)}}</span>
               </div>
@@ -131,25 +135,27 @@
               </div>
               <ng-container *ngIf="order; else elseTemplate">
                 <div class="col-3 text-end justify-content-end d-flex align-items-center pe-0">
-                  <button class="rounded-5 p-1 py-0 btn-success btn"
-                    (click)="updateQuantity(order!.idOrder, item.idOrderDetail, item.quantity + 1)"><i
-                      class="bi bi-plus-circle-fill"></i></button>
+                 <button class="rounded-5 p-1 py-0 btn-danger btn"
+                      (click)="updateQuantity(order!.idOrder, item.idOrderDetail, item.quantity - 1)"><i
+                        class="bi bi-dash-circle-fill"></i></button>
                   <input type="number" class=" form-control text-center mx-1 px-1" style="font-size: 0.9em;"
                     [value]="item.quantity" (change)="onQuantityChange(order!.idOrder, item.idOrderDetail, $event)" />
                   <!-- <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span> -->
-                  <button class="rounded-5 p-1 py-0 btn-danger btn"
-                    (click)="updateQuantity(order!.idOrder, item.idOrderDetail, item.quantity - 1)"><i
-                      class="bi bi-dash-circle-fill"></i></button>
+                      <button class="rounded-5 p-1 py-0 btn-success btn"
+                      (click)="updateQuantity(order!.idOrder, item.idOrderDetail, item.quantity + 1)"><i
+                        class="bi bi-plus-circle-fill"></i></button> 
                 </div>
               </ng-container>
               <ng-template #elseTemplate>
                 <div class="col-3 text-end justify-content-end d-flex align-items-center pe-0">
-                  <button class="rounded-5 p-1 py-0 btn-success btn"
-                    (click)="updateQuantityTemp(item, item.quantity+1)"><i class="bi bi-plus-circle-fill"></i></button>
-                  <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span>
                   <button class="rounded-5 p-1 py-0 btn-danger btn"
-                    (click)="updateQuantityTemp(item, item.quantity-1)"><i class="bi bi-dash-circle-fill"></i></button>
-                </div>
+                  (click)="updateQuantityTemp(item, item.quantity-1)"><i class="bi bi-dash-circle-fill"></i></button>
+                  <!-- <span class="mx-2 d-flex justify-content-around" style="width: 15px;">{{item.quantity}}</span> -->
+                  <input type="number" class=" form-control text-center mx-1 px-1" style="font-size: 0.9em;"
+                    [value]="item.quantity"  [(ngModel)]="item.quantity" (change)="updateQuantityTemp(item, item.quantity)" />
+                    <button class="rounded-5 p-1 py-0 btn-success btn"
+                    (click)="updateQuantityTemp(item, item.quantity+1)"><i class="bi bi-plus-circle-fill"></i></button>
+                    </div>
               </ng-template>
 
               <div class="col-2 d-flex justify-content-end align-items-center ps-0">
@@ -226,12 +232,12 @@
 
                 </div>
                 <div class="d-flex justify-content-between fw-bold">
-                  <span>Thuế</span>
-                  <span>0</span>
+                  <span>Phụ thu ngày lễ</span>
+                  <span>{{tax}} %</span>
                 </div>
                 <div class="d-flex justify-content-between fw-bold">
-                  <span>Mã giảm giá</span>
-                  <span>0 %</span>
+                  <span>Giảm giá</span> 
+                  <span>{{discountVourcher}} %</span>
                 </div>
               </div>
             </div>
@@ -252,7 +258,9 @@
               </div>
               <div class="title-pricetotal">
                 <p class="m-0 p-0 text-end fw-bold"><span>Thành tiền</span></p>
-                <h6 *ngIf="order" style="color: #3cd22f;" class="fw-bold ">{{formatPrice(order.total)}}</h6>
+                <h6 *ngIf="order  && changeVourcher " style="color: #3cd22f;" class="fw-bold ">{{formatPrice(totalTemp)}}</h6>
+                <h6 *ngIf="order && !changeVourcher " style="color: #3cd22f;" class="fw-bold ">{{formatPrice(order.total)}}</h6>
+
                 <h6 *ngIf="!order" style="color: #3cd22f;" class="fw-bold ">{{formatPrice(tempTotal)}}</h6>
               </div>
             </div>
@@ -260,15 +268,25 @@
           <!--  -->
           <!--  -->
           <div class="col-12 container row text-center align-items-center py-0">
-            <div class="col-5">
-              <span style="font-size: 0.9em;">Phương thức thanh toán :</span>
+            <div class="col-5 my-1 text-start">
+              <span style="font-size: 0.9em;">Phương thức thanh toán </span>
             </div>
-            <div class="col-7">
+            <div class="col-7 my-1">
               <select [(ngModel)]="paymentPaythod" class="form-select form-select-sm bg-secondary-subtle"
                 aria-label="Default select example">
                 <option selected value="cash">Tiền mặt</option>
                 <option value="ewallet">VN Pay</option>
 
+              </select>
+            </div>
+            <div class="col-5 text-start my-1">
+              <span style="font-size: 0.9em;">Voucher :</span>
+            </div>
+            <div class="col-7 my-1">
+              <select [(ngModel)]="selectedPromotion" (change)="onPromotionChange(selectedPromotion)" class="form-select form-select-sm bg-secondary-subtle"
+                aria-label="Default select example">
+                <option value="0">Không</option>
+                <option *ngFor="let voucher of listPromotion"[value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
               </select>
             </div>
 
@@ -286,28 +304,63 @@
                         </button>
 
                         <ul class="dropdown-menu" style="font-size: 0.9em;">
-                          <li><a class="dropdown-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="19"
-                                height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round"
-                                class="text-success-emphasis icon icon-tabler icons-tabler-outline icon-tabler-layers-intersect-2">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path
-                                  d="M8 4m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
-                                <path
-                                  d="M4 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
-                                <path d="M9 15l6 -6" />
-                              </svg> Gộp bàn</a></li>
-                          <li><a class="dropdown-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="19"
-                                height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round"
-                                class="text-warning-emphasis icon icon-tabler icons-tabler-outline icon-tabler-cut">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M7 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                <path d="M9.15 14.85l8.85 -10.85" />
-                                <path d="M6 4l8.85 10.85" />
-                              </svg> Tách bàn</a></li>
-                          <li><a class="dropdown-item" (click)="openModalCancel()"><svg
+                          <li>  <button
+                            class="navbar-toggler btn btn-outline-secondary border w-100 mt-1"
+                            style="box-shadow: 0px 0px 5px 1px #d9d9d9; color: #000;"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#mergeTables"
+                            aria-controls="staticBackdropLabel"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation"
+                            (click)="getAllArea()"
+                          >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="19"
+                          height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"
+                          class="text-success-emphasis icon icon-tabler icons-tabler-outline icon-tabler-layers-intersect-2">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            d="M8 4m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+                          <path
+                            d="M4 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+                          <path d="M9 15l6 -6" />
+                        </svg> Gộp bàn
+                          </button>
+                            
+                          
+                           </li>
+                          <li>
+                            
+
+                            <button 
+                            class="navbar-toggler btn btn-outline-secondary border w-100 "
+                            style="box-shadow: 0px 0px 5px 1px #d9d9d9 ; color: #000;"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                            aria-controls="staticBackdropLabel"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation"
+                            (click)="getAllArea()"
+                          >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="19"
+                          height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"
+                          class="text-warning-emphasis icon icon-tabler icons-tabler-outline icon-tabler-cut">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M7 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                          <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                          <path d="M9.15 14.85l8.85 -10.85" />
+                          <path d="M6 4l8.85 10.85" />
+                        </svg> Tách bàn
+                          </button>
+                          
+                            
+                            </li>
+                          <li><button  class="navbar-toggler btn btn-outline-secondary border w-100 mt-1"
+                            style="box-shadow: 0px 0px 5px 1px #d9d9d9; color: #000;"
+                            type="button" (click)="openModalCancel()"><svg
                                 xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
                                 fill="currentColor"
                                 class="text-danger icon icon-tabler icons-tabler-filled icon-tabler-trash-x">
@@ -316,7 +369,7 @@
                                   d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16zm-9.489 5.14a1 1 0 0 0 -1.218 1.567l1.292 1.293l-1.292 1.293l-.083 .094a1 1 0 0 0 1.497 1.32l1.293 -1.292l1.293 1.292l.094 .083a1 1 0 0 0 1.32 -1.497l-1.292 -1.293l1.292 -1.293l.083 -.094a1 1 0 0 0 -1.497 -1.32l-1.293 1.292l-1.293 -1.292l-.094 -.083z" />
                                 <path
                                   d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" />
-                              </svg> Hủy đơn</a></li>
+                              </svg> Hủy đơn</button></li>
                         </ul>
                       </div>
                     </nav>
@@ -337,6 +390,7 @@
                   <div class="col-10 px-3 pe-0" *ngIf="order">
 
                     <button class="btn form-control btn-primary py-3 rounded-4 fw-bold" data-bs-toggle="modal"
+                    (click)="getInvoice()"
                       data-bs-target="#paymentModal" style="font-size: 0.9em;"><span><svg
                           xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -430,10 +484,10 @@
     </div>
   </div>
 
-
+        
   <!-- Modal -->
   <div class="modal modal-xl fade" id="invoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-body">
 
@@ -522,18 +576,323 @@
 
   <!-- Modal -->
   <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận thanh toán cho đơn hàng này?</h1>
+        <div class="modal-body px-4">
+          <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel"><i>Xác nhận thanh toán cho đơn hàng này?</i></h1>
+          <div class="box-info bg-secondary-subtle p-3">
+            <div class="row mb-2">
+              <div class="col-12 text-center">
+                <p class="fw-bold m-0">HÓA ĐƠN THANH TOÁN</p>
+                <p class="fw-bold m-0">Số : HD001128-0{{order?.idOrder}}</p>
+                <p class="fw-bold m-0">Ngày: {{onlyDate}}</p>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6"><b>Giờ vào:</b> {{order?.dateCreate | date:'HH:mm:ss dd/MM/yyyy'}}</div>
+              <div class="col-6"><b>Giờ ra:</b> {{fullDateTime }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6"><b>Thu ngân: </b><span>{{order?.fullname}}</span></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-6"><b>Phương thức thanh toán: </b>
+                <ng-container *ngIf="paymentPaythod=== 'cash'; else elseTemplate">
+                  <span>Tiền mặt</span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span>VN Pay</span>
+                </ng-template>
+                
+              </div>
+            </div>
+            <table class="table">
+              <thead  >
+                <tr>
+                  <th scope="col" style="width: 300px;">Tên món</th>
+                  <th scope="col">Số lượng</th>
+                  <th scope="col">đơn giá</th>
+                  <th scope="col">Giảm</th>
+                  <th scope="col">Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody style="font-size: 0.8em;">
+
+                <tr *ngFor="let element of listDataInvoice">
+                  <td scope="row">{{element.nameFood}}</td>
+                  <td scope="row">{{element.quantityOrder}}</td>
+                  <td scope="row">{{ formatPrice( element.priceFood)}}</td>
+                  <ng-container *ngIf="element.discountFood; else elseTemplate">
+                    <td scope="row">{{element.discountFood}}%</td>
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <td scope="row"></td>
+                  </ng-template>
+                  
+                  <td scope="row">{{formatPrice(element.totalPriceDetailFood) }}</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" (click)="paymentOrder()" data-bs-dismiss="modal" class="btn btn-primary">Đồng ý</button>
+          <button type="button" class="btn btn-secondary bg-danger btn-sm" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" (click)="paymentOrder()" data-bs-dismiss="modal" class="btn btn-outline-primary btn-sm"><svg  xmlns="http://www.w3.org/2000/svg"  width="19"  height="19"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cash-register"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 15h-2.5c-.398 0 -.779 .158 -1.061 .439c-.281 .281 -.439 .663 -.439 1.061c0 .398 .158 .779 .439 1.061c.281 .281 .663 .439 1.061 .439h1c.398 0 .779 .158 1.061 .439c.281 .281 .439 .663 .439 1.061c0 .398 -.158 .779 -.439 1.061c-.281 .281 -.663 .439 -1.061 .439h-2.5" /><path d="M19 21v1m0 -8v1" /><path d="M13 21h-7c-.53 0 -1.039 -.211 -1.414 -.586c-.375 -.375 -.586 -.884 -.586 -1.414v-10c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h2m12 3.12v-1.12c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2" /><path d="M16 10v-6c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-4c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414v6m8 0h-8m8 0h1m-9 0h-1" /><path d="M8 14v.01" /><path d="M8 17v.01" /><path d="M12 13.99v.01" /><path d="M12 17v.01" /></svg> Thanh toán</button>
         </div>
       </div>
     </div>
+  </div>
+
+</div>
+
+
+ <!-- ManagerOrder Tách Bàn -->
+ <div 
+ class="modal fade bd-example-modal-xxl"
+ id="staticBackdrop"
+ data-bs-backdrop="static"
+ data-bs-keyboard="false"
+ tabindex="-1"
+ aria-labelledby="staticBackdropLabel"
+ aria-hidden="true"
+ >
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h6 class="modal-title fs-5" id="staticBackdropLabel">
+         Tách bàn/Chuyển bàn:
+       </h6>
+       <button
+         type="button"
+         class="btn-close"
+         data-bs-dismiss="modal"
+         aria-label="Close"
+         (click)="reloadData()"
+       ></button>
+     </div>
+     <div class="modal-body row">
+       <div class="col-12">
+         <p class="text-danger">
+           Bạn chọn bàn đã có order, món sẽ tách bàn này và chuyển qua bàn mới
+         </p>
+       
+       </div>
+       <div class="col-sm-6">
+         <p>Bàn cũ</p>
+         <input
+           class="col-sm-12 mb-1"
+           type="text"
+           value="{{ order?.nameTable }}"
+           readonly
+         />
+         <div class="mx-auto" style="overflow-y: scroll; height: 350px;">
+           <div
+           class="item-product  d-flex justify-content-around border-secondary p-3"
+           style="
+             font-size: 0.9em;
+             background-color: #f1f1f1;
+             border-bottom: 1px dotted; "
+           *ngFor="let newitem of listOrderDetails; let i = index">
+           
+               <span class="me-1 fw-bold col-5  mt-1"
+               >{{ newitem.nameFood }} </span>
+               <div class="col-1 me-1 mt-1">
+                 <p class="fw-bold border rounded-circle bg-primary text-center text-light"
+                 >{{ newitem.quantity }}</p>
+               </div>  
+             <input class="form-control"(change)="updateQuantityOrder(i, $event,newitem.idFood)"  min="0" type="number" />
+ 
+ 
+         </div>
+         </div>
+         
+       </div>
+       <div class="col-sm-6">
+         <div class="d-flex justify-content-between">
+           <p class="col-sm-6">Bàn mới - Khu</p>
+ 
+           <select
+               class="col-sm-5 mb-1"
+               [(ngModel)]="selectedAreaId"
+               (change)="getTable()"
+             >
+               <option
+                 class="text-center"
+                 *ngFor="let areaItem of listArea"
+                 [value]="areaItem.idArea"
+               >
+                 {{ areaItem.nameArea }}
+               </option>
+             </select>
+             
+         </div>
+         
+           <select
+             class="col-sm-12 "
+             style="height: 27px"
+             [(ngModel)]="selectedTableId"
+           >
+             <option
+               *ngFor="let tableItem of listTable"
+               [value]="tableItem.idTable"
+             >
+             
+               {{ tableItem.nameTable }}
+             </option>
+           </select>
+           
+           <div class="mx-auto mt-1" style="overflow-y: scroll; height: 350px;">
+             <div
+             class="item-product  d-flex justify-content-around border-secondary p-3"
+             style="
+               font-size: 0.9em;
+               background-color: #f1f1f1;
+               border-bottom: 1px dotted; "
+                 *ngFor="let newItem of seletedListFood; let i = index">
+                 <span class=" fw-bold mt-1 col-7">{{ newItem.nameFood }}</span>
+                 
+                 <div class="col-1 me-1 mt-1">
+                     <p class="fw-bold border rounded-circle bg-primary text-center text-light">{{ newItem.quantity }}</p>
+                 </div>
+         
+                 <button class="btn btn-outline-danger col-md-2" (click)="removeFromNewTable(i)">
+                     Xóa
+                 </button>
+             </div>
+         </div>
+         
+       </div>
+       
+     </div>
+     <div class="modal-footer">
+       <button type="button" (click)="reloadData()" class="btn btn-secondary" data-bs-dismiss="modal">
+         Close
+       </button>
+       <button type="button"  class="btn btn-primary" (click)="createNewOrder()">
+         Tách bàn mới
+       </button>
+     </div>
+   </div>
+ </div>
+ </div>
+ <!-- ManagerOrder Gộp Bàn -->
+ <div
+ class="modal fade bd-example-modal-xxl"
+ id="mergeTables"
+ data-bs-backdrop="static"
+ data-bs-keyboard="false"
+ tabindex="-1"
+ aria-labelledby="staticBackdropLabel"
+ aria-hidden="true"
+ >
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h6 class="modal-title fs-5" id="staticBackdropLabel">
+         Gộp bàn:
+       </h6>
+       <button
+         type="button"
+         class="btn-close"
+         data-bs-dismiss="modal"
+         aria-label="Close" (click)="reloadData()"
+       ></button>
+     </div>
+     <div class="modal-body row">
+       <div class="col-12">
+         <p class="text-danger">
+           Bạn chọn bàn đã có order và chọn bàn để gộp, sau đó tiến hành gộp 2 bàn lại với nhau.
+         </p>
+       </div>
+       <div class="col-sm-6">
+         <p>Bàn cũ</p>
+         <input
+           class="col-sm-12 mb-1"
+           type="text"
+           value="{{ order?.nameTable }}"
+           readonly
+         />
+         <div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+           <div
+           class="item-product  d-flex justify-content-around border-secondary p-3"
+           style="
+             font-size: 0.9em;
+             background-color: #f1f1f1;
+             border-bottom: 1px dotted; "
+           *ngFor="let newitem of listOrderDetails; let i = index">
+           
+               <span class="me-1 fw-bold col-5  mt-1"
+               >{{ newitem.nameFood }} </span>
+               <div class="col-1 me-1 mt-1">
+                 <p class="fw-bold border rounded-circle bg-primary text-center text-light"
+                 >{{ newitem.quantity }}</p>
+               </div>  
+       
+           
+         </div>
+         </div>
+         
+       </div>
+       <div class="col-sm-6">
+         <div class="d-flex justify-content-between">
+           <p class="col-sm-6">Bàn gộp - Khu</p>
+           <select
+             class="col-sm-5 mb-1"
+             [(ngModel)]="selectedAreaId"
+             (change)="getTableOpen()"
+           >
+             <option
+               class="text-center"
+               *ngFor="let areaItem of listArea"
+               [value]="areaItem.idArea"
+             >
+               {{ areaItem.nameArea }}
+             </option>
+           </select>
+         </div>
+           
+           <select
+             class="col-sm-12 mb-2"
+             style="height: 27px"
+             [(ngModel)]="selectedTable"
+             (change)="onTableSelectChange(selectedTable)"
+           >
+             <option
+               *ngFor="let tableItem of listTable"
+               [ngValue]="tableItem"
+               
+             >
+ 
+               {{ tableItem.nameTable }}
+             </option>
+           </select>
+           
+           <div class="mx-auto" style="overflow-y: scroll; height: 370px;">
+             <div
+                 class="item-product border-secondary d-flex justify-content-around p-3"
+                 style="font-size: 0.9em; background-color: #f1f1f1; border-bottom: 1px dotted;"
+                 *ngFor="let newItem of listOrderDetailsTableMerge; let i = index">
+                 <span class="ms-3 fw-bold mt-1 col-7">{{ newItem.nameFood }}</span>
+                 
+                 <div class="col-1 me-1 mt-1">
+                     <p class="fw-bold border rounded-circle bg-primary text-center text-light">{{ newItem.quantity }}</p>
+                 </div>
+         
+             </div>
+         </div>
+         
+        
+       </div>
+     </div>
+     <div class="modal-footer">
+       <button type="button" (click)="reloadData()" class="btn btn-secondary" data-bs-dismiss="modal">
+         Close
+       </button>
+       <button type="button" class="btn btn-primary" (click)="mergeOrder()" >
+         Gộp bàn
+       </button>
+     </div>
+   </div>
+ </div>
   </div>

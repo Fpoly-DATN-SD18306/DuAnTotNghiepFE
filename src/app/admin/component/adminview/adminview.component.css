@@ -2,3 +2,6 @@
     background-color: #FFAB2C !important;
     color: white !important;
 }
+a {
+    cursor: pointer;
+}

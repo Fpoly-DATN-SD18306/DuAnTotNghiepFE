@@ -11,6 +11,7 @@ import { WebsocketService } from '../../../service/websocketService/websocket.se
 import { IpServiceService } from '../../../service/ipService/ip-service.service';
 import { TableService } from '../../../service/tableService/table.service';
 import { tableResponse } from '../../../entity/response/table-response';
+import { LocalStorageService } from '../../../service/localStoredService/localStored.service';
 
 
 @Component({
@@ -21,7 +22,9 @@ import { tableResponse } from '../../../entity/response/table-response';
 export class CartComponent implements OnInit {
   isConfirmed: boolean = false; 
   iserror : boolean = false; 
+  errorShift : boolean = false; 
   isSuccess : boolean = false;
+  errorAddFood : boolean = false;
 
   itemTable! : tableResponse
   items: Icart[] = [];
@@ -37,7 +40,8 @@ export class CartComponent implements OnInit {
     private router: Router,
     private tableService : TableService,
     private requestOrderService: RequestOrder,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private localStoredService : LocalStorageService 
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +63,7 @@ export class CartComponent implements OnInit {
       sessionStorage.removeItem('cart');
       this.getAllCart();
       CartService.items = [];
+      this.localStoredService.saveOrderId(data.result.idOrder)
     },
     error => {
       if (error.error.code === 1005) {
@@ -66,6 +71,17 @@ export class CartComponent implements OnInit {
         this.iserror = true;
 
       }
+      if (error.error.code == 1901) {
+            
+        this.errorShift = true;
+      }
+
+      if (error.error.code == 1405) {
+            
+        this.errorAddFood = true;
+      }
+
+
     }
   )
   this.isOrderConfirm = false
