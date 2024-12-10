@@ -76,19 +76,19 @@ export class OrderprocessingComponent implements OnInit {
   srcImage = "./img/noImage.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 //Promotion
-selectedStatus = '';
+  selectedStatus = '';  
   searchText = "";
   sortField = "namePromotion";
   sortDirection= "asc" ;
   isIncreasePrice:string="123";
-listPromotion:PromotionReponse[]=[];
-selectedPromotion= 0;
-newPromotion!:Promotion;
-totalBeforePay:number=0;
-totalTemp=0;
-changeVourcher = false
-discountVourcher ="0"
-tax = "0"
+  listPromotion:PromotionReponse[]=[];
+  selectedPromotion= 0;
+  newPromotion!:Promotion;
+  totalBeforePay:number=0;
+  totalTemp=0;
+  changeVourcher = false
+  discountVourcher ="0"
+  tax = "0"
   refreshListMerge() {
     this.seletedListMergerFood = [];
     this.listOrderDetailsTableMerge = [];
@@ -117,7 +117,7 @@ tax = "0"
     private invoiceService: InvoiceService,
     private route: ActivatedRoute,
     private apiConfigService: ApiConfigService,
-    private promotionService: VourcherService
+    private promotionService: VourcherService,
   ) { }
 
   ngOnInit(): void {
@@ -126,6 +126,7 @@ tax = "0"
     this.getAllCategories();
     this.notificationOrder();
     this.updateTotal();
+    this.getCurrentDateAndTime()
     
     this.route.queryParams.subscribe((params) => {
       if (params['reload']) {
@@ -271,6 +272,7 @@ tax = "0"
   }
 
   getByIdCategory(idCategory: number) {
+    this.nameFoodSearch = ''
     this.productService.getByIdCategory(idCategory).subscribe((data) => {
       this.activeCategoryId = idCategory;
       this.listProducts = data.result;
@@ -729,7 +731,7 @@ tax = "0"
       this.requestOrder.postNewOrder(this.seletedListFood, this.selectedTableId)
         .subscribe(
           response => {
-            console.log('New order created:', response);
+            // console.log('New order created:', response.result);
             this.openTotast('Đã tách bàn thành công!');
             this.seletedListFood = [];
             this.selectedTableId = null;
@@ -985,7 +987,7 @@ tax = "0"
         data => {
           this.listDataInvoice = data.result
           console.log(this.listDataInvoice);
-          console.log("alo");
+          console.log("alo", this.order);
 
         }, error => {
           console.log(error)
@@ -1097,10 +1099,29 @@ onPromotionChange(selectedPromotionId: any) {
   reloadData() {
     console.log(this.router.url);
     this.router.navigateByUrl(this.router.url + '/reload=1')
-
-
-
   }
 
+  nameFoodSearch : string = ''
+  searchByName(){
+    this.activeCategoryId = null
+    this.productService.searchByName(this.nameFoodSearch).subscribe(data => {
+      this.listProducts = data.result
+      console.log('e',data.result)
+      if(this.nameFoodSearch ===''){
+        this.getAllProducts()
+      }
+    })
+  }
+
+
+
+  onlyDate = ''
+  fullDateTime = ''
+  getCurrentDateAndTime(): void {
+    const currentDate = new Date();
+    this.onlyDate = currentDate.toISOString().split('T')[0]
+    this.fullDateTime = currentDate.toLocaleString()
+  }
+  
 }
 

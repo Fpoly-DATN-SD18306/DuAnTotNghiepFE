@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { TableService } from '../../../../../service/tableService/table.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tableResponse } from '../../../../../entity/response/table-response';
-import { error } from 'console';
+import { error, log } from 'console';
 import { tableStatusResponse } from '../../../../../entity/response/tableStatus-response';
 import { WebsocketService } from '../../../../../service/websocketService/websocket.service';
 import { OrderRequest } from '../../../../../entity/request/order-request';
@@ -39,8 +39,11 @@ export class TableorderStaffComponent implements OnInit {
   selectedTable: tableResponse | null = null;
   order: OrderResponse | null = null;
 
+  //
+  activeTableStatus: string | null = null;
 
   getAllTables(){
+    this.activeTableStatus = null;
     this.tableservice.getAllTablesNotDeleted().subscribe(data =>{
       console.log("Data", data);
       this.listTable = data.result
@@ -216,7 +219,16 @@ openModalDauCa(){
   )
  
 }
+}
 
+getByStatus(status: string){
+  this.tableservice.getByStatus(status).subscribe(data => {
+    this.activeTableStatus = status;
+    console.log("Updated Table:", data);
+    this.listTable = data.result
+  }, error => {
+    console.log("Error", error);
+  })
 }
   ngOnInit(): void {
     this.getAllTables()
@@ -225,5 +237,4 @@ openModalDauCa(){
     this.notifiConfirmOrder()
     this.openModalDauCa()
   }
-
 }

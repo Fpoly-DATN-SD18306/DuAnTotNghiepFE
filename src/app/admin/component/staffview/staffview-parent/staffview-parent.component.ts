@@ -15,12 +15,13 @@ import { OrderService } from '../../../../service/orderService/order.service';
   styleUrl: './staffview-parent.component.css'
 })
 export class StaffviewParentComponent implements OnInit {
-
-  orderMessages: { id: number; message: string; visible: boolean; order: OrderResponse }[] = [];
+  orderMessages: { id: number; message: string; visible: boolean; order: OrderResponse, hidenbutton: boolean}[] = [];
   itemsorder!: OrderResponse
-  private orderIdCounter = 0; // Đếm số lượng đơn hàng để gán ID cho thông báo
+  orderIdCounter = 0; // Đếm số lượng đơn hàng để gán ID cho thông báo
 
-
+  //Ẩn xác nhận và chi tiết
+  hidenButton: boolean = false;
+  
   constructor(
     private websocketservice: WebsocketService,
     private router: Router,
@@ -33,6 +34,7 @@ export class StaffviewParentComponent implements OnInit {
     this.websocketservice.connect()
     this.notificationOrder()
     this.notificationPayment() 
+    this.notificationCallStaff()
     this.route.queryParams.subscribe((params) => {
       if (params['reload']) {
         this.websocketservice.connect()
@@ -52,7 +54,8 @@ export class StaffviewParentComponent implements OnInit {
             id: this.itemsorder.idOrder, 
             message: `[${this.itemsorder.nameTable}] có đơn hàng mới #${this.itemsorder.idOrder}`, 
             visible: true, 
-            order: this.itemsorder // Lưu thông tin đơn hàng vào thông báo
+            order: this.itemsorder, // Lưu thông tin đơn hàng vào thông báo
+            hidenbutton: true
           });
           this.orderIdCounter++;
         }else{
@@ -60,7 +63,8 @@ export class StaffviewParentComponent implements OnInit {
             id: this.itemsorder.idOrder, 
             message: `[${this.itemsorder.nameTable}] khách hàng gọi thêm món`, 
             visible: true, 
-            order: this.itemsorder // Lưu thông tin đơn hàng vào thông báo
+            order: this.itemsorder, // Lưu thông tin đơn hàng vào thông báo
+            hidenbutton: true
           });
           this.orderIdCounter++;
         }
@@ -70,10 +74,9 @@ export class StaffviewParentComponent implements OnInit {
       }
       console.log('ordermess:', message);
     });
+
   }
 
-
- 
   notificationPayment() {
     this.websocketservice.onPaymentMessage().subscribe(message => {
       if (message) {
@@ -88,6 +91,26 @@ export class StaffviewParentComponent implements OnInit {
     });
   }
 
+  notificationCallStaff() {
+    this.websocketservice.onMessCallStaff().subscribe(message => {
+      if (message) {
+        this.itemsorder = JSON.parse(message); // Chuyển đổi message thành OrderResponse
+        this.orderMessages.push({ 
+          id: this.orderIdCounter, 
+          message: `[${this.itemsorder.nameTable}] gọi nhân viên hổ trợ!`, 
+          visible: true, 
+          order: this.itemsorder, // Lưu thông tin đơn hàng vào thông báo
+          hidenbutton: false
+        });
+        console.log('Coososooo',this.orderIdCounter)
+          this.orderIdCounter++;
+          this.hidenButton = true
+        }
+   
+    })
+  }
+
+  // Hàm để phát giọng nói
   
 
 
@@ -122,7 +145,7 @@ export class StaffviewParentComponent implements OnInit {
       console.log('idorder',idOrder)
       this.pauseSound()
       if (message.id === idOrder) {
-        message.visible = false; 
+        message.visible = false
       }
     })
     this.orderService.confirmOrder(idOrder).subscribe(
@@ -137,10 +160,11 @@ export class StaffviewParentComponent implements OnInit {
 
   //Đóng thông báo / Closed notifications
   closedNotification(id: number) {
+    console.log('Close:', id)
     this.audioService.pauseSound()
-    const notification = this.orderMessages.find(msg => msg.id === id);
+    const notification = this.orderMessages.find(msg => msg.id === id)
     if (notification) {
-      notification.visible = false; // Đánh dấu thông báo là không hiển thị
+      notification.visible = false; 
     }
   }
 

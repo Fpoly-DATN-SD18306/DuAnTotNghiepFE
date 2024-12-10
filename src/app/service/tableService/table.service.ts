@@ -93,4 +93,7 @@ export class TableService {
   }
   
   
+  getByStatus(status : string) : Observable<ApiRespone> {
+    return this.http.get<ApiRespone>(`${this.url}/api/v1/tables/status/${status}`)
+  }
 }

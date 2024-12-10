@@ -1,4 +1,4 @@
-<div *ngIf="listStatuses == null" class="d-flex justify-content-center pt-5 align-items-center" >
+<div *ngIf="listStatuses == null" class="d-flex justify-content-center pt-5 align-items-center">
     <i>Không có dữ liệu!</i>
 </div>
 <nav class="navbar  navbar-expand-lg border-black border-bottom py-3" *ngIf="listStatuses != null || listStatuses > 0">
@@ -6,21 +6,18 @@
         <ul class="nav d-flex flex-nowrap align-items-center gap-2">
             <li class="nav-item">
                 <a type="button"
-                    class="btn-active btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Tất
+                [ngClass]="{'btn-active': activeTableStatus === null}"
+                (click)="getAllTables()"
+                    class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Tất
                     cả</a>
                 <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
             </li>
 
-            <li class="nav-item">
-                <a type="button"
-                    class="btn btn-outline-secondary rounded-1 px-lg-5 px-md-4 px-2 fs-lg-6 fs-md-6 fs-7">Bàn đang
-                    mở</a>
-                <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
-            </li>
-            <li class="nav-item">
-                <a type="button"
-                    class="btn btn-outline-secondary rounded-1 px-lg-4 px-md-3 px-2 fs-lg-6 fs-md-6 fs-7">Đặt bàn</a>
-                <!-- Thiết lập trạng thái đã click vào button (btn-active) -->
+            <li class="nav-item" *ngFor="let item of listStatuses">
+                <a type="button" *ngIf="item.status === 'AVAILABLE' || item.status === 'OCCUPIED'"
+                [ngClass]="{'btn-active': activeTableStatus === item.status}"
+                (click)="getByStatus(item.status)"
+                    class="btn btn-outline-secondary rounded-1 px-lg-5 px-md-4 px-4 fs-lg-6 fs-md-6 fs-7">{{item.displayName}}</a>
             </li>
 
         </ul>
@@ -31,8 +28,8 @@
 <div class="container-fluid ">
     <div class="row mx-2 mt-3 container-box-tables">
         <!-- start item table -->
-        <div  class="container-tables col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4" *ngFor="let item of listTable" >
-            <div class="box-item-table"  >
+        <div class="container-tables col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4" *ngFor="let item of listTable">
+            <div class="box-item-table">
                 <!-- 
                 THAY ĐỔI TRẠNG THÁI BÀN THANH TOÁN
                 đã thanh toán (status-active-paid)
@@ -61,22 +58,21 @@
                                         <option *ngFor="let status of listStatuses" [ngValue]="status.status">
                                             {{status.displayName}}</option>
                                     </select>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="custom-card-body rounded-bottom-4">
-                        
-                        <div class="d-flex justify-content-center align-items-center" style="height: 140px;" (click)="selectTable(item)">
+
+                        <div class="d-flex justify-content-center align-items-center" style="height: 140px;"
+                            (click)="selectTable(item)">
                             <span class="text-light fw-bold custom-font-size mb-4">{{item.nameTable}}</span>
                         </div>
                         <div class="box-status-table px-3 py-1 rounded-bottom-4 "
                             style="font-size: 0.75em; color: rgb(255, 255, 255);">
-                            
-
                             <span class="title-paid">{{item.displayName}}</span>
-                                    <span>Bây giờ</span>
+                            <span>Bây giờ</span>
                         </div>
                     </div>
                 </div>
@@ -87,72 +83,52 @@
 
 
 
-        
+
     </div>
 </div>
 <!-- Modal đầu ca -->
-<button id="btnModalDauCa"
-class="navbar-toggler btn btn-outline-secondary border w-100 mt-1"
-style="display: none;"
-type="button"
-data-bs-toggle="modal"
-data-bs-target="#mergeTables"
-aria-controls="staticBackdropLabel"
-aria-expanded="false"
-aria-label="Toggle navigation"
->
-<p class="text-dark  mt-2">openDauCa</p>
+<button id="btnModalDauCa" class="navbar-toggler btn btn-outline-secondary border w-100 mt-1" style="display: none;"
+    type="button" data-bs-toggle="modal" data-bs-target="#mergeTables" aria-controls="staticBackdropLabel"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <p class="text-dark  mt-2">openDauCa</p>
 </button>
 
 
-<div
-class="modal fade bd-example-modal-xxl"
-id="mergeTables"
-data-bs-backdrop="static"
-data-bs-keyboard="false"
-tabindex="-1"
-aria-labelledby="staticBackdropLabel"
-aria-hidden="true"
->
-<div class="modal-dialog modal-lg">
-  <div class="modal-content">
- 
-    <div class="modal-header">
-        KHAI BÁO TIỀN ĐẦU CA
-      </div>
-      <div class="modal-body">
-        <p>Nhân viên: <b>demo</b></p>
-        <p>{{ currentDate }}</p>
-        <table>
-          <tr>
-            <th>Mệnh giá</th>
-            <th>Số tờ</th>
-          </tr>
-          <tr *ngFor="let denomination of denominations">
-            <td>{{ denomination.value | currency: 'VND' }}</td>
-            <td>
-              <input
-                type="number" 
-                [(ngModel)]="denomination.quantity"
-                value="{{absNum(denomination.quantity)}}"
-                (input)="calculateTotal()"
-                min="0"
-              />
-            </td>
-          </tr>
-        </table>
-        <div class="total">
-          Tổng tiền đầu ca: <b>{{ totalAmount | currency: 'VND' }}</b>
+<div class="modal fade bd-example-modal-xxl" id="mergeTables" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                KHAI BÁO TIỀN ĐẦU CA
+            </div>
+            <div class="modal-body">
+                <p>Nhân viên: <b>demo</b></p>
+                <p>{{ currentDate }}</p>
+                <table>
+                    <tr>
+                        <th>Mệnh giá</th>
+                        <th>Số tờ</th>
+                    </tr>
+                    <tr *ngFor="let denomination of denominations">
+                        <td>{{ denomination.value | currency: 'VND' }}</td>
+                        <td>
+                            <input type="number" [(ngModel)]="denomination.quantity"
+                                value="{{absNum(denomination.quantity)}}" (input)="calculateTotal()" min="0" />
+                        </td>
+                    </tr>
+                </table>
+                <div class="total">
+                    Tổng tiền đầu ca: <b>{{ totalAmount | currency: 'VND' }}</b>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button (click)="save()">Lưu</button>
+                <button type="button" (click)="cancel()" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Huỷ bỏ
+                </button>
+
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button (click)="save()">Lưu</button>
-        <button type="button" (click)="cancel()" class="btn btn-secondary" data-bs-dismiss="modal">
-            Huỷ bỏ
-          </button>
-
-      </div>
-  </div>
+    </div>
 </div>
-</div>
-

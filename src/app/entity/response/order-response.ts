@@ -15,9 +15,10 @@ export class OrderResponse  {
         public idOrderMain : number,
         public isPrinted : boolean,
         public dateCreate: string,
+        public fullname: string,
+        public paymentDate: string,
         public namePaymentMethod: string,
-        public cancellationReason: string,
-  
+        public cancellationReason: string
     ){
     }
 

@@ -91,6 +91,26 @@ export class OrderService {
       return this.http.put<ApiRespone>(`${this.url}/api/v1/order/cancel?${params.toString()}`, cancellationReason);
     }
 
+
+    callStaff(idTable: number | null): Observable<ApiRespone> {
+      if (idTable === null) {
+        console.error('idTable cannot be null');
+        return throwError(() => new Error('idTable cannot be null'));
+      }
+    
+      const urlWithParams = `${this.url}/api/order/${idTable}`;
+      return this.http.get<ApiRespone>(urlWithParams)
+        .pipe(
+          tap(res => {
+            this.websocketService.sendCallStaff(idTable);
+          }),
+          catchError(error => {
+            console.error('Error:', error);
+            return throwError(() => error);
+          })
+        );
+    }
+    
     getAllOrderByListId(listIdOrder: number[]):Observable<ApiRespone>{
       return this.http.post<ApiRespone>(`${this.url}/api/orderCustomer/listIdOrder`,listIdOrder);
     }
