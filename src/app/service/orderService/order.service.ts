@@ -97,12 +97,29 @@ export class OrderService {
         console.error('idTable cannot be null');
         return throwError(() => new Error('idTable cannot be null'));
       }
-    
       const urlWithParams = `${this.url}/api/order/${idTable}`;
       return this.http.get<ApiRespone>(urlWithParams)
         .pipe(
           tap(res => {
             this.websocketService.sendCallStaff(idTable);
+          }),
+          catchError(error => {
+            console.error('Error:', error);
+            return throwError(() => error);
+          })
+        );
+    }
+
+    callPayment(idTable: number | null): Observable<ApiRespone> {
+      if (idTable === null) {
+        console.error('idTable cannot be null');
+        return throwError(() => new Error('idTable cannot be null'));
+      }
+      const urlWithParams = `${this.url}/api/order/payment/${idTable}`;
+      return this.http.get<ApiRespone>(urlWithParams)
+        .pipe(
+          tap(res => {
+            this.websocketService.sendCallPayment(idTable);
           }),
           catchError(error => {
             console.error('Error:', error);

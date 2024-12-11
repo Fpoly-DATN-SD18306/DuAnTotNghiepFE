@@ -18,6 +18,7 @@ export class WebsocketService {
   private PaymentMessageSubject = new Subject<string>();
   private confirmOrderSubject = new Subject<any>();
   private messageCallStaff = new Subject<any>();
+  private messageCallPayment = new Subject<any>();
   constructor() { }
   
   private stompClient: any
@@ -35,6 +36,7 @@ export class WebsocketService {
      this.subscribeToConfirmOrder()
      this.subcribeTolistenPayment()
      this.subscribeToCallStaff()
+     this.subscribeToCallPayment()
     },{headers:this.header})
     
   }
@@ -87,6 +89,13 @@ export class WebsocketService {
       }
     })
   }
+  subscribeToCallPayment(){
+    this.stompClient.subscribe('/topic/payment', (mess : any) => {
+      if(mess.body){
+        this.messageCallPayment.next(mess.body);
+      }
+    })
+  }
 
   sendOrderUpdate(order: OrderRequest) {
     this.stompClient.send('/app/api/order', {}, JSON.stringify(order)); // Gửi thông tin đơn hàng đến broker
@@ -123,7 +132,20 @@ export class WebsocketService {
     }
   }
 
+
+  sendCallPayment(idTable: number) {
+    if (this.stompClient) {
+      this.stompClient.send(`/app/api/order/payment/${idTable}`, {});
+    } else {
+      console.error('stompClient is not initialized');
+    }
+  }
+
   onMessCallStaff(){
     return this.messageCallStaff.asObservable();
+  }
+
+  onMessCallPayment(){
+    return this.messageCallPayment.asObservable();
   }
 }

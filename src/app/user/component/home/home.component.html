@@ -32,14 +32,13 @@
 </div>
 
 <div class="row container-fluid mx-auto  ">
-    <button type="button" class="col-6  py-3 btn border bg-white shadow  text-center">
+    <button type="button" (click)="clickCallPayment()" class="col-6  py-3 btn border bg-white shadow  text-center">
         <img src="./img/money.png" class="d-block mx-auto" style="width: 70px; height: 70px;" alt="...">
        
         <span>Gọi Thanh toán</span>
     </button>
     
-    <button
-    type="button" (click)="clickCallStaff()" class="col-6 btn border  bg-white shadow-sm  text-center">
+    <button type="button" (click)="clickCallStaff()" class="col-6 btn border  bg-white shadow-sm  text-center">
         <img src="./img/iconStaff.png" class="d-block mx-auto" style="width: 70px;" alt="...">
 
         <span>Gọi nhân viên</span>

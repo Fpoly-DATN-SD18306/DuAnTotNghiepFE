@@ -35,6 +35,7 @@ export class StaffviewParentComponent implements OnInit {
     this.notificationOrder()
     this.notificationPayment() 
     this.notificationCallStaff()
+    this.notificationCustomerCallPayment()
     this.route.queryParams.subscribe((params) => {
       if (params['reload']) {
         this.websocketservice.connect()
@@ -106,14 +107,28 @@ export class StaffviewParentComponent implements OnInit {
           this.orderIdCounter++;
           this.hidenButton = true
         }
-   
+    })
+  }
+
+  notificationCustomerCallPayment() {
+    this.websocketservice.onMessCallPayment().subscribe(message => {
+      if (message) {
+        this.itemsorder = JSON.parse(message); // Chuyển đổi message thành OrderResponse
+        this.orderMessages.push({ 
+          id: this.orderIdCounter, 
+          message: `[${this.itemsorder.nameTable}] gọi thanh toán!`, 
+          visible: true, 
+          order: this.itemsorder, // Lưu thông tin đơn hàng vào thông báo
+          hidenbutton: false
+        });
+        console.log('Coososooo',this.orderIdCounter)
+          this.orderIdCounter++;
+          this.hidenButton = true
+        }
     })
   }
 
   // Hàm để phát giọng nói
-  
-
-
     fetchOrderDetails(idOrder: number | null, idTable: number | null) {
       this.pauseSound()
       this.orderMessages.forEach((message) => {
