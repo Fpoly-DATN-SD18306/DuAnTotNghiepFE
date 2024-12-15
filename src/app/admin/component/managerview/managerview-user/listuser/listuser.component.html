@@ -40,7 +40,6 @@
       <thead class="table-light">
         <tr>
           <th scope="col">Ảnh nhân viên</th>
-          <th scope="col-1">Mã nhân viên</th>
           <th scope="col">Tên tài khoản</th>
           <th scope="col">Họ tên</th>
           <th scope="col">Chức năng</th>
@@ -51,21 +50,23 @@
       </thead>
       <tbody>
         <tr *ngFor="let users of filteredUsers">
-          <td style="width: 140px;">
-            <img *ngIf="users?.imgUser" alt="" src="http://localhost:8080/images/{{users.imgUser}}"
-              style="height: 100px; width: 120px">
-            <img *ngIf="!users?.imgUser" alt="" src="./img/noImage.jpg" style="height: 100px; width: 120px">
-          </td>
-          <td style="width: 180px;">{{users.idUser}}</td>
-          <td>{{users.username}}</td>
-          <td>{{users.fullname}}</td>
-          <td>{{users.isAdmin?"Admin":"User"}}</td>
-          <td>{{users.isChangedPass?"Đã Cập nhật":"Chưa cập nhật"}}</td>
-
-          <td>{{users.isDeleted?"Đã xóa":"Chưa xóa"}}</td>
-          <td>
-            <button type="button" (click)="editUser(users.idUser)" class="btn mx-1 btn-outline-secondary">Sửa</button>
-          </td>
+          <ng-container *ngIf="users.username!='admin'">
+            <td style="width: 140px;">
+              <img *ngIf="users?.imgUser" alt="" src="{{users.imgUser}}"
+                style="height: 100px; width: 120px">
+              <img *ngIf="!users?.imgUser" alt="" src="./img/noImage.jpg" style="height: 100px; width: 120px">
+            </td>
+            <td>{{users.username}}</td>
+            <td>{{users.fullname}}</td>
+            <td>{{users.isAdmin?"Admin":"User"}}</td>
+            <td>{{users.isChangedPass?"Đã Cập nhật":"Chưa cập nhật"}}</td>
+  
+            <td>{{users.isDeleted?"Đã xóa":"Chưa xóa"}}</td>
+            <td>
+              <button  type="button" (click)="editUser(users.idUser)" class="btn mx-1 btn-outline-secondary">Sửa</button>
+            </td>
+          </ng-container>
+     
           
         </tr>
       </tbody>

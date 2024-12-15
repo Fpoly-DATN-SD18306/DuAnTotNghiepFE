@@ -9,6 +9,7 @@ import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ListuserComponent } from './listuser/listuser.component';
 import { ManagerviewUserRoutingModule } from './managerview-user-routing.module';
 import { ManagerUserComponent } from './manager-user/manager-user.component';
+import { LoaderSharedModule } from '../../../../loader-shared/loader-shared.module';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ManagerUserComponent } from './manager-user/manager-user.component';
     ReactiveFormsModule,
     NgbModule,
     MatSnackBarModule,
-    ManagerviewUserRoutingModule
+    ManagerviewUserRoutingModule,
+    LoaderSharedModule
   ]
 })
 export class ManagerviewUserModule { }

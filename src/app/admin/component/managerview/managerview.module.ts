@@ -13,6 +13,7 @@ import { ManagerviewUserComponent } from './managerview-user/managerview-user.co
 import { ManagerviewVoucherComponent } from './managerview-voucher/managerview-voucher.component';
 import { ManagerviewOrderComponent } from './managerview-order/managerview-order.component';
 import { ManagerviewReportComponent } from './managerview-report/managerview-report.component';
+import { LoaderSharedModule } from '../../../loader-shared/loader-shared.module';
 
 
 
@@ -35,6 +36,7 @@ import { ManagerviewReportComponent } from './managerview-report/managerview-rep
     ManagerviewRoutingModule,
     FormsModule,
     MatSnackBarModule,
+    LoaderSharedModule
   ]
 })
 export class ManagerviewModule { }

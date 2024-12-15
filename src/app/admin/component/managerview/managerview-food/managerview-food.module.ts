@@ -9,6 +9,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoaderComponent } from '../../../../loader/loader.component';
+import { LoaderSharedModule } from '../../../../loader-shared/loader-shared.module';
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     NgbModule,
     MatSnackBarModule,
-    ManagerviewFoodRoutingModule
+    ManagerviewFoodRoutingModule,
+    LoaderSharedModule
   ]
 })
 export class ManagerviewFoodModule { }

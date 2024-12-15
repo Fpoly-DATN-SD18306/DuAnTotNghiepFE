@@ -53,6 +53,8 @@ export class ManagerviewTableComponent implements OnInit {
     idArea : 0
   }
 
+  loader =false;
+
   constructor(
     private tableserive: TableService, 
     private qrcodeservice: QrcodeService, 
@@ -65,14 +67,17 @@ export class ManagerviewTableComponent implements OnInit {
 
   // AREA******************
    createArea(){
+    this.loader=true;
     this.areaService.createArea(this.areaData).subscribe(data => {
       console.log(data);
       this.getAllAreas()
       this.openTotast('✅ Tạo mới khu vực thành công!')
       this.areaData.nameArea = ''
+      this.loader=false;
     },error => {
       console.log('Error',error);
       this.openTotast('❌ Tạo mới thất bại!')
+      this.loader=false;
     })
    }
 
@@ -87,14 +92,17 @@ export class ManagerviewTableComponent implements OnInit {
 
 
   updateArea(keyArea: number) {
+    this.loader=true;
     this.areaService.updateArea(this.areaData, keyArea).subscribe(
       data => {
         this.ngOnInit()
         this.openTotast('✅ Cập nhật khu vực thành công!');
+        this.loader=true;
       }, 
       error => {
         console.log("Error update table: ", error);
         this.openTotast('❌ Lỗi cập nhật! ');
+        this.loader=true;
       }
     );
 }
@@ -178,12 +186,15 @@ export class ManagerviewTableComponent implements OnInit {
     })
   }
   createNewTable() {
+    this.loader=true;
     this.tableserive.createTable(this.tableData).subscribe(data => {
       this.ngOnInit()
       this.openTotast('✅ Tạo mới bàn thành công!')
+      this.loader=false;
     }, error => {
       console.log(error)
       this.openTotast('❌ Lỗi tạo bàn ! ')
+      this.loader=false;
     })
   }
 
@@ -261,33 +272,39 @@ export class ManagerviewTableComponent implements OnInit {
     this.timestamp = new Date().getTime().toString();
   }
   updateQrCode(idtable: number){
+    this.loader=true;
     console.log(idtable);
     
     this.qrcodeservice.updateQrCode(idtable).subscribe(
       data => {
         console.log('QR Code updated:', data);
         this.openTotast('✅ Cập nhật QRCode thành công!')
-        setTimeout(()=>{
-          this.timestamp = new Date().getTime().toString();
-        },3000)
+        // setTimeout(()=>{
+        //   this.timestamp = new Date().getTime().toString();
+        // },3000)
+        this.loader=false;
         
       }, error => {
         console.error('Error creating QR Code:', error);
         this.openTotast('❌ Cập nhật QRCode thất bại!')
+        this.loader=false;
       }
     );
   }
 
   createQrcode(idTable: number) {
+    this.loader=true;
     this.qrcodeservice.createQrCode(idTable).subscribe(
       data => {
         console.log('QR Code created:', data);
         this.openTotast('✅ Tạo mới QRCode thành công!')
+        this.loader=false;
       }, error => {
         if(error.status === 400) {
           console.error('Error creating QR Code:', error);
           this.openTotast('❌ Tạo mới QRCode thất bại!')
         }
+        this.loader=false;
       }
     );
   }

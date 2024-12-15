@@ -7,7 +7,6 @@ import { OrderResponse } from '../../../entity/response/order-response';
 import { WebsocketService } from '../../../service/websocketService/websocket.service';
 import { OrderService } from '../../../service/orderService/order.service';
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -28,34 +27,38 @@ export class HomeComponent implements OnInit {
     this.route.navigate(['Staff']);
   }
 
-
+  cc = ""
 ngOnInit(): void {
-  this.router.queryParams.subscribe(
-    param=>{
-      let idTable = param['table']
-      let secretKey = param['secretKey']
-      let currentId = sessionStorage.getItem("itb")
-      if(currentId){
-        console.log("co r"+currentId);
-       
-      } else if(idTable && secretKey ){
-        this.verifyTable.getVerifyTable(idTable,secretKey).subscribe(
-          data =>{
-            verifyTable.tableVerified =  data.result
-            this.tableCurrent=verifyTable.tableVerified
-            console.log(data.result.idTable);
-            
-            sessionStorage.setItem("itb",data.result.idTable)
-            // console.log("co r"+idTable);
-          }, error =>{
-            console.log(error);
-            window.location.assign("/error")
-          }
-        );
-      } else {
-        window.location.assign("/error")
-      } 
-    }  );
+  let currentId = sessionStorage.getItem("itb")
+  if(currentId){
+    console.log("co r"+currentId);
+   
+  } else {
+
+    this.router.queryParams.subscribe(
+      param=>{
+        let idTable = param['table']
+        let secretKey = param['secretKey']    
+          if(idTable && secretKey ){
+          this.verifyTable.getVerifyTable(idTable,secretKey).subscribe(
+            data =>{
+              verifyTable.tableVerified =  data.result
+              this.tableCurrent=verifyTable.tableVerified
+              console.log(data.result.idTable);
+              
+              sessionStorage.setItem("itb",data.result.idTable)
+              // console.log("co r"+idTable);
+            }, error =>{
+              window.location.assign("/error") 
+            }
+          );
+        } else {
+          window.location.assign("/error")
+        } 
+      }  );
+
+  }
+ 
     this.websocketservice.connect()
 }
 

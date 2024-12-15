@@ -89,6 +89,7 @@ export class OrderprocessingComponent implements OnInit {
   changeVourcher = false
   discountVourcher ="0"
   tax = "0"
+  nameVourcher = "";
   refreshListMerge() {
     this.seletedListMergerFood = [];
     this.listOrderDetailsTableMerge = [];
@@ -452,7 +453,7 @@ export class OrderprocessingComponent implements OnInit {
           this.getDataOrderdetail(); 
          
           if (this.order) {
-            this.totalTemp=this.order.total
+            this.totalTemp=this.order.total;
             console.log( "total1:",this.order.total);
           }
           
@@ -1056,7 +1057,7 @@ export class OrderprocessingComponent implements OnInit {
 }
 
 onPromotionChange(selectedPromotionId: any) {
- 
+
   if (this.order) {
     this.totalTemp= this.order.total
    
@@ -1067,19 +1068,25 @@ onPromotionChange(selectedPromotionId: any) {
     this.discountVourcher = "0";
     this.totalTemp = this.order.total;
    }
-    return; // Dừng hàm tại đây
+    return;
   }
   else {
     this.promotionService.getById(selectedPromotionId).subscribe(
 
       (data) => {
+        
         this.newPromotion = data.result;
+      
+
         if(this.newPromotion.increasePrice){
           if (this.order) {
             this.changeVourcher = true
             this.tax = "+ "+this.newPromotion.discount;
             this.discountVourcher = "0";
             this.totalTemp  = this.order.total + this.newPromotion.discount / 100 * this.order.total;
+            this.totalTemp = Math.round(this.totalTemp/1000)*1000;
+            this.order.total= this.totalTemp;
+            this.nameVourcher = this.newPromotion.namePromotion + "( tăng " + this.newPromotion.discount+ "% )" ;
           }
         }else{
           if (this.order) {
@@ -1087,6 +1094,10 @@ onPromotionChange(selectedPromotionId: any) {
             this.discountVourcher = "- "+this.newPromotion.discount;
             this.tax = "0";
             this.totalTemp = this.order.total - this.newPromotion.discount / 100 * this.order.total;
+            this.totalTemp = Math.round(this.totalTemp/1000)*1000;
+            this.order.total= this.totalTemp;
+          
+            this.nameVourcher = this.newPromotion.namePromotion + "( giảm " +this.newPromotion.discount+ "% )" ;
           }
         }
        
