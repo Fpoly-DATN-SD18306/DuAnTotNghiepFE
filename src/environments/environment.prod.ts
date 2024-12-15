@@ -1,5 +1,5 @@
 export const environment = {
-    production: false,
+    production: true,
     apiUrl: 'https://backend-157429275950.asia-east1.run.app', 
     
   };

@@ -45,7 +45,7 @@
     <tbody>
       <tr *ngFor="let food of filteredFoods">
         <td style="width: 140px;">
-          <img *ngIf="food?.imgFood" alt="" src="http://localhost:8080/images/{{food.imgFood}}"
+          <img *ngIf="food?.imgFood" alt="" src="{{food.imgFood}}"
             style="height: 100px; width: 120px">
           <img *ngIf="!food?.imgFood" alt="" src="./img/noImage.jpg" style="height: 100px; width: 120px">
         </td>

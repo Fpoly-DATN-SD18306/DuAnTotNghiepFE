@@ -14,16 +14,20 @@ export class ManagerUserComponent implements OnInit {
   userForm!: FormGroup;
   idUserNeedUpdate!: String;
   imgUser: string = "./img/noImage.jpg";
-  hostingImg = "http://localhost:8080/images/";
+  hostingImg = "";
   selectedFiles!: File;
   isEditing = false;
-
+  loader = false;
   constructor(
     private formBuilder: FormBuilder,
     private userService: UsersService,
     private snackBar: MatSnackBar,
     private router: ActivatedRoute
-  ) {}
+  ) { }
+
+   errorNotify : Record<number,string> ={
+    1701 :"Username này đã tồn tại !"
+   }
 
   ngOnInit(): void {
     this.refreshForm();
@@ -34,12 +38,12 @@ export class ManagerUserComponent implements OnInit {
         this.isEditing = true;
         this.userService.getById(userId).subscribe(
           data => {
-           
+
             const userResponse = data.result as userResponse;
             this.idUserNeedUpdate = userResponse.idUser;
             this.userForm.patchValue({
               fullname: userResponse.fullname,
-              username: userResponse.username,        
+              username: userResponse.username,
               isAdmin: userResponse.isAdmin,
               isDeleted: userResponse.isDeleted,
               isChangedPass: userResponse.isChangedPass,
@@ -52,24 +56,24 @@ export class ManagerUserComponent implements OnInit {
           error => console.error("Error fetching user data:", error)
         );
       }
-      
+
     });
   }
-resertPassword(){
-  const formData = new FormData(); 
-  formData.append('fullname', this.userForm.value.fullname);
-  formData.append('username', this.userForm.value.username);
-  formData.append('password', '123');
-  formData.append('isAdmin', this.userForm.value.isAdmin.toString());
-  formData.append('isDeleted', this.userForm.value.isDeleted.toString());
-  if (this.selectedFiles) {
-    formData.append('file', this.selectedFiles);
+  resertPassword() {
+    const formData = new FormData();
+    formData.append('fullname', this.userForm.value.fullname);
+    formData.append('username', this.userForm.value.username);
+    formData.append('password', '123');
+    formData.append('isAdmin', this.userForm.value.isAdmin.toString());
+    formData.append('isDeleted', this.userForm.value.isDeleted.toString());
+    if (this.selectedFiles) {
+      formData.append('file', this.selectedFiles);
+    }
+    this.userService.putUser(formData, this.idUserNeedUpdate).subscribe(
+      () => this.openToast("Làm mới mật khẩu Thành Công"),
+      error => this.openToast("Làm mới mật khẩu Không thành công")
+    );
   }
-  this.userService.putUser(formData, this.idUserNeedUpdate).subscribe(
-    () => this.openToast("Làm mới mật khẩu Thành Công"),
-    error => this.openToast("Làm mới mật khẩu Không thành công")
-  );
-}
 
   refreshForm() {
     this.userForm = this.formBuilder.group({
@@ -107,23 +111,37 @@ resertPassword(){
 
   createUser() {
     const formData = this.prepareFormData();
+    this.loader = true;
     this.userService.postUser(formData).subscribe(
-      () => this.openToast('Thêm mới nhân viên thành công'),
-      error => this.openToast(`Error: ${error}`)
+      data => {
+        this.loader = false
+        this.openToast("Thêm nhân viên mới Thành Công")
+      },
+      error => {
+        this.openToast(this.errorNotify[1701])
+        this.loader =false
+      }
     );
   }
 
   putUser() {
-    const formData = this.prepareFormData(); 
+    this.loader = true;
+    const formData = this.prepareFormData();
     this.userService.putUser(formData, this.idUserNeedUpdate).subscribe(
-      () => this.openToast("Sửa Thành Công"),
-      error => this.openToast("Sửa Không thành công")
+      data => {
+        this.loader = false
+        this.openToast("Sửa Thành Công")
+      },
+      error => {
+        this.openToast("Sửa Không thành công")
+        this.loader =false
+      }
     );
   }
 
   prepareFormData(): FormData {
     const formData = new FormData();
-    this.userForm.get('password')?.enable(); 
+    this.userForm.get('password')?.enable();
     formData.append('fullname', this.userForm.value.fullname);
     formData.append('username', this.userForm.value.username);
     formData.append('isAdmin', this.userForm.value.isAdmin.toString());

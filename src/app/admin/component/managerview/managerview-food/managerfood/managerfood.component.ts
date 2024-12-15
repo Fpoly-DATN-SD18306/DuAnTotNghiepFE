@@ -26,7 +26,7 @@ export class ManagerfoodComponent implements OnInit {
     listCate !: any;
     idFoodNeedUpdate !: Number;
     selectedFile !: File;
-
+    loader = false;     
     
    errorNotify : Record<number, string> = {
     1101 : "Tên món đã tồn tại !",
@@ -37,7 +37,7 @@ export class ManagerfoodComponent implements OnInit {
 
 
   srcImage="./img/noImage.jpg";
-   hostingImg = "http://localhost:8080/images/"
+   hostingImg = ""
   changeImage(event : Event){
     const input = event.target as HTMLInputElement;
 
@@ -61,7 +61,7 @@ export class ManagerfoodComponent implements OnInit {
   }
 
   postFood(){
-
+    this.loader  =true;
     let food = new foodRequest(
       this.productForm.value.nameFood,
       this.productForm.value.priceFood,
@@ -77,17 +77,20 @@ export class ManagerfoodComponent implements OnInit {
       data=>{
         console.log("ok  done!")
         this.openToast("Thêm mới Thành Công");
+        this.loader  =false;
+        this.refreshForm()
 
       },error =>{
         console.log(error)
         this.openToast( "Lỗi : "+this.errorNotify[error.error.code]);
+        this.loader  =false;
       }
     )
 
   }
 
   putFood(){
-
+    this.loader  =true;
     let food = new foodRequest(
       this.productForm.value.nameFood,
       this.productForm.value.priceFood,
@@ -103,10 +106,13 @@ export class ManagerfoodComponent implements OnInit {
       data=>{
         console.log("ok  done!")
         this.openToast("Sửa  Thành Công");
+        this.loader  =false;
+        this.refreshForm()
 
       },error =>{
         console.log(error)
         this.openToast("Sửa Không thành công");
+        this.loader  =false;
       }
     )
 
@@ -143,6 +149,7 @@ export class ManagerfoodComponent implements OnInit {
       
   
     })
+    this.srcImage="./img/noImage.jpg";
   }
 
 ngOnInit(): void {
