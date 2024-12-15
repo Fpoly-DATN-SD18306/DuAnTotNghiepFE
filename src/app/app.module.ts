@@ -20,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoginComponent } from './login/login.component';
 import { VnPayComponent } from './vn-pay/vn-pay.component';
 import { ChangepassComponent } from './changepass/changepass.component';
+import { LoaderComponent } from './loader/loader.component';
 
 
 @NgModule({

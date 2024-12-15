@@ -15,6 +15,7 @@ import { ProductInCartComponent } from './component/product-in-cart/product-in-c
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OrderDetailComponent } from './component/order-detail/order-detail.component';
 import { ProductInOderDetailComponent } from './component/product-in-oder-detail/product-in-oder-detail.component';
+import { LoaderSharedModule } from '../loader-shared/loader-shared.module';
 
 
 
@@ -45,7 +46,8 @@ import { ProductInOderDetailComponent } from './component/product-in-oder-detail
     CommonModule,
     UserRoutingModule,
     FormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    LoaderSharedModule
   ]
 })
 export class UserModule { }

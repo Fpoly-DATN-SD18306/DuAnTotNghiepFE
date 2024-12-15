@@ -25,6 +25,14 @@ export class RoleGuardService implements CanActivate {
       } 
       let expectedRole:string[] = route.data['expectedRole'];
       let decodeToken: any = jwtDecode(token);
+      console.log(decodeToken);
+      console.log(Date.now()/1000);
+      console.log(decodeToken.exp);
+      if(Date.now()/1000>decodeToken.exp){
+        localStorage.removeItem("jwt")
+        this.router.navigate(["/login"])
+        return false
+      }
       let roleToken = decodeToken.scope;
       if(expectedRole.indexOf(roleToken)<0){
         this.router.navigate(["/login"])
