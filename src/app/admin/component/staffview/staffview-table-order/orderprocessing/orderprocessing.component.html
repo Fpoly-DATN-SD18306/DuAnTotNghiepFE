@@ -612,7 +612,15 @@
                 </ng-template>
                 
               </div>
+              
             </div>
+            <div class="row mb-2">
+              <div class="col-6"><b>Vourcher: </b>              
+                <span>{{ nameVourcher}}</span>
+            </div>
+              
+            </div>
+            
             <table class="table">
               <thead  >
                 <tr>
@@ -641,7 +649,8 @@
 
               </tbody>
             </table>
-              <p class="text-end fw-bold" *ngIf="order">Tổng: {{formatPrice(order!.total)}}</p>
+              <p class="text-end fw-bold" *ngIf="order  && changeVourcher ">Tổng: {{formatPrice(totalTemp)}}</p> 
+              <p class="text-end fw-bold" *ngIf="order && !changeVourcher " >Tổng: {{formatPrice(order!.total)}}</p> 
           </div>
         </div>
         <div class="modal-footer">
