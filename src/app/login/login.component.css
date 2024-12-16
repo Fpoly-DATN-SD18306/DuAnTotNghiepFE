@@ -1,8 +1,22 @@
 body {
-    background-color: #f5b400bd;
-    
-  }
-  
+  position: relative;
+  background-image: url('/img/nen2.webp');
+  background-size: cover; /* Để ảnh bao phủ toàn bộ màn hình */
+  background-position: center; /* Đặt vị trí ảnh ở giữa */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */
+  margin: 0; /* Loại bỏ khoảng cách mặc định của trình duyệt */
+  height: 100vh; /* Đặt chiều cao body bằng chiều cao viewport */
+}
+
+.container {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Căn giữa chính xác theo cả chiều ngang và chiều dọc */
+}
+.card{
+  background-color: rgba(222, 219, 212, 0.816);
+}
   .btn-login {
     font-size: 0.9rem;
     letter-spacing: 0.05rem;
