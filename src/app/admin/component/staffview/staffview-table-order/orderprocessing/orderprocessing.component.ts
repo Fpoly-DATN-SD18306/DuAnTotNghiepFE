@@ -30,6 +30,7 @@ import { ApiConfigService } from '../../../../../service/ApiConfigService';
 import { PromotionReponse } from '../../../../../entity/response/promotion-response';
 import { Promotion } from '../../../../../interface/voucher/promotion';
 import { promotionRequest } from '../../../../../entity/request/promotion-request';
+import { SearchFilterService } from '../../../../../service/foodService/search-filter.service';
 
 @Component({
   selector: 'app-orderprocessing',
@@ -51,6 +52,9 @@ export class OrderprocessingComponent implements OnInit {
   iOrder!: OrderRequest;
   activeCategoryId: number | null = null;
   tempTotal!: number
+  totalPages = 0;
+  theTotalElements: number = 0;
+  number = 0;
   //Gộp/Tách bàn
 
   selectedTable: tableResponse | null = null;
@@ -108,6 +112,7 @@ export class OrderprocessingComponent implements OnInit {
     private orderdetailsService: OrderdetailService,
     private orderService: OrderService,
     private productService: FoodService,
+    private searchFilterService: SearchFilterService,
     private categoryService: CategoryService,
     private webSocketService: WebsocketService,
     private router: Router,
@@ -253,10 +258,12 @@ export class OrderprocessingComponent implements OnInit {
   }
   // ********************************
   getAllProducts() {
-    this.productService.getAllList().subscribe(
+    this.searchFilterService.filterFood("", "", "True",  this.number, 18).subscribe(
       (data) => {
         this.activeCategoryId = null;
         this.listProducts = data.result.content;
+        this.theTotalElements = data.result.totalElements;            
+        this.totalPages = data.result.totalPages; 
         console.log('Data product', data.result.content);
       },
       (err) => {
@@ -264,7 +271,13 @@ export class OrderprocessingComponent implements OnInit {
       }
     );
   }
-
+ 
+  paging(numberPage: number) {
+    console.log(numberPage);
+    console.log(this.totalPages);
+    this.number = numberPage;
+    this.getAllProducts();  
+  }
   getAllCategories() {
     this.categoryService.getAllCate().subscribe((data) => {
       console.log('Category: ', data.result);
@@ -274,9 +287,12 @@ export class OrderprocessingComponent implements OnInit {
 
   getByIdCategory(idCategory: number) {
     this.nameFoodSearch = ''
-    this.productService.getByIdCategory(idCategory).subscribe((data) => {
+    const idCategoryStr = idCategory.toString()
+    this.searchFilterService.filterFood("",idCategoryStr, "True", this.number, 10000).subscribe((data) => {
       this.activeCategoryId = idCategory;
-      this.listProducts = data.result;
+      this.listProducts = data.result.content;
+      this.theTotalElements = data.result.totalElements;            
+      this.totalPages = data.result.totalPages; 
       console.log('data food by category', data.result);
     });
   }
@@ -1057,7 +1073,6 @@ export class OrderprocessingComponent implements OnInit {
 }
 
 onPromotionChange(selectedPromotionId: any) {
-
   if (this.order) {
     this.totalTemp= this.order.total
    
@@ -1096,7 +1111,6 @@ onPromotionChange(selectedPromotionId: any) {
             this.totalTemp = this.order.total - this.newPromotion.discount / 100 * this.order.total;
             this.totalTemp = Math.round(this.totalTemp/1000)*1000;
             this.order.total= this.totalTemp;
-          
             this.nameVourcher = this.newPromotion.namePromotion + "( giảm " +this.newPromotion.discount+ "% )" ;
           }
         }
