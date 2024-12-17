@@ -82,7 +82,8 @@ export class ProductNgangComponent  implements OnInit{
     console.log();
 
     if(this.product){
-      if (this.product.imgFood.trim() !== "") {
+      if(this.product.imgFood)
+      if (this.product.imgFood?.trim() !== "") {
         this.srcImage = this.hostingImg + this.product.imgFood;
         // this.cdr.detectChanges();
       }

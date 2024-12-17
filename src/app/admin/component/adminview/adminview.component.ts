@@ -39,10 +39,8 @@ export class AdminviewComponent {
       data=>{
         this.datainfoCheckout  = data.result
         this.currentTime = new Date
-        console.log(this.datainfoCheckout)  
       },
       error=>{
-        console.log(error)
         alert("Không có ca nào đang làm !")
       }
     )
@@ -57,12 +55,12 @@ export class AdminviewComponent {
     }
     this.shiftService.shiftEnd(this.totalAmount).subscribe(
       data=>{
-        console.log(data);
+
         alert("Kết ca thành công !")
         this.logout()
       },
       error=>{
-        console.log(error);
+   
         alert(this.errorRecord[error.error.code])
       }
     )
@@ -76,12 +74,12 @@ export class AdminviewComponent {
     }
     this.shiftService.EndDay(this.totalAmount).subscribe(
       data=>{
-        console.log(data);
+
         alert("Kết ca thành công !")
         this.logout()
       },
       error=>{
-        console.log(error);
+
         alert(this.errorRecord[error.error.code])
       }
     )

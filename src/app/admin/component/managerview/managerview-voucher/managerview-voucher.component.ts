@@ -105,7 +105,6 @@ export class ManagerviewVoucherComponent implements OnInit {
       this.voucherForm.reset();
     }
 update(){
-console.log(this.voucherForm.value)
 }
     editVoucher(promotion: Promotion) {
       this.editMode = true;
@@ -145,7 +144,6 @@ console.log(this.voucherForm.value)
             this.openTotast('Xóa thành công !')
           },
           error => {
-            console.log('Error fetching data:', error);
           });
         }
       }
@@ -163,7 +161,6 @@ console.log(this.voucherForm.value)
           isIncreasePrice: formValue.isIncreasePrice === 'true',
           isDeleted:false
         };
-        console.log("form hheheh",newVoucherRequest.isIncreasePrice)
         if (this.editMode && this.currentVoucherId) {
 
           this.voucherService.putVoucher(newVoucherRequest, this.currentVoucherId).subscribe(data => {
@@ -174,7 +171,6 @@ console.log(this.voucherForm.value)
 
               this.closeModal();
               this.openTotast('Cập nhật thành công !')
-              console.log("voucher",newVoucherRequest)
             });
         } else {
           
@@ -191,7 +187,6 @@ console.log(this.voucherForm.value)
               
             error => {
               this.openTotast('Promotion đã tồn tại hoặc bị khóa!')
-              console.log('Error fetching data:', error);
             });
         }
       }
@@ -206,10 +201,8 @@ console.log(this.voucherForm.value)
             this.totalPages = data.result.totalPages;
           },
           error => {
-            console.log('Error fetching data:', error);
           }
         );
-       console.log(this.filteredVouchers)
     }
   
     ngOnInit() {

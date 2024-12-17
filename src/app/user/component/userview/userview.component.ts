@@ -14,7 +14,7 @@ ngOnInit(): void {
     if(itb)
     this.sessionStorage.setItem("itb",itb);
   });
-  
+
 }
 
 }

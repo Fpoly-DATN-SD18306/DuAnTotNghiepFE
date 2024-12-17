@@ -79,8 +79,6 @@ export class ListfoodComponent implements OnInit {
   }
  
   paging(numberPage: number) {
-    console.log(numberPage);
-    console.log(this.totalPages);
     this.number = numberPage;
     this.listFood2();  
   }
@@ -95,7 +93,7 @@ export class ListfoodComponent implements OnInit {
         this.totalPages = data.result.totalPages;         
       },
       error => {
-        console.log('Error fetching data:', error);
+       
       }
     );
   }
@@ -109,10 +107,10 @@ export class ListfoodComponent implements OnInit {
         this.size = this.filteredFoods.length;
         this.number = data.result.number;
         this.totalPages = data.result.totalPages;
-       console.log(this.filteredFoods)
+
         }, 
-      error => {console.log(error),
-        console.log(this.filteredFoods)
+      error => {
+     
       }
     );
     

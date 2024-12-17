@@ -25,7 +25,10 @@ export class OtherComponent implements OnInit {
   }
 
 ngOnInit(): void {
-  
+  let itb = sessionStorage.getItem("itb");;
+  if(itb==null){
+      window.location.assign("/error")
+  }
 this.fillOrder();
 
 

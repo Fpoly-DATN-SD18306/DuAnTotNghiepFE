@@ -73,7 +73,6 @@ export class StaffviewParentComponent implements OnInit {
           this.audioService.playSound()
         }
       }
-      console.log('ordermess:', message);
     });
 
   }
@@ -87,7 +86,6 @@ export class StaffviewParentComponent implements OnInit {
           window.location.reload();
         }
         this.ngOnInit()
-        console.log('payment:' + message)
       }
     });
   }
@@ -103,7 +101,6 @@ export class StaffviewParentComponent implements OnInit {
           order: this.itemsorder, // Lưu thông tin đơn hàng vào thông báo
           hidenbutton: false
         });
-        console.log('Coososooo',this.orderIdCounter)
           this.orderIdCounter++;
           this.hidenButton = true
         }
@@ -121,7 +118,6 @@ export class StaffviewParentComponent implements OnInit {
           order: this.itemsorder, // Lưu thông tin đơn hàng vào thông báo
           hidenbutton: false
         });
-        console.log('Coososooo',this.orderIdCounter)
           this.orderIdCounter++;
           this.hidenButton = true
         }
@@ -132,8 +128,6 @@ export class StaffviewParentComponent implements OnInit {
     fetchOrderDetails(idOrder: number | null, idTable: number | null) {
       this.pauseSound()
       this.orderMessages.forEach((message) => {
-        console.log('mess',message.id)
-        console.log('idorder',idOrder)
         if (message.id === idOrder) {
           message.visible = false; 
         }
@@ -156,8 +150,6 @@ export class StaffviewParentComponent implements OnInit {
 
   confirmOrder(idOrder: number | null) {
     this.orderMessages.forEach((message) => {
-      console.log('mess',message.id)
-      console.log('idorder',idOrder)
       this.pauseSound()
       if (message.id === idOrder) {
         message.visible = false
@@ -165,17 +157,14 @@ export class StaffviewParentComponent implements OnInit {
     })
     this.orderService.confirmOrder(idOrder).subscribe(
       (data) => {
-        console.log('data',data)
       },
       (error) => {
-        console.log('Error', error);
       }
     );
   }
 
   //Đóng thông báo / Closed notifications
   closedNotification(id: number) {
-    console.log('Close:', id)
     this.audioService.pauseSound()
     const notification = this.orderMessages.find(msg => msg.id === id)
     if (notification) {
@@ -187,7 +176,6 @@ export class StaffviewParentComponent implements OnInit {
 
   speakText(idOrder : any) {
     const textToSpeak = " Đã nhận được thanh toán của đơn hàng số " + idOrder;
-    console.log(textToSpeak);
     
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     

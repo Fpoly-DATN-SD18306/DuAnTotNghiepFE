@@ -69,13 +69,11 @@ export class ManagerviewTableComponent implements OnInit {
    createArea(){
     this.loader=true;
     this.areaService.createArea(this.areaData).subscribe(data => {
-      console.log(data);
       this.getAllAreas()
       this.openTotast('✅ Tạo mới khu vực thành công!')
       this.areaData.nameArea = ''
       this.loader=false;
     },error => {
-      console.log('Error',error);
       this.openTotast('❌ Tạo mới thất bại!')
       this.loader=false;
     })
@@ -83,10 +81,8 @@ export class ManagerviewTableComponent implements OnInit {
 
   getAllAreas(){
     this.areaService.getAllAreas().subscribe(data =>{
-      console.log(data);
       this.listAreas = data.result
     },error => {
-      console.log('Error',error);
     })
   }
 
@@ -100,7 +96,6 @@ export class ManagerviewTableComponent implements OnInit {
         this.loader=true;
       }, 
       error => {
-        console.log("Error update table: ", error);
         this.openTotast('❌ Lỗi cập nhật! ');
         this.loader=true;
       }
@@ -109,11 +104,9 @@ export class ManagerviewTableComponent implements OnInit {
 
   deleteArea(keyArea : number){
     this.areaService.deleteArea(this.keyArea).subscribe(data => {
-      console.log('data'+data);
       this.getAllAreas()
       this.openTotast('✅ Xóa khu vực thành công!')
     },err =>{
-      console.log('Error', err)
       this.openTotast('❌ Xóa thất bại!')
     })
   }
@@ -123,9 +116,7 @@ export class ManagerviewTableComponent implements OnInit {
     this.areaService.getArea(idArea).subscribe(data => {
       this.areaData = data.result
       this.keyArea = idArea
-      console.log(data.result);
     },error =>{
-      console.log('Error', error)
     })
   }
 
@@ -144,36 +135,30 @@ export class ManagerviewTableComponent implements OnInit {
 
   getAllTableASC(page: number, size: number, idArea: number) {
     this.tableserive.getAllTablesASC(page, size, idArea).subscribe(data => {
-      console.log(data.result)
       this.listTable = data.result.content
       this.totalPages = data.result.totalPages
       this.pages = Array(this.totalPages).fill(0).map((x, i) => i)
     }, error => {
-      console.log("Error list table: ", error)
     })
   }
 
 
   getAllTableDESC(page: number, size: number, idArea: number) {
     this.tableserive.getAlltableDESC(page, size, idArea).subscribe(data => {
-      console.log(data.result)
       this.listTable = data.result.content
       this.totalPages = data.result.totalPages
       this.pages = Array(this.totalPages).fill(0).map((x, i) => i)
     }, error => {
-      console.log("Error list table: ", error)
     })
   }
 
   getTablesFromFilter(keyArea : number) {
     this.tableserive.getTablesByArea(this.nameTableSearch, keyArea, this.status, this.currentPage, this.pagesize)
       .subscribe(data => {
-        console.log('data: ' + data.result)
         this.listTable = data.result.content;  // Lấy danh sách tables từ API
         this.totalPages = data.result.totalPages;  // Tổng số phần tử
         this.keyArea = keyArea
       }, err => {
-        console.log('error: ' + err)
       });
   }
 
@@ -182,7 +167,6 @@ export class ManagerviewTableComponent implements OnInit {
     this.qrcodeservice.getAllQr().subscribe(data => { 
       this.listTableContaiQR = data.result
     }, error => {
-      console.log("Error list table: ", error)
     })
   }
   createNewTable() {
@@ -192,7 +176,6 @@ export class ManagerviewTableComponent implements OnInit {
       this.openTotast('✅ Tạo mới bàn thành công!')
       this.loader=false;
     }, error => {
-      console.log(error)
       this.openTotast('❌ Lỗi tạo bàn ! ')
       this.loader=false;
     })
@@ -207,7 +190,6 @@ export class ManagerviewTableComponent implements OnInit {
             this.openTotast('✅ Cập nhật bàn thành công!');
         }, 
         error => {
-          console.log("Error update table: ", error);
           this.openTotast('❌ Lỗi cập nhật bàn! ');
         }
       );
@@ -217,11 +199,9 @@ export class ManagerviewTableComponent implements OnInit {
   deleteTable(keyTable: number) {
     this.tableserive.deleteTable(keyTable).subscribe(data => {
       this.ngOnInit()
-      console.log("Delete success!", data);
       this.openTotast('✅ Đã xóa bàn thành công!')
       this.keyTable = 0
     }, err => {
-      console.log("Delete fail!");
       this.openTotast('❌ Xóa bàn thất bại!')
     })
   }
@@ -231,7 +211,6 @@ export class ManagerviewTableComponent implements OnInit {
       this.ngOnInit()
       this.openTotast('⚠️ Đã khóa bàn '+data.result.nameTable)
     }, err => {
-      console.log(err)
       this.openTotast('❌ Khóa bàn thất bại!')
     })
   }
@@ -254,7 +233,6 @@ export class ManagerviewTableComponent implements OnInit {
   
   openModal(idtable: number) {
     this.tableserive.getTable(idtable).subscribe(data => {
-      console.log(data.result);
       this.itemTable = data.result
       this.tableData = data.result
       this.keyTable = idtable
@@ -273,11 +251,9 @@ export class ManagerviewTableComponent implements OnInit {
   }
   updateQrCode(idtable: number){
     this.loader=true;
-    console.log(idtable);
     
     this.qrcodeservice.updateQrCode(idtable).subscribe(
       data => {
-        console.log('QR Code updated:', data);
         this.openTotast('✅ Cập nhật QRCode thành công!')
         // setTimeout(()=>{
         //   this.timestamp = new Date().getTime().toString();
@@ -296,7 +272,6 @@ export class ManagerviewTableComponent implements OnInit {
     this.loader=true;
     this.qrcodeservice.createQrCode(idTable).subscribe(
       data => {
-        console.log('QR Code created:', data);
         this.openTotast('✅ Tạo mới QRCode thành công!')
         this.loader=false;
       }, error => {

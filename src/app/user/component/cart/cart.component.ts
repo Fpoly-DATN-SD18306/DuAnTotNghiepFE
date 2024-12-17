@@ -45,6 +45,10 @@ export class CartComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    let itb = sessionStorage.getItem("itb");;
+    if(itb==null){
+        window.location.assign("/error")
+    }
     this.getAllCart();
     this.calculateTotal();
     this.websocketService.connect()
@@ -117,6 +121,8 @@ export class CartComponent implements OnInit {
  // Kiểm tra trạng thái bàn và hiển thị modal thích hợp
  checkOrder() {
   this.iserror = false
+  this.errorShift = false;
+  this.errorAddFood = false;
   const idTable = sessionStorage.getItem("itb");
   if (idTable) {
     this.tableService.getTable(Number(idTable)).subscribe(data => {

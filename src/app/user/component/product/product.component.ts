@@ -17,19 +17,19 @@ export class ProductComponent implements OnInit {
   srcImage = "./img/noImage.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 
-  quantity =0;
+  quantity =1;
   noteOrder="";
-  validQuantity(event:Event){
-    let inputData = event.target as HTMLInputElement
- 
-    if(inputData.valueAsNumber<0 ||Number.isNaN(inputData.valueAsNumber)){
-      this.quantity=0;
-   
+  validQuantity(event: Event) {
+    let inputData = event.target as HTMLInputElement;
+  
+    if (inputData.valueAsNumber < 0 || Number.isNaN(inputData.valueAsNumber) || inputData.valueAsNumber % 1 !== 0) {
+      alert("Nhập phải đúng số nguyên")
+      this.quantity = 0;  
     } else {
-      this.quantity=inputData.valueAsNumber;  
-   
+      this.quantity = inputData.valueAsNumber; 
     }
   }
+  
 
   throwStatusForParent(message:string){
     this.statusAdd.emit(message);
@@ -81,6 +81,7 @@ export class ProductComponent implements OnInit {
     console.log();
 
     if(this.product){
+      if(this.product.imgFood)
       if (this.product.imgFood.trim() !== "") {
         this.srcImage = this.hostingImg + this.product.imgFood;
         // this.cdr.detectChanges();

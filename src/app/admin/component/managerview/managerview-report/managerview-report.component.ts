@@ -115,7 +115,7 @@ getReport(){
       this.getChartData();
     },
     error => {
-      console.log('Error fetching data:', error);
+
     }
   );
 }

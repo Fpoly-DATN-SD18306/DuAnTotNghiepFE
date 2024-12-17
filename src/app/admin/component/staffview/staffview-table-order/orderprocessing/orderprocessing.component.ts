@@ -152,15 +152,12 @@ export class OrderprocessingComponent implements OnInit {
 
   getOrder(idOrder: number) {
     this.orderService.getOrder(idOrder).subscribe((data) => {
-      console.log('Data order: wwww', data.result);
       this.order = data.result;
 
-      console.log('status: ' + this.order?.statusOrder);
     });
   }
 
   checkStatusOrder(idTable: number) {
-    console.log('Status: ', this.order?.statusOrder);
     if (
       this.order?.statusOrder === 'Completed' ||
       this.order?.statusOrder === 'Cancelled'
@@ -169,11 +166,9 @@ export class OrderprocessingComponent implements OnInit {
         (data) => {
         },
         (error) => {
-          console.log('Error', error);
         }
       );
     } else {
-      console.log('lllllll');
     }
   }
 
@@ -181,8 +176,6 @@ export class OrderprocessingComponent implements OnInit {
     this.routerActive.params.subscribe((param) => {
       let idOrder = param['idOrder'];
       let idTable = param['idTable'];
-      console.log(idOrder);
-      console.log(idTable);
       if (idOrder != undefined) {
         this.getOrder(idOrder);
         this.orderdetailsService
@@ -204,13 +197,10 @@ export class OrderprocessingComponent implements OnInit {
   confirmOrder(idOrder: number | null) {
     this.orderService.confirmOrder(idOrder).subscribe(
       (data) => {
-        console.log('data', data)
         this.openTotast('✅ Đã xác nhận | ' + this.order?.nameTable);
-        console.log('confirm')
         this.router.navigate(['/admin/staff/tableorder_staff/orderprocessing', data.result.idOrderMain, this.order?.idTable]);
       },
       (error) => {
-        console.log('Error', error);
       }
     );
   }
@@ -227,13 +217,11 @@ export class OrderprocessingComponent implements OnInit {
     this.orderService.createNewOrder(this.itemOrder, idTable)?.subscribe(
       (data) => {
         const idOrder = data.result.idOrder;
-        console.log('Updated Map in saveOrder: ', this.oldIdOrders);
         this.router.navigate([
           `/admin/staff/tableorder_staff/orderprocessing/${idOrder}/${idTable}`,
         ]);
       },
       (error) => {
-        console.log('Error', error);
         alert(this.errorCode[error.error.code])
       }
     );
@@ -243,7 +231,6 @@ export class OrderprocessingComponent implements OnInit {
     this.webSocketService.onMessage().subscribe((message) => {
       if (message) {
         this.getDataOrderdetail();
-        console.log('ordermess:' + message);
       }
     });
   }
@@ -252,7 +239,6 @@ export class OrderprocessingComponent implements OnInit {
     this.webSocketService.onConfirmMessage().subscribe((message) => {
       if (message) {
         this.getDataOrderdetail();
-        console.log('ordermess:' + message);
       }
     });
   }
@@ -264,23 +250,18 @@ export class OrderprocessingComponent implements OnInit {
         this.listProducts = data.result.content;
         this.theTotalElements = data.result.totalElements;            
         this.totalPages = data.result.totalPages; 
-        console.log('Data product', data.result.content);
       },
       (err) => {
-        console.log('Error', err);
       }
     );
   }
  
   paging(numberPage: number) {
-    console.log(numberPage);
-    console.log(this.totalPages);
     this.number = numberPage;
     this.getAllProducts();  
   }
   getAllCategories() {
     this.categoryService.getAllCate().subscribe((data) => {
-      console.log('Category: ', data.result);
       this.listCategories = data.result;
     });
   }
@@ -293,14 +274,12 @@ export class OrderprocessingComponent implements OnInit {
       this.listProducts = data.result.content;
       this.theTotalElements = data.result.totalElements;            
       this.totalPages = data.result.totalPages; 
-      console.log('data food by category', data.result);
     });
   }
 
 
   // // ********************************************************************************************
   clickProduct(product: foodResponse) {
-    console.log('idFood', product.idFood);
     if (this.order) {
       // Nếu đã có order, cập nhật order hiện tại
       let existingProductInList = this.listOrderDetails.find(
@@ -322,11 +301,9 @@ export class OrderprocessingComponent implements OnInit {
         this.listOrderDetails.push(newOrderDetail);
       }
       this.iOrder = new OrderRequest(product.idFood, 1, product.note, product.nameFood);
-      console.log('update', this.listOrderDetails);
       this.updateOrder(this.order.idOrder, this.iOrder);
       if (this.order) {
         this.totalTemp=this.order.total
-        console.log( "total1:",this.order.total);
       }
      
     } else {
@@ -341,7 +318,6 @@ export class OrderprocessingComponent implements OnInit {
     );
 
     if (existingProductInTemp) {
-      console.log('quantityProductTemp');
       // Nếu sản phẩm đã tồn tại trong tempProducts, tăng số lượng và cập nhật giá trị tổng
       existingProductInTemp.quantity++;
       existingProductInTemp.totalPrice = existingProductInTemp.price *
@@ -368,7 +344,6 @@ export class OrderprocessingComponent implements OnInit {
 
     if (existingProductInList) {
       // Nếu sản phẩm đã tồn tại trong listOrderDetails, chỉ tăng số lượng của sản phẩm đó
-      console.log('quantityproductList');
       existingProductInList.quantity++;
       existingProductInList.totalPrice = existingProductInList.price *
         existingProductInList.quantity * ((100 - existingProductInList.discount) / 100)
@@ -396,11 +371,9 @@ export class OrderprocessingComponent implements OnInit {
     if (!itemOrder) return;
     this.orderService.updateOrder(idOrder, itemOrder).subscribe(
       (data) => {
-        console.log('Order updated successfully', data);
         this.getDataOrderdetail();
       },
       (error) => {
-        console.log('Error', error);
       }
     );
   }
@@ -432,7 +405,6 @@ export class OrderprocessingComponent implements OnInit {
     );
 
     if (existingProductInTemp) {
-      console.log('quantityProductTemp');
       existingProductInTemp.quantity = newQuantity;
     }
 
@@ -442,15 +414,12 @@ export class OrderprocessingComponent implements OnInit {
 
     if (existingProductInList) {
       // Nếu sản phẩm đã tồn tại trong listOrderDetails, chỉ tăng số lượng của sản phẩm đó
-      console.log('quantityproductList');
       existingProductInList.quantity = newQuantity;
 
 
     }
     item.totalPrice = item.price * item.quantity * ((100 - item.discount) / 100)
     this.updateTotal();
-    console.log('Temppr: ', this.tempProducts)
-    console.log('ListOrr: ', this.listOrderDetails)
   }
 
   //cập nhật số lượng orderdetail
@@ -470,14 +439,11 @@ export class OrderprocessingComponent implements OnInit {
          
           if (this.order) {
             this.totalTemp=this.order.total;
-            console.log( "total1:",this.order.total);
           }
           
-          console.log('Success update quantity', idOrderDetail);
          
         },
         (err) => {
-          console.log('Error', err);
         }
       );
       
@@ -518,7 +484,6 @@ export class OrderprocessingComponent implements OnInit {
         this.executeRemove(idOrderDetail);
        
           this.totalTemp=this.order.total
-          console.log( "total1:",this.order.total);
        
       }
     } else {
@@ -579,7 +544,6 @@ export class OrderprocessingComponent implements OnInit {
         
       },
       (err) => {
-        console.log('Delete fail!', err);
       }
     );
   }
@@ -600,7 +564,6 @@ export class OrderprocessingComponent implements OnInit {
       } else {
         this.orderService.cancelOrder(this.order!.idOrder, this.cancelReason).subscribe(
           (res) => {
-            console.log(res);
             if (res.result.idOrderMain === null) {
               this.router.navigate(['/admin/staff/tableorder_staff/tableorder'])
               this.openTotast('⚠️ Đã hủy đơn #' + this.order?.idOrder + ' | ' + this.order?.nameTable)
@@ -610,7 +573,6 @@ export class OrderprocessingComponent implements OnInit {
             }
           },
           (error) => {
-            console.log('Error', error);
           }
         );
 
@@ -625,7 +587,6 @@ export class OrderprocessingComponent implements OnInit {
     this.areaService.getAllAreas().subscribe(data => {
       this.listArea = data.result
     }, error => {
-      console.log('Error', error)
     }
     )
   }
@@ -709,8 +670,6 @@ export class OrderprocessingComponent implements OnInit {
 
     this.updateTotal();
 
-    console.log(this.seletedListFood);
-    console.log(this.seletedListUpdateFood);
   }
 
 
@@ -763,7 +722,6 @@ export class OrderprocessingComponent implements OnInit {
                     .subscribe(
                       () => {
 
-                        console.log('Order deleted successfully');
                       },
                       (error) => {
                         console.error('Error deleting order:', error);
@@ -777,14 +735,11 @@ export class OrderprocessingComponent implements OnInit {
                       .subscribe(
                         response => {
                           this.ngOnInit();
-                          console.log('Order updated successfully:', response);
-                          console.log('Đơn hàng cũ đã được cập nhật thành công!');
-                          console.log(this.seletedListUpdateFood)
+                      
                         },
 
                         error => {
 
-                          console.error('Error updating order:', error);
                         }
 
                       );
@@ -814,12 +769,9 @@ export class OrderprocessingComponent implements OnInit {
       this.tableMergerId = idTable;
       this.mergerOrderId = currentOrderId;
 
-      console.log('Selected currentOrderId:', currentOrderId);
-      console.log('Selected idTable:', idTable);
 
 
       this.orderdetailsService.getOrderDetail(currentOrderId, idTable).subscribe(data => {
-        console.log('DataOrderget: ', data.result)
         this.listOrderDetailsTableMerge = data.result
       })
 

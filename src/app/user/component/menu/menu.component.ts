@@ -143,7 +143,12 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let itb = sessionStorage.getItem("itb");;
+    if(itb==null){
+        window.location.assign("/error")
+    }
     this.getAlldata();
+    
   }
 
 }

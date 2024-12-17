@@ -42,7 +42,7 @@ export class ManagerfoodComponent implements OnInit {
     const input = event.target as HTMLInputElement;
 
     if(input.files){
-      console.log(input.files[0])
+    
       this.selectedFile = input.files[0]
       this.srcImage = URL.createObjectURL(input.files[0])
       
@@ -71,17 +71,17 @@ export class ManagerfoodComponent implements OnInit {
       this.productForm.value.discount
     )
 
-    console.log(food)
+
 
     this.foodService.postFood(food,this.selectedFile).subscribe(
       data=>{
-        console.log("ok  done!")
+   
         this.openToast("Thêm mới Thành Công");
         this.loader  =false;
         this.refreshForm()
 
       },error =>{
-        console.log(error)
+       
         this.openToast( "Lỗi : "+this.errorNotify[error.error.code]);
         this.loader  =false;
       }
@@ -100,17 +100,17 @@ export class ManagerfoodComponent implements OnInit {
       this.productForm.value.discount
     )
 
-    console.log(food)
+
 
     this.foodService.putFood(food,this.selectedFile,this.idFoodNeedUpdate).subscribe(
       data=>{
-        console.log("ok  done!")
+      
         this.openToast("Sửa  Thành Công");
         this.loader  =false;
         this.refreshForm()
 
       },error =>{
-        console.log(error)
+       
         this.openToast("Sửa Không thành công");
         this.loader  =false;
       }
@@ -123,10 +123,10 @@ export class ManagerfoodComponent implements OnInit {
       data=>{
        
         this.listCate = data.result as ApiRespone;
-        console.log(this.listCate)
+    
       }, 
       error =>{
-        console.log(error)
+   
       }
 
     )
@@ -165,7 +165,7 @@ ngOnInit(): void {
         this.foodService.getById(foodId).subscribe(
           data=>{
             foodResponse =data.result;
-            console.log(foodResponse)
+       
             this.idFoodNeedUpdate = foodResponse.idFood;
             this.productForm = this.formBuilder.group({
               nameFood:[foodResponse.nameFood,Validators.required],

@@ -46,14 +46,11 @@ export class ListuserComponent implements OnInit {
         this.totalPages = data.result.totalPages;         
       },
       error => {
-        console.log('Error fetching data:', error);
       }
     );
     
 }
 paging(numberPage: number) {
-  console.log(numberPage);
-  console.log(this.totalPages);
   this.number = numberPage;
   this.getAllUsers();  
 }

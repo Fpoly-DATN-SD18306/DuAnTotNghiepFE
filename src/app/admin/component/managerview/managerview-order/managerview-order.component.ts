@@ -58,13 +58,13 @@ export class ManagerviewOrderComponent implements OnInit {
   getFilterOrders(){
     const { statusOrder, idOrder, dateFrom, dateTo, searchKeyword } = this.filter;
     this.orderService.getFilteredOrders(statusOrder, idOrder, dateFrom, dateTo,searchKeyword, this.currentPage, 8).subscribe(data => {
-      console.log(data.result.content)
+      
       this.listOrders = data.result.content
       this.totalPages = data.result.totalPages
       this.pages = Array(this.totalPages).fill(0).map((x, i) => i)
       this.updatePagination()
     },error => {
-      console.log("Error list table: ", error)
+   
     })
   }
 
@@ -86,7 +86,7 @@ export class ManagerviewOrderComponent implements OnInit {
   getOrderDetails(idOrderSelect:number){
     this.orderdetailService.getOrderDetail(idOrderSelect, null).subscribe(data => {
       this.listOrderDetails = data.result
-      console.log('dataaaa',data.result)
+
     })
   }
 
@@ -119,7 +119,7 @@ export class ManagerviewOrderComponent implements OnInit {
   getOrder(idOrderSelect:number){
     this.orderService.getOrder(idOrderSelect).subscribe(order => {
       this.orderSelect = order.result
-      console.log('order', order.result)
+
     })
   }
 
