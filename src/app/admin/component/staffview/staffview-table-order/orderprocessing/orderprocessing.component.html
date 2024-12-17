@@ -35,9 +35,7 @@
                   <div class="position-absolute" *ngIf="product.discount" [ngClass]="{'box-sale': product.discount}">
                     <span class="tittle-discount">-{{product.discount}}%</span>
                   </div>
-                  <!-- <div class="buttons-overlay" [ngClass]="{'d-none': order?.statusOrder == 'Waiting' || !order}">
-                                        <button class="btn btn-sm mx-2 me-2 btn-dark rounded-3" (click)="addProductToTemp(product)"><i class="bi bi-plus-circle-dotted fs-5" ></i></button>
-                                      </div> -->
+                 
                   <div class="buttons-overlay">
                     <button class="btn btn-sm mx-2 me-2 btn-dark rounded-3" (click)="clickProduct(product)"><i
                         class="bi bi-plus-circle-dotted fs-5"></i></button>
@@ -47,27 +45,6 @@
                   <span class="fw-bold" style="font-size: 0.9em;">{{product.nameFood}}</span>
                 </div>
               </div>
-
-
-            </div>
-            <div class="w-100 my-3 d-flex justify-content-center ">
-              <nav class="mx-auto text-center " aria-label="...">
-                <ul class="pagination">
-                  <li class="page-item "  [class.disabled]="number==0" >
-                    <button (click)="paging(number-1)"  class="page-link">Previous</button>
-                  </li>
-                  <li *ngIf="number>0" class="page-item ">
-                    <button (click)="paging(number-1)" class="page-link" >{{number}} </button></li>
-                  <li  class="page-item active">
-                     <button class="page-link" >{{number+1}}  </button></li>
-                     <li *ngIf="totalPages-1>number" class="page-item ">
-                      <button (click)="paging(number+1)" class="page-link" >{{number+2}} </button></li>
-            
-                  <li class="page-item" [class.disabled]="number==totalPages-1">
-                    <button  (click)="paging(number+1)" class="page-link" >Next</button>
-                  </li>
-                </ul>
-              </nav>
             </div>
             <!-- end item product -->
 
