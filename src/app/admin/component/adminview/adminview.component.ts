@@ -27,7 +27,8 @@ export class AdminviewComponent {
       "bankAmountEnd": 0,
       "shiftRevenue": 0,
       "totalServing": 0,
-      "dateStart": ""
+      "dateStart": "",
+      "staffName": "",
   }
   formatPrice(price: number) {
     return new Intl.NumberFormat('vi-VN').format(price)

@@ -76,6 +76,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+              <div class="row mb-3 inline">
+              <p> <span class="text-primary h5">Ca làm của nhân viên :</span> <span class="h4">{{ datainfoCheckout.staffName}}</span></p>
+              </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <h6>Giờ đầu ca: <span class="text-primary"> {{ datainfoCheckout.dateStart | date:'dd/MM/yyyy HH:mm' }}</span></h6>

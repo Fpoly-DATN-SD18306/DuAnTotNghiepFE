@@ -26,7 +26,7 @@
             <div
               class="item-product col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-4 px-2 position-relative d-flex align-items-center"
               *ngFor="let product of listProducts">
-              <div  class="box-item-product">
+              <div *ngIf="product.isSelling" class="box-item-product">
                 <div  class="img-product p-3 border border-secondary rounded-3">
                   <div *ngIf="product.imgFood">
                     <img  src="{{hostingImg}}{{product.imgFood}}" alt="" class="w-100">
@@ -285,7 +285,7 @@
                   <select [(ngModel)]="selectedPromotion" (change)="onPromotionChange(selectedPromotion)" class="form-select form-select-sm bg-secondary-subtle"
                     aria-label="Default select example">
                     <option value="0">Không</option>
-                    <option *ngFor="let voucher of listPromotion"[value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
+                    <option *ngFor="let voucher of listPromotion" [value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
                   </select>
                 </div>
               </div>
@@ -498,17 +498,17 @@
           <div class="container" id="body_invoice">
             <div class="text-center">
               <br>
-              <span class="h3 pt-5">Nhà hàng ABC</span><br>
+              <span class="h3 pt-5">Nhà hàng FPTFood</span><br>
               <span>Đường số 5, ngã 5, Khu công nghiệp sơn trà</span> <br>
               <span>Sđt : 0708000789 - 0708888886</span>
             </div>
             <div class="text-center">
               <span class="h3">Hoá đơn bán hàng</span><br>
-              <span class="h4">bàn A1</span>
+              <span class="h4">{{order?.nameTable}}</span>
             </div>
             <div class="d-flex justify-content-between">
-              <span class="h3">Thu Ngân : Nguyễn văn a</span><br>
-              <span class="h4">Mã hoá đơn : 12345</span>
+              <span class="h3">Thu Ngân : {{order?.fullname}}</span><br>
+              <span class="h4">Mã hoá đơn : HD001128-0{{order?.idOrder}}</span>
             </div>
             <div style="min-height: 300px;">
               <table class="table">
@@ -537,9 +537,20 @@
 
             </div>
 
-            <div class="d-flex justify-content-between">
-              <span class="h3">Tổng :</span><br>
-              <span *ngIf="listDataInvoice" class="h4">{{ formatPrice(listDataInvoice[0].totalOrder) }}</span>
+            <div class="d-flex justify-content-end" *ngIf="nameVourcher">
+              <i>Voucher: {{nameVourcher}}</i>
+            </div>
+            <div class="d-flex justify-content-end">
+        
+                <span class="h4">Tổng : </span><br>
+              <!-- <span *ngIf="order  && changeVourcher" class="h4"> {{formatPrice(totalTemp)}}</span>
+              <span *ngIf="listDataInvoice" class="h4"> {{formatPrice(listDataInvoice[0].totalOrder)}}</span> -->
+
+              <p class="text-end fw-bold h4" *ngIf="order  && changeVourcher ">{{formatPrice(totalTemp)}}</p> 
+              <p class="text-end fw-bold h4" *ngIf="order && !changeVourcher " >{{formatPrice(order!.total)}}</p> 
+              <!-- <p class="text-end fw-bold" *ngIf="order  && changeVourcher ">Tổng: {{formatPrice(totalTemp)}}</p>  -->
+
+             
             </div>
             <div class="text-center">
 
@@ -610,7 +621,7 @@
               </div>
               
             </div>
-            <div class="row mb-2">
+            <div class="row mb-2" *ngIf="nameVourcher">
               <div class="col-6"><b>Vourcher: </b>              
                 <span>{{ nameVourcher}}</span>
             </div>
