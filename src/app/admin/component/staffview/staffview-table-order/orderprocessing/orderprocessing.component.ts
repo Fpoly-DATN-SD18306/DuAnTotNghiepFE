@@ -80,7 +80,7 @@ export class OrderprocessingComponent implements OnInit {
   srcImage = "./img/noImage.jpg";
   hostingImg = ApiConfigService.apiUrlimg;
 //Promotion
-  selectedStatus = '';  
+  selectedStatus = 'active';  
   searchText = "";
   sortField = "namePromotion";
   sortDirection= "asc" ;
@@ -1074,10 +1074,11 @@ export class OrderprocessingComponent implements OnInit {
 
 onPromotionChange(selectedPromotionId: any) {
   if (this.order) {
+
     this.totalTemp= this.order.total
    
   }
-  if (selectedPromotionId == 0) {
+  if (+selectedPromotionId === 0) {
    if (this.order) {
     this.tax = "0";
     this.discountVourcher = "0";
@@ -1100,7 +1101,7 @@ onPromotionChange(selectedPromotionId: any) {
             this.discountVourcher = "0";
             this.totalTemp  = this.order.total + this.newPromotion.discount / 100 * this.order.total;
             this.totalTemp = Math.round(this.totalTemp/1000)*1000;
-            this.order.total= this.totalTemp;
+            // this.order.total= this.totalTemp;
             this.nameVourcher = this.newPromotion.namePromotion + "( tăng " + this.newPromotion.discount+ "% )" ;
           }
         }else{
@@ -1110,7 +1111,7 @@ onPromotionChange(selectedPromotionId: any) {
             this.tax = "0";
             this.totalTemp = this.order.total - this.newPromotion.discount / 100 * this.order.total;
             this.totalTemp = Math.round(this.totalTemp/1000)*1000;
-            this.order.total= this.totalTemp;
+            // this.order.total= this.totalTemp;
             this.nameVourcher = this.newPromotion.namePromotion + "( giảm " +this.newPromotion.discount+ "% )" ;
           }
         }

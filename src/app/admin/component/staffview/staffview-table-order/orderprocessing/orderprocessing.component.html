@@ -35,9 +35,7 @@
                   <div class="position-absolute" *ngIf="product.discount" [ngClass]="{'box-sale': product.discount}">
                     <span class="tittle-discount">-{{product.discount}}%</span>
                   </div>
-                  <!-- <div class="buttons-overlay" [ngClass]="{'d-none': order?.statusOrder == 'Waiting' || !order}">
-                                        <button class="btn btn-sm mx-2 me-2 btn-dark rounded-3" (click)="addProductToTemp(product)"><i class="bi bi-plus-circle-dotted fs-5" ></i></button>
-                                      </div> -->
+                 
                   <div class="buttons-overlay">
                     <button class="btn btn-sm mx-2 me-2 btn-dark rounded-3" (click)="clickProduct(product)"><i
                         class="bi bi-plus-circle-dotted fs-5"></i></button>
@@ -47,28 +45,7 @@
                   <span class="fw-bold" style="font-size: 0.9em;">{{product.nameFood}}</span>
                 </div>
               </div>
-
-
             </div>
-            <!-- <div class="w-100 my-3 d-flex justify-content-center ">
-              <nav class="mx-auto text-center " aria-label="...">
-                <ul class="pagination">
-                  <li class="page-item "  [class.disabled]="number==0" >
-                    <button (click)="paging(number-1)"  class="page-link">Previous</button>
-                  </li>
-                  <li *ngIf="number>0" class="page-item ">
-                    <button (click)="paging(number-1)" class="page-link" >{{number}} </button></li>
-                  <li  class="page-item active">
-                     <button class="page-link" >{{number+1}}  </button></li>
-                     <li *ngIf="totalPages-1>number" class="page-item ">
-                      <button (click)="paging(number+1)" class="page-link" >{{number+2}} </button></li>
-            
-                  <li class="page-item" [class.disabled]="number==totalPages-1">
-                    <button  (click)="paging(number+1)" class="page-link" >Next</button>
-                  </li>
-                </ul>
-              </nav>
-            </div> -->
             <!-- end item product -->
 
           </div>
@@ -308,7 +285,7 @@
                   <select [(ngModel)]="selectedPromotion" (change)="onPromotionChange(selectedPromotion)" class="form-select form-select-sm bg-secondary-subtle"
                     aria-label="Default select example">
                     <option value="0">Không</option>
-                    <option *ngFor="let voucher of listPromotion"[value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
+                    <option *ngFor="let voucher of listPromotion" [value] ="voucher.idPromotion"  >{{voucher.namePromotion}}  ({{voucher.increasePrice?"Tăng giá":"Giảm giá"}})</option>
                   </select>
                 </div>
               </div>
@@ -521,17 +498,17 @@
           <div class="container" id="body_invoice">
             <div class="text-center">
               <br>
-              <span class="h3 pt-5">Nhà hàng ABC</span><br>
+              <span class="h3 pt-5">Nhà hàng FPTFood</span><br>
               <span>Đường số 5, ngã 5, Khu công nghiệp sơn trà</span> <br>
               <span>Sđt : 0708000789 - 0708888886</span>
             </div>
             <div class="text-center">
               <span class="h3">Hoá đơn bán hàng</span><br>
-              <span class="h4">bàn A1</span>
+              <span class="h4">{{order?.nameTable}}</span>
             </div>
             <div class="d-flex justify-content-between">
-              <span class="h3">Thu Ngân : Nguyễn văn a</span><br>
-              <span class="h4">Mã hoá đơn : 12345</span>
+              <span class="h3">Thu Ngân : {{order?.fullname}}</span><br>
+              <span class="h4">Mã hoá đơn : HD001128-0{{order?.idOrder}}</span>
             </div>
             <div style="min-height: 300px;">
               <table class="table">
@@ -560,9 +537,20 @@
 
             </div>
 
-            <div class="d-flex justify-content-between">
-              <span class="h3">Tổng :</span><br>
-              <span *ngIf="listDataInvoice" class="h4">{{ formatPrice(listDataInvoice[0].totalOrder) }}</span>
+            <div class="d-flex justify-content-end" *ngIf="nameVourcher">
+              <i>Voucher: {{nameVourcher}}</i>
+            </div>
+            <div class="d-flex justify-content-end">
+        
+                <span class="h4">Tổng : </span><br>
+              <!-- <span *ngIf="order  && changeVourcher" class="h4"> {{formatPrice(totalTemp)}}</span>
+              <span *ngIf="listDataInvoice" class="h4"> {{formatPrice(listDataInvoice[0].totalOrder)}}</span> -->
+
+              <p class="text-end fw-bold h4" *ngIf="order  && changeVourcher ">{{formatPrice(totalTemp)}}</p> 
+              <p class="text-end fw-bold h4" *ngIf="order && !changeVourcher " >{{formatPrice(order!.total)}}</p> 
+              <!-- <p class="text-end fw-bold" *ngIf="order  && changeVourcher ">Tổng: {{formatPrice(totalTemp)}}</p>  -->
+
+             
             </div>
             <div class="text-center">
 
@@ -633,7 +621,7 @@
               </div>
               
             </div>
-            <div class="row mb-2">
+            <div class="row mb-2" *ngIf="nameVourcher">
               <div class="col-6"><b>Vourcher: </b>              
                 <span>{{ nameVourcher}}</span>
             </div>
