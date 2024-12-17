@@ -258,7 +258,7 @@ export class OrderprocessingComponent implements OnInit {
   }
   // ********************************
   getAllProducts() {
-    this.searchFilterService.filterFood("", "", "True",  this.number, 18).subscribe(
+    this.searchFilterService.filterFood("", "", "True",  this.number, 99999).subscribe(
       (data) => {
         this.activeCategoryId = null;
         this.listProducts = data.result.content;
