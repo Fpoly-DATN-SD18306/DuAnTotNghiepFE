@@ -94,7 +94,7 @@ export class MenuComponent implements OnInit {
       console.log(this.listFood);
       this.loader = false;
     } else {
-      this.foodService.getAllList().subscribe(
+      this.filterFoodService.filterFood("", "", "True",  0, 10000).subscribe(
         data => {
           this.listFood = data.result.content;
           this.loader = false;
