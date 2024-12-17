@@ -65,7 +65,7 @@ export class ManagerfoodComponent implements OnInit {
     let food = new foodRequest(
       this.productForm.value.nameFood,
       this.productForm.value.priceFood,
-      this.productForm.value.isSelling=="True"?true:false,
+      this.productForm.value.isSelling,
       this.productForm.value.note,
       this.productForm.value.idCategory,
       this.productForm.value.discount
@@ -94,7 +94,7 @@ export class ManagerfoodComponent implements OnInit {
     let food = new foodRequest(
       this.productForm.value.nameFood,
       this.productForm.value.priceFood,
-      this.productForm.value.isSelling=="True"?true:false,
+      this.productForm.value.isSelling,
       this.productForm.value.note,
       this.productForm.value.idCategory,
       this.productForm.value.discount

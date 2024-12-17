@@ -50,7 +50,7 @@ export class FoodService {
     const data = new FormData();
     data.append('nameFood',foodRequest.nameFood)
     data.append('priceFood',foodRequest.priceFood.toString())
-    data.append('isSelling',foodRequest.isSelling?'True':'False'),
+    data.append('isSelling',foodRequest.isSelling),
    
     data.append('note',foodRequest.note)
     data.append('idCategory',foodRequest.idCategory.toString())

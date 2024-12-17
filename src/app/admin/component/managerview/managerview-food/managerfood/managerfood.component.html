@@ -76,8 +76,8 @@
           <label for="inputPassword4" class="form-label">Trạng thái(Đang bán)</label>
           <select class="form-select"  formControlName="isSelling" aria-label="Default select example">  
             
-            <option value=True [selected]="productForm.controls['isSelling'].value==true" >True</option>
-            <option value=False [selected]="productForm.controls['isSelling'].value==false">False</option>
+            <option value=true [selected]="productForm.controls['isSelling'].value=='true'" >True</option>
+            <option value=false [selected]="productForm.controls['isSelling'].value=='false'">False</option>
           </select>
         
 
